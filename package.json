@@ -1,0 +1,22 @@
+{
+  "name": "maa-crm",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:migrate": "node scripts/migrate.js"
+  },
+  "dependencies": {
+    "next": "14.2.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "@neondatabase/serverless": "^0.9.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3"
+  }
+}

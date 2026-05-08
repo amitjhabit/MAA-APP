@@ -138,7 +138,7 @@ export default function HomePage() {
         <div style={{ position: 'relative', zIndex: 1 }}>
           <span className="hero-eyebrow">Est. 2004 · Connecting Communities</span>
           <h1>Celebrating <em>Maithili</em><br />Culture &amp; Heritage</h1>
-          <span className="hero-maithili">मैथिली संस्कृति आ विरासतक उत्सव</span>
+          <span className="hero-maithili">Helloमैथिली संस्कृति आ विरासतक उत्सव</span>
           <p className="hero-sub">Uniting the Maithili-speaking community across America — preserving our language, traditions, and cultural identity for future generations.</p>
           <div style={{ display: 'flex', gap: '.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a href="/join" className="btn btn-primary btn-sm">Become a Member</a>

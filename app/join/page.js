@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 // app/join/page.js
 import { useState } from 'react';
 

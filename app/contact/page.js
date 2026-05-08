@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 // app/contact/page.js
 import { useState } from 'react';
 

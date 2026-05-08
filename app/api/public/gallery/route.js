@@ -1,4 +1,4 @@
-﻿export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 // app/api/public/gallery/route.js
 import { NextResponse } from 'next/server';
 import { getDb, ensureInit } from '@/lib/db';

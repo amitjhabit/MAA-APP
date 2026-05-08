@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 // app/gallery/page.js
 import { useState, useEffect } from 'react';
 

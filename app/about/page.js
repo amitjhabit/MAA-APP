@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 // app/about/page.js â€” About Us
 import { useState, useEffect } from 'react';
 

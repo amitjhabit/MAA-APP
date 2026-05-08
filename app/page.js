@@ -138,7 +138,7 @@ export default function HomePage() {
         <div style={{ position: 'relative', zIndex: 1 }}>
           <span className="hero-eyebrow">Est. 2004 · Connecting Communities</span>
           <h1>Celebrating <em>Maithili</em><br />Culture &amp; Heritage</h1>
-          <span className="hero-maithili">Helloमैथिली संस्कृति आ विरासतक उत्सव</span>
+          <span className="hero-maithili">मैथिली संस्कृति आ विरासतक उत्सव</span>
           <p className="hero-sub">Uniting the Maithili-speaking community across America — preserving our language, traditions, and cultural identity for future generations.</p>
           <div style={{ display: 'flex', gap: '.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a href="/join" className="btn btn-primary btn-sm">Become a Member</a>
@@ -150,12 +150,10 @@ export default function HomePage() {
 
       {/* Stats */}
       <section style={{ background: 'var(--paper-2)', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(2,1fr)' }}>
           {[
             { num: loading ? '…' : `${stats.members}+`, label: 'Members',          sub: 'सदस्य' },
             { num: loading ? '…' : `${stats.events}+`,  label: 'Events Organized', sub: 'कार्यक्रम' },
-            { num: '25+',                                label: 'Years of Service', sub: 'सेवा के वर्ष' },
-            { num: '15+',                                label: 'US States',        sub: 'राज्य' },
           ].map(s => (
             <div key={s.label} style={{ textAlign: 'center', padding: '.75rem' }}>
               <div style={{ fontFamily: 'var(--serif)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--saffron)', lineHeight: 1 }}>{s.num}</div>

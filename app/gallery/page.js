@@ -8,7 +8,7 @@ function Nav() {
       <div className="pub-nav-inner">
         <a href="/" className="pub-nav-brand">
           <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>à¤®à¥ˆà¤¥à¤¿à¤² à¤à¤¸à¥‹à¤¸à¤¿à¤à¤¶à¤¨ à¤‘à¤« à¤…à¤®à¥‡à¤°à¤¿à¤•à¤¾</span></div>
+          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
         </a>
         <div className="pub-nav-links">
           {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
@@ -25,7 +25,7 @@ function Footer() {
   return (
     <footer className="pub-footer">
       <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem' }}>
-        Â© {new Date().getFullYear()} Maithil Association of America Â· <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
+        © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
       </div>
     </footer>
   );
@@ -63,7 +63,7 @@ export default function GalleryPage() {
       {/* Hero */}
       <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hero-eyebrow">à¤—à¥ˆà¤²à¤°à¥€</span>
+          <span className="hero-eyebrow">गैलरी</span>
           <h1>Photo <em>Gallery</em></h1>
           <p className="hero-sub">Memories from our events, celebrations, and community gatherings.</p>
         </div>
@@ -72,12 +72,12 @@ export default function GalleryPage() {
       <div className="shell">
         {photos.length === 0 && !loading && (
           <div style={{ background: 'var(--gold-light)', border: '1px solid rgba(201,150,12,.3)', borderRadius: 'var(--radius)', padding: '.75rem 1rem', marginBottom: '1.5rem', fontSize: '.875rem', color: 'var(--gold)' }}>
-            ðŸ“Œ Showing sample photos. Add real photos via the <a href="/admin" style={{ color: 'var(--saffron)' }}>Admin Gallery</a>.
+            📌 Showing sample photos. Add real photos via the <a href="/admin" style={{ color: 'var(--saffron)' }}>Admin Gallery</a>.
           </div>
         )}
 
         {loading ? (
-          <div className="loading-state"><span className="spinner" />Loading galleryâ€¦</div>
+          <div className="loading-state"><span className="spinner" />Loading gallery…</div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(280px,1fr))', gap: '1rem' }}>
             {displayPhotos.map((photo, idx) => (
@@ -92,7 +92,7 @@ export default function GalleryPage() {
                     onError={e => { e.target.src = 'https://via.placeholder.com/400x266?text=MAA+Photo'; }}
                   />
                   {photo.is_featured && (
-                    <div style={{ position: 'absolute', top: '.5rem', left: '.5rem', background: 'var(--saffron)', color: '#fff', fontSize: '.65rem', fontWeight: 700, padding: '.2rem .5rem', borderRadius: 4 }}>â­ Featured</div>
+                    <div style={{ position: 'absolute', top: '.5rem', left: '.5rem', background: 'var(--saffron)', color: '#fff', fontSize: '.65rem', fontWeight: 700, padding: '.2rem .5rem', borderRadius: 4 }}>⭐ Featured</div>
                   )}
                 </div>
                 {(photo.title || photo.description) && (
@@ -111,10 +111,10 @@ export default function GalleryPage() {
       {/* Lightbox */}
       {lightbox && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.92)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setLightbox(null)}>
-          <button style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: '#fff', fontSize: '1.75rem', cursor: 'pointer' }} onClick={() => setLightbox(null)}>âœ•</button>
+          <button style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: '#fff', fontSize: '1.75rem', cursor: 'pointer' }} onClick={() => setLightbox(null)}>✕</button>
           {currentIndex > 0 && (
             <button style={{ position: 'absolute', left: '1rem', background: 'rgba(255,255,255,.15)', border: 'none', color: '#fff', fontSize: '1.5rem', cursor: 'pointer', borderRadius: '50%', width: 44, height: 44 }}
-              onClick={e => { e.stopPropagation(); setLightbox(displayPhotos[currentIndex - 1]); }}>â€¹</button>
+              onClick={e => { e.stopPropagation(); setLightbox(displayPhotos[currentIndex - 1]); }}>‹</button>
           )}
           <div style={{ maxWidth: 900, width: '100%' }} onClick={e => e.stopPropagation()}>
             <img src={lightbox.image_url} alt={lightbox.title} style={{ width: '100%', maxHeight: '75vh', objectFit: 'contain', borderRadius: 'var(--radius)' }} onError={e => { e.target.src = 'https://via.placeholder.com/800x533?text=MAA+Photo'; }} />
@@ -127,7 +127,7 @@ export default function GalleryPage() {
           </div>
           {currentIndex < displayPhotos.length - 1 && (
             <button style={{ position: 'absolute', right: '1rem', background: 'rgba(255,255,255,.15)', border: 'none', color: '#fff', fontSize: '1.5rem', cursor: 'pointer', borderRadius: '50%', width: 44, height: 44 }}
-              onClick={e => { e.stopPropagation(); setLightbox(displayPhotos[currentIndex + 1]); }}>â€º</button>
+              onClick={e => { e.stopPropagation(); setLightbox(displayPhotos[currentIndex + 1]); }}>›</button>
           )}
         </div>
       )}
@@ -136,4 +136,3 @@ export default function GalleryPage() {
     </>
   );
 }
-

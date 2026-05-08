@@ -8,7 +8,7 @@ function Nav() {
       <div className="pub-nav-inner">
         <a href="/" className="pub-nav-brand">
           <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>à¤®à¥ˆà¤¥à¤¿à¤² à¤à¤¸à¥‹à¤¸à¤¿à¤à¤¶à¤¨ à¤‘à¤« à¤…à¤®à¥‡à¤°à¤¿à¤•à¤¾</span></div>
+          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
         </a>
         <div className="pub-nav-links">
           {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
@@ -25,7 +25,7 @@ function Footer() {
   return (
     <footer className="pub-footer">
       <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem' }}>
-        Â© {new Date().getFullYear()} Maithil Association of America Â· <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
+        © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
       </div>
     </footer>
   );
@@ -44,7 +44,7 @@ function NewsCard({ post, featured }) {
   return (
     <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '.65rem', ...(featured ? { borderTop: '3px solid var(--saffron)' } : {}) }}>
       {featured && (
-        <div style={{ background: 'var(--saffron)', color: '#fff', fontSize: '.68rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', padding: '.2rem .6rem', borderRadius: 4, alignSelf: 'flex-start' }}>â­ Featured</div>
+        <div style={{ background: 'var(--saffron)', color: '#fff', fontSize: '.68rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', padding: '.2rem .6rem', borderRadius: 4, alignSelf: 'flex-start' }}>⭐ Featured</div>
       )}
       <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
         <span className="badge" style={{ background: cat.bg, color: cat.color }}>{post.category}</span>
@@ -55,9 +55,9 @@ function NewsCard({ post, featured }) {
         {post.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.35rem' }}>{post.title_maithili}</div>}
       </div>
       {post.excerpt && <p className="text-sm text-muted" style={{ lineHeight: 1.7 }}>{post.excerpt}</p>}
-      {post.content && !post.excerpt && <p className="text-sm text-muted" style={{ lineHeight: 1.7 }}>{post.content.slice(0, 200)}â€¦</p>}
+      {post.content && !post.excerpt && <p className="text-sm text-muted" style={{ lineHeight: 1.7 }}>{post.content.slice(0, 200)}…</p>}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '.5rem' }}>
-        {post.author && <span className="text-xs text-muted">âœï¸ {post.author}</span>}
+        {post.author && <span className="text-xs text-muted">✍️ {post.author}</span>}
       </div>
     </div>
   );
@@ -92,7 +92,7 @@ export default function NewsPage() {
       {/* Hero */}
       <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hero-eyebrow">à¤¸à¤®à¤¾à¤šà¤¾à¤° à¤† à¤˜à¥‹à¤·à¤£à¤¾</span>
+          <span className="hero-eyebrow">समाचार आ घोषणा</span>
           <h1>News &amp; <em>Announcements</em></h1>
           <p className="hero-sub">Stay updated with the latest news, cultural updates, and announcements from MAA.</p>
         </div>
@@ -101,7 +101,7 @@ export default function NewsPage() {
       <div className="shell">
         {/* Search + filter */}
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem', alignItems: 'center' }}>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="ðŸ”  Search newsâ€¦" style={{ flex: '1 1 220px', maxWidth: 300 }} />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="🔍  Search news…" style={{ flex: '1 1 220px', maxWidth: 300 }} />
           <div className="filter-bar" style={{ marginBottom: 0 }}>
             {[['all', 'All'], ['announcement', 'Announcements'], ['cultural', 'Cultural'], ['event', 'Events'], ['newsletter', 'Newsletter']].map(([v, l]) => (
               <button key={v} className={`filter-btn${catFilter === v ? ' active' : ''}`} onClick={() => setCatFilter(v)}>{l}</button>
@@ -110,9 +110,9 @@ export default function NewsPage() {
         </div>
 
         {loading ? (
-          <div className="loading-state"><span className="spinner" />Loading newsâ€¦</div>
+          <div className="loading-state"><span className="spinner" />Loading news…</div>
         ) : filtered.length === 0 ? (
-          <div className="empty-state"><div className="icon">ðŸ“°</div><p>No posts found.</p></div>
+          <div className="empty-state"><div className="icon">📰</div><p>No posts found.</p></div>
         ) : (
           <>
             {/* Featured post */}
@@ -135,4 +135,3 @@ export default function NewsPage() {
     </>
   );
 }
-

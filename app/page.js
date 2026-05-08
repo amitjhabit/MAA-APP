@@ -58,7 +58,7 @@ function Footer() {
         <div>
           <div style={{ color: 'var(--gold)', fontWeight: 600, marginBottom: '.75rem', fontSize: '.85rem', textTransform: 'uppercase', letterSpacing: '.08em' }}>Contact</div>
           <div style={{ color: 'rgba(255,255,255,.7)', fontSize: '.875rem', lineHeight: 1.8 }}>
-            info@maa-america.org<br />Edison, NJ (Headquarters)
+            info@maithilusa.org<br />San Ramon, CA (Headquarters)
           </div>
         </div>
       </div>

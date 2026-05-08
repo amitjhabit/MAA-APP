@@ -1,3 +1,4 @@
+﻿export const dynamic = 'force-dynamic';
 // app/api/public/committee/route.js
 import { NextResponse } from 'next/server';
 import { getDb, ensureInit } from '@/lib/db';
@@ -12,3 +13,4 @@ export async function GET() {
     return NextResponse.json({ success: true, data: [] });
   }
 }
+

@@ -1,3 +1,4 @@
+﻿export const dynamic = 'force-dynamic';
 // app/api/public/join/route.js
 import { NextResponse } from 'next/server';
 import { getDb, ensureInit } from '@/lib/db';
@@ -36,3 +37,4 @@ export async function POST(request) {
     return NextResponse.json({ success: false, message: e.message }, { status: 500 });
   }
 }
+

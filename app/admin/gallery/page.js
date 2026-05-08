@@ -7,21 +7,41 @@ function Sidebar(){const NL=({href,icon,label,a})=><a href={href} className={`ad
 
 function Modal({ photo, secret, onClose, onSave }) {
   const isEdit = !!photo;
+
+  // Normalize stored URL: strip accidental "public/" prefix
+  const normalizeUrl = url => {
+    if (!url) return '';
+    return url.replace(/^public\//, '/').replace(/^\/\//, '/');
+  };
+
   const blank = { image_url: '', title: '', description: '', category: 'general', is_featured: false, sort_order: '0', uploaded_by: '' };
-  const [form, setForm] = useState(isEdit ? { ...blank, ...photo, sort_order: String(photo.sort_order || 0) } : blank);
+  const initUrl = isEdit ? normalizeUrl(photo.image_url) : '';
+  const [form, setForm] = useState(isEdit ? { ...blank, ...photo, image_url: initUrl, sort_order: String(photo.sort_order || 0) } : blank);
   const [busy, setBusy] = useState(false);
-  const [uploadMode, setUploadMode] = useState('file'); // 'file' | 'url'
+  const [uploadMode, setUploadMode] = useState(isEdit && initUrl ? 'url' : 'file');
   const [uploading, setUploading] = useState(false);
   const [uploadErr, setUploadErr] = useState('');
-  const [preview, setPreview] = useState(isEdit ? photo.image_url : '');
+  // localPreview: object URL from FileReader for instant preview before upload
+  const [localPreview, setLocalPreview] = useState('');
+  const [uploadDone, setUploadDone] = useState(false);
   const fileRef = useRef();
 
   const set = k => e => setForm(p => ({ ...p, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
+
+  // Determine the best preview source: local blob > stored url
+  const previewSrc = localPreview || (uploadMode === 'url' ? normalizeUrl(form.image_url) : form.image_url);
 
   const handleFileChange = async e => {
     const file = e.target.files[0];
     if (!file) return;
     setUploadErr('');
+    setUploadDone(false);
+
+    // Instant local preview via FileReader
+    const reader = new FileReader();
+    reader.onload = ev => setLocalPreview(ev.target.result);
+    reader.readAsDataURL(file);
+
     setUploading(true);
     try {
       const fd = new FormData();
@@ -30,19 +50,22 @@ function Modal({ photo, secret, onClose, onSave }) {
       const data = await res.json();
       if (data.success) {
         setForm(p => ({ ...p, image_url: data.url }));
-        setPreview(data.url);
+        setUploadDone(true);
       } else {
         setUploadErr(data.message || 'Upload failed.');
+        setLocalPreview('');
       }
     } catch {
       setUploadErr('Network error during upload.');
+      setLocalPreview('');
     }
     setUploading(false);
   };
 
   const handleUrlChange = e => {
-    setForm(p => ({ ...p, image_url: e.target.value }));
-    setPreview(e.target.value);
+    const raw = e.target.value;
+    const fixed = normalizeUrl(raw);
+    setForm(p => ({ ...p, image_url: fixed }));
   };
 
   const submit = async () => {
@@ -63,7 +86,7 @@ function Modal({ photo, secret, onClose, onSave }) {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal" style={{ maxWidth: 580 }} onClick={e => e.stopPropagation()}>
+      <div className="modal" style={{ maxWidth: 600 }} onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h3 className="modal-title">{isEdit ? 'Edit Photo' : '🖼️ Add Photo'}</h3>
           <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
@@ -71,33 +94,38 @@ function Modal({ photo, secret, onClose, onSave }) {
 
         {/* Upload mode tabs */}
         <div style={{ display: 'flex', gap: '.35rem', marginBottom: '1rem', background: 'var(--paper-2)', borderRadius: 'var(--radius)', padding: '.3rem' }}>
-          <button onClick={() => setUploadMode('file')} style={{ flex: 1, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'file' ? '#fff' : 'transparent', color: uploadMode === 'file' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'file' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
+          <button onClick={() => { setUploadMode('file'); setUploadErr(''); }} style={{ flex: 1, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'file' ? '#fff' : 'transparent', color: uploadMode === 'file' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'file' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
             📁 Upload from Computer
           </button>
-          <button onClick={() => setUploadMode('url')} style={{ flex: 1, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'url' ? '#fff' : 'transparent', color: uploadMode === 'url' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'url' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
-            🔗 Enter Image URL
+          <button onClick={() => { setUploadMode('url'); setUploadErr(''); }} style={{ flex: 1, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'url' ? '#fff' : 'transparent', color: uploadMode === 'url' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'url' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
+            🔗 Enter Image URL / Path
           </button>
         </div>
 
-        {/* File upload */}
+        {/* ── FILE UPLOAD TAB ── */}
         {uploadMode === 'file' && (
           <div style={{ marginBottom: '1rem' }}>
             <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" style={{ display: 'none' }} onChange={handleFileChange} />
+
+            {/* Drop zone */}
             <div
               onClick={() => fileRef.current?.click()}
-              style={{ border: '2px dashed var(--border-hi)', borderRadius: 'var(--radius)', padding: '1.5rem', textAlign: 'center', cursor: 'pointer', background: 'var(--paper-2)', transition: 'var(--trans)' }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--saffron)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-hi)'}
+              style={{ border: `2px dashed ${uploading ? 'var(--gold)' : uploadDone ? 'var(--forest)' : 'var(--border-hi)'}`, borderRadius: 'var(--radius)', padding: '1.25rem', textAlign: 'center', cursor: 'pointer', background: uploadDone ? 'var(--forest-light)' : 'var(--paper-2)', transition: 'var(--trans)' }}
+              onMouseEnter={e => { if (!uploading) e.currentTarget.style.borderColor = 'var(--saffron)'; }}
+              onMouseLeave={e => { if (!uploading) e.currentTarget.style.borderColor = uploadDone ? 'var(--forest)' : 'var(--border-hi)'; }}
             >
               {uploading ? (
-                <><span className="spinner" style={{ margin: '0 auto .5rem', display: 'block' }} /><div className="text-sm text-muted">Uploading…</div></>
-              ) : form.image_url && uploadMode === 'file' ? (
-                <div className="text-sm" style={{ color: 'var(--forest)' }}>✅ Uploaded — click to change</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5rem', color: 'var(--gold)' }}>
+                  <span className="spinner" />
+                  <span className="text-sm">Uploading to server…</span>
+                </div>
+              ) : uploadDone ? (
+                <div style={{ color: 'var(--forest)', fontWeight: 600, fontSize: '.875rem' }}>✅ Upload complete — click to replace</div>
               ) : (
                 <>
-                  <div style={{ fontSize: '2rem', marginBottom: '.5rem' }}>📷</div>
-                  <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem', fontSize: '.9rem' }}>Click to choose a photo</div>
-                  <div className="text-xs text-muted">JPG, PNG, GIF, WEBP — max 5 MB</div>
+                  <div style={{ fontSize: '2rem', marginBottom: '.4rem' }}>📷</div>
+                  <div style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.9rem' }}>Click to choose a photo</div>
+                  <div className="text-xs text-muted" style={{ marginTop: '.2rem' }}>JPG, PNG, GIF, WEBP — max 5 MB</div>
                 </>
               )}
             </div>
@@ -105,28 +133,49 @@ function Modal({ photo, secret, onClose, onSave }) {
           </div>
         )}
 
-        {/* URL input */}
+        {/* ── URL TAB ── */}
         {uploadMode === 'url' && (
           <div className="form-group" style={{ marginBottom: '1rem' }}>
-            <label>Image URL <span className="req">*</span></label>
-            <input type="url" value={form.image_url} onChange={handleUrlChange} placeholder="https://example.com/photo.jpg" />
+            <label>Image URL or path <span className="req">*</span></label>
+            <input
+              value={form.image_url}
+              onChange={handleUrlChange}
+              placeholder="/images/gallery/photo.jpg  or  https://example.com/photo.jpg"
+            />
+            <div className="text-xs text-muted" style={{ marginTop: '.3rem' }}>
+              Tip: if image is in your project folder, enter <code>/images/gallery/filename.jpg</code> (start with /)
+            </div>
             {uploadErr && <div style={{ color: 'var(--crimson)', fontSize: '.8rem', marginTop: '.25rem' }}>{uploadErr}</div>}
           </div>
         )}
 
-        {/* Preview */}
-        {preview && (
-          <div style={{ marginBottom: '1rem', borderRadius: 'var(--radius)', overflow: 'hidden', maxHeight: 180, background: 'var(--paper-3)' }}>
-            <img src={preview} alt="Preview" style={{ width: '100%', objectFit: 'cover', maxHeight: 180, display: 'block' }} onError={e => e.target.style.display = 'none'} />
+        {/* ── PREVIEW ── always visible when there's any source ── */}
+        <div style={{ marginBottom: '1rem' }}>
+          <div style={{ fontSize: '.75rem', fontWeight: 600, color: 'var(--ink-soft)', marginBottom: '.35rem', textTransform: 'uppercase', letterSpacing: '.06em' }}>Preview</div>
+          <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', background: 'var(--paper-3)', border: '1px solid var(--border)', minHeight: 180, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+            {previewSrc ? (
+              <img
+                src={previewSrc}
+                alt="Preview"
+                style={{ width: '100%', maxHeight: 260, objectFit: 'contain', display: 'block' }}
+                onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+              />
+            ) : null}
+            <div style={{ display: previewSrc ? 'none' : 'flex', flexDirection: 'column', alignItems: 'center', gap: '.5rem', color: 'var(--ink-dim)', padding: '2rem' }}>
+              <span style={{ fontSize: '2.5rem' }}>🖼️</span>
+              <span className="text-sm">No image yet — upload a file or enter a URL above</span>
+            </div>
+            <div style={{ display: 'none', flexDirection: 'column', alignItems: 'center', gap: '.5rem', color: 'var(--crimson)', padding: '2rem' }}>
+              <span style={{ fontSize: '2rem' }}>⚠️</span>
+              <span className="text-sm">Image could not be loaded — check the URL or path</span>
+            </div>
           </div>
-        )}
-
-        {/* Hidden path display */}
-        {form.image_url && (
-          <div style={{ background: 'var(--paper-2)', borderRadius: 'var(--radius)', padding: '.5rem .75rem', marginBottom: '1rem', fontSize: '.75rem', color: 'var(--ink-soft)', wordBreak: 'break-all' }}>
-            📌 Path: <code style={{ color: 'var(--saffron)' }}>{form.image_url}</code>
-          </div>
-        )}
+          {form.image_url && (
+            <div style={{ marginTop: '.35rem', fontSize: '.72rem', color: 'var(--ink-dim)', wordBreak: 'break-all' }}>
+              Saved as: <code style={{ color: 'var(--saffron)' }}>{form.image_url}</code>
+            </div>
+          )}
+        </div>
 
         <div className="form-grid">
           <div className="form-group"><label>Title</label><input value={form.title} onChange={set('title')} /></div>

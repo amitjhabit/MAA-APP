@@ -222,7 +222,7 @@ export default function HomePage() {
       {/* ── Hero ── */}
       <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hero-eyebrow">Est. 2000 · Connecting Communities</span>
+          <span className="hero-eyebrow">Est. 2024 · Connecting Communities</span>
           <h1>Celebrating <em>Maithili</em><br />Culture &amp; Heritage</h1>
           <span className="hero-maithili">मैथिली संस्कृति आ विरासतक उत्सव</span>
           <p className="hero-sub">

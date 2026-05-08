@@ -1,206 +1,120 @@
 'use client';
-// app/page.js — MAA Public Homepage (dynamic from Neon PostgreSQL)
+// app/page.js — MAA Homepage with Inquiry Button
 import { useState, useEffect } from 'react';
 
-/* ══════════════════════════════════════
-   NAV
-══════════════════════════════════════ */
-function Nav() {
+/* ── Inquiry Modal ── */
+function InquiryModal({ onClose }) {
+  const [form, setForm] = useState({ name: '', email: '', phone: '', inquiry_type: 'general', subject: 'General Inquiry', message: '' });
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState('');
+  const set = k => e => setForm(p => ({ ...p, [k]: e.target.value }));
+
+  const submit = async e => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) { setError('Name, email, and message are required.'); return; }
+    setError(''); setLoading(true);
+    try {
+      const res  = await fetch('/api/public/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const data = await res.json();
+      if (data.success) setDone(true);
+      else setError(data.message || 'Something went wrong.');
+    } catch { setError('Network error. Please try again.'); }
+    setLoading(false);
+  };
+
+  return (
+    <div className="modal-backdrop" onClick={onClose}>
+      <div className="modal" style={{ maxWidth: 520 }} onClick={e => e.stopPropagation()}>
+        {done ? (
+          <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+            <h3 style={{ fontFamily: 'var(--serif)', color: 'var(--navy)', marginBottom: '.5rem' }}>Message Sent!</h3>
+            <p className="text-muted" style={{ marginBottom: '1.5rem' }}>Thank you, <strong>{form.name}</strong>! We'll reply to <strong>{form.email}</strong> soon.</p>
+            <button className="btn btn-primary" onClick={onClose}>Close</button>
+          </div>
+        ) : (
+          <>
+            <div className="modal-header">
+              <h3 className="modal-title">✉️ Send us a Message</h3>
+              <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
+            </div>
+            <p className="text-sm text-muted" style={{ marginBottom: '1.25rem' }}>Have a question? We'd love to hear from you. Send us a message and we'll respond within 24 hours.</p>
+            {error && <div style={{ background: 'var(--crimson-light)', borderRadius: 'var(--radius)', padding: '.7rem', marginBottom: '1rem', color: 'var(--crimson)', fontSize: '.83rem' }}>{error}</div>}
+            <form onSubmit={submit}>
+              <div className="form-grid">
+                <div className="form-group"><label>Your Name <span className="req">*</span></label><input value={form.name} onChange={set('name')} placeholder="Full name" /></div>
+                <div className="form-group"><label>Email <span className="req">*</span></label><input type="email" value={form.email} onChange={set('email')} placeholder="your@email.com" /></div>
+                <div className="form-group"><label>Phone</label><input type="tel" value={form.phone} onChange={set('phone')} placeholder="555-0100" /></div>
+                <div className="form-group"><label>Inquiry Type</label>
+                  <select value={form.inquiry_type} onChange={set('inquiry_type')}>
+                    <option value="general">General Inquiry</option>
+                    <option value="membership">Membership</option>
+                    <option value="event">Events</option>
+                    <option value="donation">Donation</option>
+                    <option value="volunteer">Volunteer</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div className="form-group span-2"><label>Subject</label><input value={form.subject} onChange={set('subject')} /></div>
+                <div className="form-group span-2"><label>Message <span className="req">*</span></label><textarea value={form.message} onChange={set('message')} rows={4} placeholder="How can we help you?" /></div>
+              </div>
+              <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'flex-end', marginTop: '.5rem' }}>
+                <button type="button" className="btn btn-ghost" onClick={onClose}>Cancel</button>
+                <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? <><span className="spinner" />Sending…</> : 'Send Message →'}</button>
+              </div>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Nav({ onInquiry }) {
   return (
     <nav className="pub-nav">
       <div className="pub-nav-inner">
         <a href="/" className="pub-nav-brand">
           <div className="emblem">MAA</div>
-          <div className="org-name">
-            Maithil Association of America
-            <span>मैथिल एसोसिएशन ऑफ अमेरिका</span>
-          </div>
+          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
         </a>
         <div className="pub-nav-links">
-          {[
-            ['/', 'Home'],
-            ['/events', 'Events'],
-            ['/news', 'News'],
-            ['/gallery', 'Gallery'],
-            ['/about', 'About'],
-            ['/contact', 'Contact'],
-          ].map(([h, l]) => (
+          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
             <a key={h} href={h} className="pub-nav-link">{l}</a>
           ))}
-          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.5rem' }}>Join / Renew</a>
+          <button onClick={onInquiry} className="pub-nav-link" style={{ background: 'rgba(255,255,255,.12)', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,.9)' }}>✉️ Inquire</button>
+          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.25rem' }}>Join / Renew</a>
         </div>
       </div>
     </nav>
   );
 }
 
-/* ══════════════════════════════════════
-   FOOTER
-══════════════════════════════════════ */
 function Footer() {
   return (
     <footer className="pub-footer">
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: '2rem', marginBottom: '2rem' }}>
-        <div>
-          <div style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem', marginBottom: '.5rem' }}>मैथिल एसोसिएशन</div>
-          <div style={{ color: 'rgba(255,255,255,.7)', fontSize: '.875rem', lineHeight: 1.7 }}>
-            Preserving and promoting Maithili language, culture, and heritage across America since 2000.
-          </div>
-        </div>
-        <div>
-          <div style={{ color: 'var(--gold)', fontWeight: 600, marginBottom: '.75rem', fontSize: '.85rem', textTransform: 'uppercase', letterSpacing: '.08em' }}>Quick Links</div>
-          {[['Events', '/events'], ['News', '/news'], ['Gallery', '/gallery'], ['Donate', '/donate'], ['Contact', '/contact']].map(([l, h]) => (
-            <div key={l} style={{ marginBottom: '.35rem' }}>
-              <a href={h} style={{ color: 'rgba(255,255,255,.7)', fontSize: '.875rem' }}>{l}</a>
-            </div>
-          ))}
-        </div>
-        <div>
-          <div style={{ color: 'var(--gold)', fontWeight: 600, marginBottom: '.75rem', fontSize: '.85rem', textTransform: 'uppercase', letterSpacing: '.08em' }}>Contact</div>
-          <div style={{ color: 'rgba(255,255,255,.7)', fontSize: '.875rem', lineHeight: 1.8 }}>
-            info@maithilusa.org<br />San Ramon, CA (Headquarters)
-          </div>
-        </div>
+        <div><div style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem', marginBottom: '.5rem' }}>मैथिल एसोसिएशन</div><div style={{ color: 'rgba(255,255,255,.7)', fontSize: '.875rem', lineHeight: 1.7 }}>Preserving and promoting Maithili language, culture, and heritage across America since 2024.</div></div>
+        <div><div style={{ color: 'var(--gold)', fontWeight: 600, marginBottom: '.75rem', fontSize: '.85rem', textTransform: 'uppercase', letterSpacing: '.08em' }}>Quick Links</div>{[['Events','/events'],['News','/news'],['Gallery','/gallery'],['Donate','/donate'],['Contact','/contact']].map(([l,h])=><div key={l} style={{marginBottom:'.35rem'}}><a href={h} style={{color:'rgba(255,255,255,.7)',fontSize:'.875rem'}}>{l}</a></div>)}</div>
+        <div><div style={{ color: 'var(--gold)', fontWeight: 600, marginBottom: '.75rem', fontSize: '.85rem', textTransform: 'uppercase', letterSpacing: '.08em' }}>Contact</div><div style={{ color: 'rgba(255,255,255,.7)', fontSize: '.875rem', lineHeight: 1.8 }}>info@maa-america.org<br />Edison, NJ (Headquarters)</div></div>
       </div>
       <div style={{ borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem' }}>
-        © {new Date().getFullYear()} Maithil Association of America ·
-        <a href="/admin" style={{ color: 'var(--gold)', marginLeft: '.5rem' }}>Admin</a>
+        © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)', marginLeft: '.5rem' }}>Admin</a>
       </div>
     </footer>
   );
 }
 
-/* ══════════════════════════════════════
-   EVENT CARD
-══════════════════════════════════════ */
-const CAT_BADGE = {
-  cultural:    { bg: 'var(--saffron-light)', color: 'var(--saffron-dark)' },
-  religious:   { bg: 'var(--crimson-light)', color: 'var(--crimson)' },
-  social:      { bg: 'var(--forest-light)',  color: 'var(--forest)' },
-  educational: { bg: '#E3F2FD',              color: '#0D47A1' },
-  fundraiser:  { bg: 'var(--gold-light)',    color: 'var(--gold)' },
-  other:       { bg: 'var(--paper-3)',       color: 'var(--ink-soft)' },
-};
-const STATUS_BADGE = {
-  upcoming:  { bg: '#E3F2FD',              color: '#0D47A1' },
-  ongoing:   { bg: 'var(--forest-light)',  color: 'var(--forest)' },
-  completed: { bg: 'var(--paper-3)',       color: 'var(--ink-soft)' },
-};
+const CAT_BADGE = { cultural:{bg:'var(--saffron-light)',color:'var(--saffron-dark)'}, religious:{bg:'var(--crimson-light)',color:'var(--crimson)'}, social:{bg:'var(--forest-light)',color:'var(--forest)'}, educational:{bg:'#E3F2FD',color:'#0D47A1'}, fundraiser:{bg:'var(--gold-light)',color:'var(--gold)'}, other:{bg:'var(--paper-3)',color:'var(--ink-soft)'} };
+const STA_BADGE = { upcoming:{bg:'#E3F2FD',color:'#0D47A1'}, ongoing:{bg:'var(--forest-light)',color:'var(--forest)'}, completed:{bg:'var(--paper-3)',color:'var(--ink-soft)'} };
 
-function EventCard({ event }) {
-  const d   = new Date(event.event_date);
-  const cat = CAT_BADGE[event.category] || CAT_BADGE.other;
-  const sta = STATUS_BADGE[event.status] || STATUS_BADGE.upcoming;
-  const isPast = event.status === 'completed';
-
-  return (
-    <div className="card card-saffron" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', opacity: isPast ? .82 : 1 }}>
-      {/* Date badge */}
-      <div style={{
-        background: isPast ? 'var(--ink-soft)' : 'var(--saffron)',
-        color: '#fff', borderRadius: 'var(--radius)',
-        padding: '.5rem .75rem', textAlign: 'center',
-        minWidth: 54, flexShrink: 0,
-      }}>
-        <div style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1 }}>{d.getDate()}</div>
-        <div style={{ fontSize: '.7rem', textTransform: 'uppercase', letterSpacing: '.07em', opacity: .9 }}>
-          {d.toLocaleString('default', { month: 'short' })}
-        </div>
-        <div style={{ fontSize: '.65rem', opacity: .8 }}>{d.getFullYear()}</div>
-      </div>
-
-      {/* Content */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap', marginBottom: '.4rem' }}>
-          <span className="badge" style={{ background: cat.bg, color: cat.color }}>
-            {event.category}
-          </span>
-          <span className="badge" style={{ background: sta.bg, color: sta.color }}>
-            {event.status}
-          </span>
-        </div>
-
-        <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>
-          {event.title}
-        </div>
-
-        {event.title_maithili && (
-          <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.35rem' }}>
-            {event.title_maithili}
-          </div>
-        )}
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '.2rem' }}>
-          {event.event_time && (
-            <div className="text-sm text-muted">🕐 {event.event_time}</div>
-          )}
-          <div className="text-sm text-muted">
-            {event.is_online
-              ? '💻 Online Event'
-              : `📍 ${[event.location, event.city, event.state].filter(Boolean).join(', ') || 'TBD'}`
-            }
-          </div>
-          {event.description && (
-            <div className="text-sm text-muted" style={{ marginTop: '.2rem', lineHeight: 1.6 }}>
-              {event.description.slice(0, 100)}{event.description.length > 100 ? '…' : ''}
-            </div>
-          )}
-        </div>
-
-        {event.status === 'upcoming' && (
-          <a href="/contact" className="btn btn-primary btn-sm" style={{ marginTop: '.75rem', display: 'inline-flex' }}>
-            RSVP →
-          </a>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════
-   NEWS CARD
-══════════════════════════════════════ */
-function NewsCard({ post }) {
-  const catColors = {
-    general:      { bg: 'var(--paper-3)',       color: 'var(--ink-soft)' },
-    cultural:     { bg: 'var(--saffron-light)', color: 'var(--saffron-dark)' },
-    event:        { bg: '#E3F2FD',              color: '#0D47A1' },
-    announcement: { bg: 'var(--gold-light)',    color: 'var(--gold)' },
-    newsletter:   { bg: 'var(--forest-light)',  color: 'var(--forest)' },
-  };
-  const cat = catColors[post.category] || catColors.general;
-
-  return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
-      <span className="badge" style={{ background: cat.bg, color: cat.color, alignSelf: 'flex-start' }}>
-        {post.category}
-      </span>
-      <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3 }}>
-        {post.title}
-      </div>
-      {post.title_maithili && (
-        <div className="maithili" style={{ fontSize: '.82rem' }}>{post.title_maithili}</div>
-      )}
-      <div className="text-sm text-muted" style={{ lineHeight: 1.6, flex: 1 }}>
-        {(post.excerpt || post.content || '').slice(0, 130)}
-        {(post.excerpt || post.content || '').length > 130 ? '…' : ''}
-      </div>
-      <div className="text-xs text-muted" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '.25rem', borderTop: '1px solid var(--border)', paddingTop: '.5rem' }}>
-        <span>{post.author || 'MAA Team'}</span>
-        <span>{post.published_at ? new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}</span>
-      </div>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════
-   MAIN HOME PAGE
-══════════════════════════════════════ */
 export default function HomePage() {
   const [events,  setEvents]  = useState([]);
   const [news,    setNews]    = useState([]);
   const [stats,   setStats]   = useState({ members: 0, events: 0, news: 0 });
   const [loading, setLoading] = useState(true);
+  const [showInquiry, setShowInquiry] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -210,34 +124,31 @@ export default function HomePage() {
     ]).then(([evRes, newsRes, statsRes]) => {
       if (evRes.success)    setEvents(evRes.data   || []);
       if (newsRes.success)  setNews(newsRes.data   || []);
-      if (statsRes.success) setStats(statsRes.data || { members: 0, events: 0, news: 0 });
+      if (statsRes.success) setStats(statsRes.data || {});
       setLoading(false);
     });
   }, []);
 
   return (
     <>
-      <Nav />
+      <Nav onInquiry={() => setShowInquiry(true)} />
 
-      {/* ── Hero ── */}
+      {/* Hero */}
       <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hero-eyebrow">Est. 2024 · Connecting Communities</span>
+          <span className="hero-eyebrow">Est. 2004 · Connecting Communities</span>
           <h1>Celebrating <em>Maithili</em><br />Culture &amp; Heritage</h1>
           <span className="hero-maithili">मैथिली संस्कृति आ विरासतक उत्सव</span>
-          <p className="hero-sub">
-            Uniting the Maithili-speaking community across America — preserving our language, traditions, and cultural identity for future generations.
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/join" className="btn btn-primary btn-lg">Become a Member</a>
-            <a href="/events" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.12)', color: '#fff', borderColor: 'rgba(255,255,255,.3)' }}>
-              View All Events
-            </a>
+          <p className="hero-sub">Uniting the Maithili-speaking community across America — preserving our language, traditions, and cultural identity for future generations.</p>
+          <div style={{ display: 'flex', gap: '.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="/join" className="btn btn-primary btn-sm">Become a Member</a>
+            <a href="/events" className="btn btn-sm" style={{ background: 'rgba(255,255,255,.12)', color: '#fff', borderColor: 'rgba(255,255,255,.3)' }}>View Events</a>
+            <button onClick={() => setShowInquiry(true)} className="btn btn-sm" style={{ background: 'rgba(255,255,255,.08)', color: 'rgba(255,255,255,.9)', borderColor: 'rgba(255,255,255,.25)' }}>✉️ Send Inquiry</button>
           </div>
         </div>
       </section>
 
-      {/* ── Stats strip ── */}
+      {/* Stats */}
       <section style={{ background: 'var(--paper-2)', borderBottom: '1px solid var(--border)' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)' }}>
           {[
@@ -246,89 +157,126 @@ export default function HomePage() {
             { num: '25+',                                label: 'Years of Service', sub: 'सेवा के वर्ष' },
             { num: '15+',                                label: 'US States',        sub: 'राज्य' },
           ].map(s => (
-            <div key={s.label} style={{ textAlign: 'center', padding: '1.5rem' }}>
-              <div style={{ fontFamily: 'var(--serif)', fontSize: '2.5rem', fontWeight: 700, color: 'var(--saffron)', lineHeight: 1 }}>{s.num}</div>
-              <div style={{ fontWeight: 600, color: 'var(--navy)', marginTop: '.35rem' }}>{s.label}</div>
-              <div style={{ fontSize: '.8rem', color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic' }}>{s.sub}</div>
+            <div key={s.label} style={{ textAlign: 'center', padding: '.75rem' }}>
+              <div style={{ fontFamily: 'var(--serif)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--saffron)', lineHeight: 1 }}>{s.num}</div>
+              <div style={{ fontWeight: 600, color: 'var(--navy)', marginTop: '.2rem', fontSize: '.82rem' }}>{s.label}</div>
+              <div style={{ fontSize: '.7rem', color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic' }}>{s.sub}</div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── Events ── */}
+      {/* Events */}
       <section className="shell">
         <div className="section-header">
-          <div>
-            <div className="section-eyebrow">आगामी कार्यक्रम</div>
-            <h2 className="section-title">Our <span>Events</span></h2>
-          </div>
+          <div><div className="section-eyebrow">आगामी कार्यक्रम</div><h2 className="section-title">Our <span>Events</span></h2></div>
           <a href="/events" className="btn btn-ghost btn-sm">View All →</a>
         </div>
-
         {loading ? (
-          <div className="loading-state">
-            <span className="spinner" />Loading events from database…
-          </div>
+          <div className="loading-state"><span className="spinner" />Loading events from database…</div>
         ) : events.length === 0 ? (
-          <div className="empty-state">
-            <div className="icon">📅</div>
-            <p style={{ marginBottom: '.75rem' }}>No events yet.</p>
-            <a href="/admin/events" className="btn btn-primary btn-sm">Add Events in Admin →</a>
-          </div>
+          <div className="empty-state"><div className="icon">📅</div><p style={{ marginBottom: '.75rem' }}>No events yet.</p><a href="/admin/events" className="btn btn-primary btn-sm">Add Events in Admin →</a></div>
         ) : (
           <div className="grid-2">
-            {events.map(e => <EventCard key={e.id} event={e} />)}
+            {events.map(ev => {
+              const d   = new Date(ev.event_date);
+              const cat = CAT_BADGE[ev.category] || CAT_BADGE.other;
+              const sta = STA_BADGE[ev.status]   || STA_BADGE.upcoming;
+              return (
+                <div key={ev.id} className="card card-saffron" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', opacity: ev.status === 'completed' ? .82 : 1 }}>
+                  <div style={{ background: ev.status === 'completed' ? 'var(--ink-soft)' : 'var(--saffron)', color: '#fff', borderRadius: 'var(--radius)', padding: '.5rem .75rem', textAlign: 'center', minWidth: 54, flexShrink: 0 }}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1 }}>{d.getDate()}</div>
+                    <div style={{ fontSize: '.7rem', textTransform: 'uppercase', letterSpacing: '.07em', opacity: .9 }}>{d.toLocaleString('default',{month:'short'})}</div>
+                    <div style={{ fontSize: '.65rem', opacity: .8 }}>{d.getFullYear()}</div>
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap', marginBottom: '.35rem' }}>
+                      <span className="badge" style={{ background: cat.bg, color: cat.color }}>{ev.category}</span>
+                      <span className="badge" style={{ background: sta.bg, color: sta.color }}>{ev.status}</span>
+                    </div>
+                    <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{ev.title}</div>
+                    {ev.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.3rem' }}>{ev.title_maithili}</div>}
+                    <div className="text-sm text-muted">{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
+                    {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem' }}>{ev.description.slice(0,100)}{ev.description.length>100?'…':''}</div>}
+                    {ev.status === 'upcoming' && (
+                      <button onClick={() => setShowInquiry(true)} className="btn btn-primary btn-sm" style={{ marginTop: '.65rem' }}>RSVP / Inquire →</button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
 
       <div className="cultural-divider">✦ ✦ ✦</div>
 
-      {/* ── News ── */}
+      {/* News */}
       <section className="shell" style={{ paddingTop: 0 }}>
         <div className="section-header">
-          <div>
-            <div className="section-eyebrow">समाचार आ घोषणा</div>
-            <h2 className="section-title">News &amp; <span>Announcements</span></h2>
-          </div>
+          <div><div className="section-eyebrow">समाचार आ घोषणा</div><h2 className="section-title">News &amp; <span>Announcements</span></h2></div>
           <a href="/news" className="btn btn-ghost btn-sm">View All →</a>
         </div>
-
         {loading ? (
-          <div className="loading-state">
-            <span className="spinner" />Loading news…
-          </div>
+          <div className="loading-state"><span className="spinner" />Loading news…</div>
         ) : news.length === 0 ? (
-          <div className="empty-state">
-            <div className="icon">📰</div>
-            <p style={{ marginBottom: '.75rem' }}>No news posts yet.</p>
-            <a href="/admin/news" className="btn btn-primary btn-sm">Add News in Admin →</a>
-          </div>
+          <div className="empty-state"><div className="icon">📰</div><p style={{ marginBottom: '.75rem' }}>No news yet.</p><a href="/admin/news" className="btn btn-primary btn-sm">Add News in Admin →</a></div>
         ) : (
           <div className="grid-3">
-            {news.map(n => <NewsCard key={n.id} post={n} />)}
+            {news.map(n => {
+              const catColors = { general:{bg:'var(--paper-3)',color:'var(--ink-soft)'}, cultural:{bg:'var(--saffron-light)',color:'var(--saffron-dark)'}, event:{bg:'#E3F2FD',color:'#0D47A1'}, announcement:{bg:'var(--gold-light)',color:'var(--gold)'}, newsletter:{bg:'var(--forest-light)',color:'var(--forest)'} };
+              const cat = catColors[n.category] || catColors.general;
+              return (
+                <div key={n.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+                  <span className="badge" style={{ background: cat.bg, color: cat.color, alignSelf: 'flex-start' }}>{n.category}</span>
+                  <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3 }}>{n.title}</div>
+                  {n.title_maithili && <div className="maithili" style={{ fontSize: '.82rem' }}>{n.title_maithili}</div>}
+                  <div className="text-sm text-muted" style={{ lineHeight: 1.6, flex: 1 }}>{(n.excerpt||n.content||'').slice(0,130)}{(n.excerpt||n.content||'').length>130?'…':''}</div>
+                  <div className="text-xs text-muted" style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '.5rem' }}>
+                    <span>{n.author||'MAA Team'}</span>
+                    <span>{n.published_at?new Date(n.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):''}</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
 
-      {/* ── Join CTA ── */}
-      <section style={{ background: 'var(--navy)', padding: '4rem 2rem', textAlign: 'center' }}>
+      {/* Inquiry CTA strip */}
+      <section style={{ background: 'var(--paper-2)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '1.25rem 2rem', textAlign: 'center' }}>
+        <div style={{ maxWidth: 640, margin: '0 auto' }}>
+          <h3 style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', color: 'var(--navy)', marginBottom: '.35rem' }}>✉️ Have a Question?</h3>
+          <p className="text-muted" style={{ marginBottom: '.85rem', fontSize: '.82rem' }}>We'd love to hear from you — whether it's about membership, events, or just to say hello.</p>
+          <button onClick={() => setShowInquiry(true)} className="btn btn-primary btn-sm">Send an Inquiry →</button>
+        </div>
+      </section>
+
+      {/* Join CTA */}
+      <section style={{ background: 'var(--navy)', padding: '2rem 2rem', textAlign: 'center' }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
           <div className="section-eyebrow" style={{ color: 'var(--gold)' }}>सदस्य बनें</div>
-          <h2 style={{ fontFamily: 'var(--serif)', fontSize: '2rem', color: '#fff', margin: '.75rem 0' }}>
-            Join the MAA Family Today
-          </h2>
-          <p style={{ color: 'rgba(255,255,255,.7)', marginBottom: '2rem' }}>
-            Annual from $25 (students) · $50 (individuals) · Lifetime membership available
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/join" className="btn btn-primary btn-lg">Join Now</a>
-            <a href="/donate" className="btn btn-gold btn-lg">Donate</a>
+          <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', color: '#fff', margin: '.4rem 0' }}>Join the MAA Family Today</h2>
+          <p style={{ color: 'rgba(255,255,255,.7)', marginBottom: '1.25rem', fontSize: '.82rem' }}>Annual from $25 (students) · $50 (individuals) · Lifetime membership available</p>
+          <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="/join" className="btn btn-primary">Join Now</a>
+            <a href="/donate" className="btn btn-gold">Donate</a>
           </div>
         </div>
       </section>
 
+      {/* Floating inquiry button */}
+      <button
+        onClick={() => setShowInquiry(true)}
+        style={{ position: 'fixed', bottom: '2rem', right: '2rem', width: 56, height: 56, borderRadius: '50%', background: 'var(--saffron)', color: '#fff', border: '3px solid var(--gold)', fontSize: '1.4rem', cursor: 'pointer', boxShadow: '0 4px 20px rgba(232,114,12,.4)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'var(--trans)' }}
+        title="Send us an inquiry"
+        onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'}
+        onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}
+      >✉️</button>
+
       <Footer />
+
+      {showInquiry && <InquiryModal onClose={() => setShowInquiry(false)} />}
     </>
   );
 }

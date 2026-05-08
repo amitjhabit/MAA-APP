@@ -11,7 +11,7 @@ function Nav() {
           <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
         </a>
         <div className="pub-nav-links">
-          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About'], ['/contact', 'Contact']].map(([h, l]) => (
+          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
             <a key={h} href={h} className={`pub-nav-link${h === '/contact' ? ' active' : ''}`}>{l}</a>
           ))}
           <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.5rem' }}>Join / Renew</a>
@@ -75,12 +75,12 @@ export default function ContactPage() {
               <div className="card card-saffron" style={{ marginBottom: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>📍</div>
                 <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem' }}>Headquarters</div>
-                <div className="text-sm text-muted">Edison, New Jersey (NJ)</div>
+                <div className="text-sm text-muted">San Ramon, California (CA)</div>
               </div>
               <div className="card" style={{ marginBottom: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>✉️</div>
                 <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem' }}>Email</div>
-                <a href="mailto:info@maa-america.org" className="text-sm" style={{ color: 'var(--saffron)' }}>info@maa-america.org</a>
+                <a href="mailto:contributemaa@maithilusa.org" className="text-sm" style={{ color: 'var(--saffron)' }}>contributemaa@maithilusa.org</a>
               </div>
               <div className="card">
                 <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>🙋</div>

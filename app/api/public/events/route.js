@@ -14,12 +14,10 @@ export async function GET(request) {
     let events;
 
     if (all) {
-      // Events page — all non-cancelled, ordered by date desc
       if (category) {
         events = await sql`
           SELECT * FROM events
-          WHERE is_public = TRUE
-            AND status != 'cancelled'
+          WHERE status != 'cancelled'
             AND category = ${category}
           ORDER BY event_date DESC
           LIMIT ${limit}
@@ -27,18 +25,15 @@ export async function GET(request) {
       } else {
         events = await sql`
           SELECT * FROM events
-          WHERE is_public = TRUE
-            AND status != 'cancelled'
+          WHERE status != 'cancelled'
           ORDER BY event_date DESC
           LIMIT ${limit}
         `;
       }
     } else {
-      // Homepage — upcoming first, then ongoing, then recently completed
       events = await sql`
         SELECT * FROM events
-        WHERE is_public = TRUE
-          AND status != 'cancelled'
+        WHERE status != 'cancelled'
         ORDER BY
           CASE status
             WHEN 'upcoming' THEN 1
@@ -53,7 +48,7 @@ export async function GET(request) {
 
     return NextResponse.json({ success: true, data: events, count: events.length });
   } catch (e) {
-    console.error('GET /api/public/events:', e);
-    return NextResponse.json({ success: true, data: [] });
+    console.error('GET /api/public/events:', e.message);
+    return NextResponse.json({ success: false, data: [], error: e.message });
   }
 }

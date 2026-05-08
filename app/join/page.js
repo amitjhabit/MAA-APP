@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 // app/join/page.js
 import { useState } from 'react';
 
@@ -8,7 +8,7 @@ function Nav() {
       <div className="pub-nav-inner">
         <a href="/" className="pub-nav-brand">
           <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
+          <div className="org-name">Maithil Association of America<span>à¤®à¥ˆà¤¥à¤¿à¤² à¤à¤¸à¥‹à¤¸à¤¿à¤à¤¶à¤¨ à¤‘à¤« à¤…à¤®à¥‡à¤°à¤¿à¤•à¤¾</span></div>
         </a>
         <div className="pub-nav-links">
           {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
@@ -62,9 +62,9 @@ export default function JoinPage() {
   return (
     <>
       <Nav />
-      <section className="hero" style={{ padding: '3.5rem 2rem 3rem' }}>
+      <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hero-eyebrow">सदस्य बनें</span>
+          <span className="hero-eyebrow">à¤¸à¤¦à¤¸à¥à¤¯ à¤¬à¤¨à¥‡à¤‚</span>
           <h1>Join <em>MAA</em></h1>
           <p className="hero-sub">Become part of the Maithili community in America. Choose your membership tier and submit your application.</p>
         </div>
@@ -73,11 +73,11 @@ export default function JoinPage() {
       <div className="shell-sm">
         {submitted ? (
           <div className="card" style={{ textAlign: 'center', padding: '3rem', borderTop: '3px solid var(--forest)' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎉</div>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>ðŸŽ‰</div>
             <h2 style={{ fontFamily: 'var(--serif)', color: 'var(--navy)', marginBottom: '.75rem' }}>Application Received!</h2>
             <p className="text-muted" style={{ marginBottom: '.5rem' }}>Thank you, <strong>{form.first_name} {form.last_name}</strong>!</p>
             <p className="text-muted" style={{ marginBottom: '.5rem' }}>Your membership application has been submitted. Our team will contact you at <strong>{form.email}</strong> with payment instructions.</p>
-            {fee > 0 && <p className="text-muted" style={{ marginBottom: '2rem' }}>Fee: <strong style={{ color: 'var(--saffron)' }}>${fee}</strong> — payable via Zelle or check.</p>}
+            {fee > 0 && <p className="text-muted" style={{ marginBottom: '2rem' }}>Fee: <strong style={{ color: 'var(--saffron)' }}>${fee}</strong> â€” payable via Zelle or check.</p>}
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <a href="/donate" className="btn btn-gold">Make a Donation</a>
               <a href="/" className="btn btn-ghost">Back to Home</a>
@@ -129,13 +129,13 @@ export default function JoinPage() {
                 <div className="form-grid">
                   <div className="form-group"><label>First Name <span className="req">*</span></label><input value={form.first_name} onChange={set('first_name')} />{errors.first_name && <span className="field-error">{errors.first_name}</span>}</div>
                   <div className="form-group"><label>Last Name <span className="req">*</span></label><input value={form.last_name} onChange={set('last_name')} />{errors.last_name && <span className="field-error">{errors.last_name}</span>}</div>
-                  <div className="form-group"><label>Maithili Name (मैथिली नाम)</label><input value={form.maithili_name} onChange={set('maithili_name')} placeholder="राजेश झा" /></div>
+                  <div className="form-group"><label>Maithili Name (à¤®à¥ˆà¤¥à¤¿à¤²à¥€ à¤¨à¤¾à¤®)</label><input value={form.maithili_name} onChange={set('maithili_name')} placeholder="à¤°à¤¾à¤œà¥‡à¤¶ à¤à¤¾" /></div>
                   <div className="form-group"><label>Email <span className="req">*</span></label><input type="email" value={form.email} onChange={set('email')} />{errors.email && <span className="field-error">{errors.email}</span>}</div>
                   <div className="form-group"><label>Phone</label><input type="tel" value={form.phone} onChange={set('phone')} /></div>
                   <div className="form-group"><label>Occupation</label><input value={form.occupation} onChange={set('occupation')} /></div>
                   <div className="form-group"><label>City</label><input value={form.city} onChange={set('city')} /></div>
                   <div className="form-group"><label>State</label><input value={form.state} onChange={set('state')} /></div>
-                  <div className="form-group span-2"><label>Village / District (गाम / जिला)</label><input value={form.village_district} onChange={set('village_district')} placeholder="Darbhanga, Bihar" /></div>
+                  <div className="form-group span-2"><label>Village / District (à¤—à¤¾à¤® / à¤œà¤¿à¤²à¤¾)</label><input value={form.village_district} onChange={set('village_district')} placeholder="Darbhanga, Bihar" /></div>
                   <div className="form-group span-2"><label>Additional Notes</label><textarea value={form.notes} onChange={set('notes')} rows={3} placeholder="Anything you'd like us to know?" /></div>
                 </div>
                 {fee !== null && fee >= 0 && (
@@ -144,9 +144,9 @@ export default function JoinPage() {
                     <span style={{ fontFamily: 'var(--serif)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--saffron)' }}>{fee === 0 ? 'Free' : `$${fee}`}</span>
                   </div>
                 )}
-                <p className="text-xs text-muted" style={{ marginBottom: '1rem' }}>Payment via Zelle or check — instructions will be sent to your email after approval.</p>
+                <p className="text-xs text-muted" style={{ marginBottom: '1rem' }}>Payment via Zelle or check â€” instructions will be sent to your email after approval.</p>
                 <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-                  {loading ? <><span className="spinner" />Submitting…</> : 'Submit Application →'}
+                  {loading ? <><span className="spinner" />Submittingâ€¦</> : 'Submit Application â†’'}
                 </button>
               </form>
             </div>
@@ -156,9 +156,10 @@ export default function JoinPage() {
 
       <footer className="pub-footer">
         <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem' }}>
-          © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
+          Â© {new Date().getFullYear()} Maithil Association of America Â· <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
         </div>
       </footer>
     </>
   );
 }
+

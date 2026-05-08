@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 // app/contact/page.js
 import { useState } from 'react';
 
@@ -8,7 +8,7 @@ function Nav() {
       <div className="pub-nav-inner">
         <a href="/" className="pub-nav-brand">
           <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
+          <div className="org-name">Maithil Association of America<span>à¤®à¥ˆà¤¥à¤¿à¤² à¤à¤¸à¥‹à¤¸à¤¿à¤à¤¶à¤¨ à¤‘à¤« à¤…à¤®à¥‡à¤°à¤¿à¤•à¤¾</span></div>
         </a>
         <div className="pub-nav-links">
           {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
@@ -52,9 +52,9 @@ export default function ContactPage() {
   return (
     <>
       <Nav />
-      <section className="hero" style={{ padding: '3.5rem 2rem 3rem' }}>
+      <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hero-eyebrow">संपर्क करें</span>
+          <span className="hero-eyebrow">à¤¸à¤‚à¤ªà¤°à¥à¤• à¤•à¤°à¥‡à¤‚</span>
           <h1>Get in <em>Touch</em></h1>
           <p className="hero-sub">We'd love to hear from you. Send us a message and we'll get back to you within 24 hours.</p>
         </div>
@@ -63,7 +63,7 @@ export default function ContactPage() {
       <div className="shell-sm">
         {submitted ? (
           <div className="card" style={{ textAlign: 'center', padding: '3rem', borderTop: '3px solid var(--forest)' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✅</div>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>âœ…</div>
             <h2 style={{ fontFamily: 'var(--serif)', color: 'var(--navy)', marginBottom: '.5rem' }}>Message Sent!</h2>
             <p className="text-muted" style={{ marginBottom: '2rem' }}>Thanks, <strong>{form.name}</strong>! We'll reply to <strong>{form.email}</strong> soon.</p>
             <button className="btn btn-ghost" onClick={() => { setSubmitted(false); setForm({ name: '', email: '', phone: '', subject: 'General Inquiry', inquiry_type: 'general', message: '' }); }}>Send another message</button>
@@ -73,20 +73,20 @@ export default function ContactPage() {
             {/* Contact info */}
             <div>
               <div className="card card-saffron" style={{ marginBottom: '1rem' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>📍</div>
+                <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>ðŸ“</div>
                 <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem' }}>Headquarters</div>
                 <div className="text-sm text-muted">San Ramon, California (CA)</div>
               </div>
               <div className="card" style={{ marginBottom: '1rem' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>✉️</div>
+                <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>âœ‰ï¸</div>
                 <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem' }}>Email</div>
                 <a href="mailto:contributemaa@maithilusa.org" className="text-sm" style={{ color: 'var(--saffron)' }}>contributemaa@maithilusa.org</a>
               </div>
               <div className="card">
-                <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>🙋</div>
+                <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>ðŸ™‹</div>
                 <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem' }}>Become a Member</div>
                 <div className="text-sm text-muted" style={{ marginBottom: '.5rem' }}>Join the MAA family today.</div>
-                <a href="/join" className="btn btn-primary btn-sm">Join / Renew →</a>
+                <a href="/join" className="btn btn-primary btn-sm">Join / Renew â†’</a>
               </div>
             </div>
 
@@ -113,7 +113,7 @@ export default function ContactPage() {
                   <div className="form-group span-2"><label>Message <span className="req">*</span></label><textarea value={form.message} onChange={set('message')} rows={5} placeholder="How can we help?" />{errors.message && <span className="field-error">{errors.message}</span>}</div>
                 </div>
                 <button type="submit" className="btn btn-primary w-full" style={{ marginTop: '.5rem' }} disabled={loading}>
-                  {loading ? <><span className="spinner" />Sending…</> : 'Send Message →'}
+                  {loading ? <><span className="spinner" />Sendingâ€¦</> : 'Send Message â†’'}
                 </button>
               </form>
             </div>
@@ -123,9 +123,10 @@ export default function ContactPage() {
 
       <footer className="pub-footer">
         <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem' }}>
-          © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
+          Â© {new Date().getFullYear()} Maithil Association of America Â· <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
         </div>
       </footer>
     </>
   );
 }
+

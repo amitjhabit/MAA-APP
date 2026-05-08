@@ -1,5 +1,5 @@
-'use client';
-// app/about/page.js — About Us
+﻿'use client';
+// app/about/page.js â€” About Us
 import { useState, useEffect } from 'react';
 
 function Nav() {
@@ -8,7 +8,7 @@ function Nav() {
       <div className="pub-nav-inner">
         <a href="/" className="pub-nav-brand">
           <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
+          <div className="org-name">Maithil Association of America<span>à¤®à¥ˆà¤¥à¤¿à¤² à¤à¤¸à¥‹à¤¸à¤¿à¤à¤¶à¤¨ à¤‘à¤« à¤…à¤®à¥‡à¤°à¤¿à¤•à¤¾</span></div>
         </a>
         <div className="pub-nav-links">
           {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
@@ -26,7 +26,7 @@ function Footer() {
     <footer className="pub-footer">
       <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: '2rem', marginBottom: '2rem' }}>
         <div>
-          <div style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem', marginBottom: '.5rem' }}>मैथिल एसोसिएशन</div>
+          <div style={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem', marginBottom: '.5rem' }}>à¤®à¥ˆà¤¥à¤¿à¤² à¤à¤¸à¥‹à¤¸à¤¿à¤à¤¶à¤¨</div>
           <div style={{ color: 'rgba(255,255,255,.7)', fontSize: '.875rem', lineHeight: 1.7 }}>Preserving and promoting Maithili language, culture, and heritage across America since 2000.</div>
         </div>
         <div>
@@ -41,7 +41,7 @@ function Footer() {
         </div>
       </div>
       <div style={{ borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem' }}>
-        © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
+        Â© {new Date().getFullYear()} Maithil Association of America Â· <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
       </div>
     </footer>
   );
@@ -60,10 +60,10 @@ export default function AboutPage() {
     <>
       <Nav />
 
-      {/* ── Hero ── */}
-      <section className="hero" style={{ padding: '3.5rem 2rem 3rem' }}>
+      {/* â”€â”€ Hero â”€â”€ */}
+      <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hero-eyebrow">हमारे बारे में</span>
+          <span className="hero-eyebrow">à¤¹à¤®à¤¾à¤°à¥‡ à¤¬à¤¾à¤°à¥‡ à¤®à¥‡à¤‚</span>
           <h1>About <em>Us</em></h1>
           
         </div>
@@ -71,7 +71,7 @@ export default function AboutPage() {
 
       <div className="shell">
 
-        {/* ── About Text ── */}
+        {/* â”€â”€ About Text â”€â”€ */}
         <div style={{ maxWidth: 840, margin: '0 auto 3.5rem' }}>
 
 
@@ -103,21 +103,21 @@ export default function AboutPage() {
           </div>
         </div>
 
-        {/* ── Core Values ── */}
+        {/* â”€â”€ Core Values â”€â”€ */}
         <div className="section-header">
           <div>
-            <div className="section-eyebrow">हमारे मूल्य</div>
+            <div className="section-eyebrow">à¤¹à¤®à¤¾à¤°à¥‡ à¤®à¥‚à¤²à¥à¤¯</div>
             <h2 className="section-title">Our Core <span>Values</span></h2>
           </div>
         </div>
         <div className="grid-3" style={{ marginBottom: '3.5rem' }}>
           {[
-            { icon: '🌍', title: 'Cultural Representation', desc: 'Representing Maithil and Mithila culture passionately on a global platform.' },
-            { icon: '🎓', title: 'Gurukul Education',       desc: 'Empowering Maithil youth through quality education and skill development programs.' },
-            { icon: '🤝', title: 'Selfless Service',        desc: 'Every initiative driven by the collective spirit and selfless dedication of our members.' },
-            { icon: '🔍', title: 'Transparency',            desc: 'Upholding transparency in all our activities, finances, and community initiatives.' },
-            { icon: '💪', title: 'Health & Fitness',        desc: 'Committed to enhancing cultural, educational, and fitness aspects within our community.' },
-            { icon: '🌐', title: 'Unity of Diaspora',       desc: 'Uniting the Maithil diaspora across America to keep our heritage alive and thriving.' },
+            { icon: 'ðŸŒ', title: 'Cultural Representation', desc: 'Representing Maithil and Mithila culture passionately on a global platform.' },
+            { icon: 'ðŸŽ“', title: 'Gurukul Education',       desc: 'Empowering Maithil youth through quality education and skill development programs.' },
+            { icon: 'ðŸ¤', title: 'Selfless Service',        desc: 'Every initiative driven by the collective spirit and selfless dedication of our members.' },
+            { icon: 'ðŸ”', title: 'Transparency',            desc: 'Upholding transparency in all our activities, finances, and community initiatives.' },
+            { icon: 'ðŸ’ª', title: 'Health & Fitness',        desc: 'Committed to enhancing cultural, educational, and fitness aspects within our community.' },
+            { icon: 'ðŸŒ', title: 'Unity of Diaspora',       desc: 'Uniting the Maithil diaspora across America to keep our heritage alive and thriving.' },
           ].map(item => (
             <div key={item.title} className="card" style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '2.2rem', marginBottom: '.75rem' }}>{item.icon}</div>
@@ -127,21 +127,21 @@ export default function AboutPage() {
           ))}
         </div>
 
-        {/* ── What We Do ── */}
+        {/* â”€â”€ What We Do â”€â”€ */}
         <div className="section-header">
           <div>
-            <div className="section-eyebrow">हमारा काम</div>
+            <div className="section-eyebrow">à¤¹à¤®à¤¾à¤°à¤¾ à¤•à¤¾à¤®</div>
             <h2 className="section-title">What We <span>Do</span></h2>
           </div>
         </div>
         <div className="grid-3" style={{ marginBottom: '3.5rem' }}>
           {[
-            { icon: '🎭', title: 'Cultural Events',     desc: 'Organizing festivals, Chhath Puja, Maithili New Year, and cultural programs throughout the year.' },
-            { icon: '📚', title: 'Gurukul Programs',    desc: 'Educational programs for Maithil youth covering language, arts, academics, and leadership skills.' },
-            { icon: '🤝', title: 'Community Support',   desc: 'Helping newly arrived Maithili families settle in America with guidance and community connections.' },
-            { icon: '🎵', title: 'Arts & Music',        desc: 'Promoting Maithili music, dance, and performing arts through workshops and performances.' },
-            { icon: '💪', title: 'Fitness & Wellness',  desc: 'Enhancing the health and fitness aspects of our community through organized programs.' },
-            { icon: '🌐', title: 'Global Outreach',     desc: 'Connecting Maithili communities worldwide and representing our culture on the global stage.' },
+            { icon: 'ðŸŽ­', title: 'Cultural Events',     desc: 'Organizing festivals, Chhath Puja, Maithili New Year, and cultural programs throughout the year.' },
+            { icon: 'ðŸ“š', title: 'Gurukul Programs',    desc: 'Educational programs for Maithil youth covering language, arts, academics, and leadership skills.' },
+            { icon: 'ðŸ¤', title: 'Community Support',   desc: 'Helping newly arrived Maithili families settle in America with guidance and community connections.' },
+            { icon: 'ðŸŽµ', title: 'Arts & Music',        desc: 'Promoting Maithili music, dance, and performing arts through workshops and performances.' },
+            { icon: 'ðŸ’ª', title: 'Fitness & Wellness',  desc: 'Enhancing the health and fitness aspects of our community through organized programs.' },
+            { icon: 'ðŸŒ', title: 'Global Outreach',     desc: 'Connecting Maithili communities worldwide and representing our culture on the global stage.' },
           ].map(item => (
             <div key={item.title} className="card" style={{ textAlign: 'center' }}>
               <div style={{ fontSize: '2.2rem', marginBottom: '.75rem' }}>{item.icon}</div>
@@ -151,12 +151,12 @@ export default function AboutPage() {
           ))}
         </div>
 
-        {/* ── Executive Committee (live from DB) ── */}
+        {/* â”€â”€ Executive Committee (live from DB) â”€â”€ */}
         {committee.length > 0 && (
           <>
             <div className="section-header">
               <div>
-                <div className="section-eyebrow">नेतृत्व</div>
+                <div className="section-eyebrow">à¤¨à¥‡à¤¤à¥ƒà¤¤à¥à¤µ</div>
                 <h2 className="section-title">Executive <span>Committee</span></h2>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function AboutPage() {
                     {m.email && <div className="text-xs text-muted">{m.email}</div>}
                     {(m.term_start || m.term_end) && (
                       <div className="text-xs text-muted">
-                        Term: {m.term_start ? new Date(m.term_start).getFullYear() : '?'} – {m.term_end ? new Date(m.term_end).getFullYear() : 'Present'}
+                        Term: {m.term_start ? new Date(m.term_start).getFullYear() : '?'} â€“ {m.term_end ? new Date(m.term_end).getFullYear() : 'Present'}
                       </div>
                     )}
                   </div>
@@ -182,10 +182,10 @@ export default function AboutPage() {
           </>
         )}
 
-        {/* ── Membership Tiers ── */}
+        {/* â”€â”€ Membership Tiers â”€â”€ */}
         <div className="section-header">
           <div>
-            <div className="section-eyebrow">सदस्यता</div>
+            <div className="section-eyebrow">à¤¸à¤¦à¤¸à¥à¤¯à¤¤à¤¾</div>
             <h2 className="section-title">Membership <span>Tiers</span></h2>
           </div>
         </div>
@@ -207,7 +207,7 @@ export default function AboutPage() {
           ))}
         </div>
 
-        {/* ── Bottom CTA ── */}
+        {/* â”€â”€ Bottom CTA â”€â”€ */}
         <div style={{ textAlign: 'center', padding: '2.5rem', background: 'var(--navy)', borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }}>
           <div style={{ color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '1.1rem', marginBottom: '1.25rem' }}>
             "Together, let's stand tall as proud Maithils."
@@ -223,3 +223,4 @@ export default function AboutPage() {
     </>
   );
 }
+

@@ -1,5 +1,4 @@
 'use client';
-// app/events/page.js
 import { useState, useEffect } from 'react';
 
 function Nav() {
@@ -14,7 +13,7 @@ function Nav() {
           {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
             <a key={h} href={h} className={`pub-nav-link${h === '/events' ? ' active' : ''}`}>{l}</a>
           ))}
-          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.5rem' }}>Join / Renew</a>
+          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.25rem' }}>Join / Renew</a>
         </div>
       </div>
     </nav>
@@ -24,7 +23,7 @@ function Nav() {
 function Footer() {
   return (
     <footer className="pub-footer">
-      <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.75rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1rem' }}>
         © {new Date().getFullYear()} Maithil Association of America ·
         <a href="/admin" style={{ color: 'var(--gold)', marginLeft: '.5rem' }}>Admin</a>
       </div>
@@ -54,60 +53,55 @@ function EventCard({ event }) {
   const sta = STATUS_COLORS[event.status] || STATUS_COLORS.upcoming;
   const isPast = event.status === 'completed' || event.status === 'cancelled';
   return (
-    <div className="card" style={{ opacity: isPast ? .75 : 1, display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
-      {/* Date badge + category */}
+    <div className="card" style={{ opacity: isPast ? .75 : 1, display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
         <div className="event-card-date" style={{ background: isPast ? 'var(--ink-soft)' : 'var(--saffron)' }}>
           <div className="day">{d.getDate()}</div>
           <div className="mon">{d.toLocaleString('default', { month: 'short' })}</div>
-          <div style={{ fontSize: '.65rem', opacity: .85 }}>{d.getFullYear()}</div>
+          <div style={{ fontSize: '.6rem', opacity: .85 }}>{d.getFullYear()}</div>
         </div>
-        <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: '.3rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
           <span className="badge" style={{ background: cat.bg, color: cat.color }}>{event.category}</span>
           <span className="badge" style={{ background: sta.bg, color: sta.color }}>{event.status}</span>
         </div>
       </div>
 
-      {/* Title */}
       <div>
-        <div style={{ fontFamily: 'var(--serif)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.25rem' }}>{event.title}</div>
-        {event.title_maithili && <div className="maithili" style={{ fontSize: '.875rem' }}>{event.title_maithili}</div>}
+        <div style={{ fontFamily: 'var(--serif)', fontWeight: 700, fontSize: '.95rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.15rem' }}>{event.title}</div>
+        {event.title_maithili && <div className="maithili" style={{ fontSize: '.78rem' }}>{event.title_maithili}</div>}
       </div>
 
-      {/* Description */}
       {event.description && (
-        <p className="text-sm text-muted" style={{ lineHeight: 1.7 }}>{event.description.slice(0, 150)}{event.description.length > 150 ? '…' : ''}</p>
+        <p className="text-sm text-muted" style={{ lineHeight: 1.6, fontSize: '.78rem' }}>{event.description.slice(0, 120)}{event.description.length > 120 ? '…' : ''}</p>
       )}
 
-      {/* Details */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '.3rem' }}>
-        {event.event_time && <div className="text-sm text-muted">🕐 {event.event_time}{event.end_date ? ` — ${new Date(event.end_date).toLocaleDateString()}` : ''}</div>}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '.2rem' }}>
+        {event.event_time && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>🕐 {event.event_time}{event.end_date ? ` — ${new Date(event.end_date).toLocaleDateString()}` : ''}</div>}
         {event.is_online
-          ? <div className="text-sm text-muted">💻 Online{event.meeting_link ? <a href={event.meeting_link} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)', marginLeft: '.35rem' }}>Join Link →</a> : ''}</div>
-          : <div className="text-sm text-muted">📍 {[event.location, event.city, event.state].filter(Boolean).join(', ')}</div>
+          ? <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>💻 Online{event.meeting_link ? <a href={event.meeting_link} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)', marginLeft: '.35rem' }}>Join →</a> : ''}</div>
+          : <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>📍 {[event.location, event.city, event.state].filter(Boolean).join(', ')}</div>
         }
-        {event.organizer && <div className="text-sm text-muted">👤 {event.organizer}</div>}
-        {event.registration_fee > 0 && <div className="text-sm" style={{ color: 'var(--forest)' }}>💰 Registration: ${parseFloat(event.registration_fee).toFixed(2)}</div>}
-        {event.max_attendees && <div className="text-sm text-muted">👥 Max {event.max_attendees} attendees</div>}
+        {event.organizer && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>👤 {event.organizer}</div>}
+        {event.registration_fee > 0 && <div className="text-sm" style={{ color: 'var(--forest)', fontSize: '.78rem' }}>💰 ${parseFloat(event.registration_fee).toFixed(2)}</div>}
+        {event.max_attendees && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>👥 Max {event.max_attendees}</div>}
       </div>
 
-      {/* CTA */}
       {event.status === 'upcoming' && (
-        <div style={{ marginTop: 'auto', paddingTop: '.5rem' }}>
+        <div style={{ marginTop: 'auto', paddingTop: '.35rem' }}>
           <a href={`/contact?event=${event.id}`} className="btn btn-primary btn-sm" style={{ width: '100%', justifyContent: 'center' }}>Register / RSVP →</a>
         </div>
       )}
       {event.contact_email && (
-        <div className="text-xs text-muted">Questions? <a href={`mailto:${event.contact_email}`} style={{ color: 'var(--saffron)' }}>{event.contact_email}</a></div>
+        <div className="text-xs text-muted" style={{ fontSize: '.72rem' }}>Questions? <a href={`mailto:${event.contact_email}`} style={{ color: 'var(--saffron)' }}>{event.contact_email}</a></div>
       )}
     </div>
   );
 }
 
 export default function EventsPage() {
-  const [events, setEvents]     = useState([]);
-  const [loading, setLoading]   = useState(true);
-  const [filter, setFilter]     = useState('all');
+  const [events, setEvents]       = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [filter, setFilter]       = useState('all');
   const [catFilter, setCatFilter] = useState('all');
 
   useEffect(() => {
@@ -117,12 +111,7 @@ export default function EventsPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = events.filter(e => {
-    const statusOk = filter === 'all' || e.status === filter;
-    const catOk    = catFilter === 'all' || e.category === catFilter;
-    return statusOk && catOk;
-  });
-
+  const filtered  = events.filter(e => (filter === 'all' || e.status === filter) && (catFilter === 'all' || e.category === catFilter));
   const upcoming  = events.filter(e => e.status === 'upcoming').length;
   const completed = events.filter(e => e.status === 'completed').length;
 
@@ -131,37 +120,31 @@ export default function EventsPage() {
       <Nav />
 
       {/* Hero */}
-      <section className="hero" style={{ padding: '3.5rem 2rem 3rem' }}>
+      <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
           <span className="hero-eyebrow">कार्यक्रम</span>
           <h1>MAA <em>Events</em></h1>
           <p className="hero-sub">Celebrating culture, community, and heritage through events across America.</p>
-          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <div style={{ textAlign: 'center', color: '#fff' }}>
-              <div style={{ fontFamily: 'var(--serif)', fontSize: '2rem', fontWeight: 700, color: 'var(--gold)' }}>{upcoming}</div>
-              <div style={{ fontSize: '.82rem', opacity: .8 }}>Upcoming</div>
-            </div>
-            <div style={{ textAlign: 'center', color: '#fff' }}>
-              <div style={{ fontFamily: 'var(--serif)', fontSize: '2rem', fontWeight: 700, color: 'var(--gold)' }}>{events.length}</div>
-              <div style={{ fontSize: '.82rem', opacity: .8 }}>Total Events</div>
-            </div>
-            <div style={{ textAlign: 'center', color: '#fff' }}>
-              <div style={{ fontFamily: 'var(--serif)', fontSize: '2rem', fontWeight: 700, color: 'var(--gold)' }}>{completed}</div>
-              <div style={{ fontSize: '.82rem', opacity: .8 }}>Completed</div>
-            </div>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {[{ num: upcoming, label: 'Upcoming' }, { num: events.length, label: 'Total' }, { num: completed, label: 'Completed' }].map(s => (
+              <div key={s.label} style={{ textAlign: 'center', color: '#fff' }}>
+                <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--gold)' }}>{s.num}</div>
+                <div style={{ fontSize: '.72rem', opacity: .8 }}>{s.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <div className="shell">
         {/* Filters */}
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2rem', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', marginBottom: '1.25rem', alignItems: 'center', justifyContent: 'space-between' }}>
           <div className="filter-bar" style={{ marginBottom: 0 }}>
-            {[['all', 'All Events'], ['upcoming', 'Upcoming'], ['ongoing', 'Ongoing'], ['completed', 'Past']].map(([v, l]) => (
+            {[['all', 'All'], ['upcoming', 'Upcoming'], ['ongoing', 'Ongoing'], ['completed', 'Past']].map(([v, l]) => (
               <button key={v} className={`filter-btn${filter === v ? ' active' : ''}`} onClick={() => setFilter(v)}>{l}</button>
             ))}
           </div>
-          <select value={catFilter} onChange={e => setCatFilter(e.target.value)} style={{ width: 'auto', fontSize: '.82rem', padding: '.35rem .75rem' }}>
+          <select value={catFilter} onChange={e => setCatFilter(e.target.value)} style={{ width: 'auto', fontSize: '.78rem', padding: '.3rem .65rem' }}>
             <option value="all">All Categories</option>
             <option value="cultural">Cultural</option>
             <option value="religious">Religious</option>

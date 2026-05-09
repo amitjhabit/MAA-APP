@@ -152,16 +152,35 @@ export default function AdminAboutPage() {
   const [showAdd, setShowAdd] = useState(null); // type string
   const [editItem, setEditItem] = useState(null);
 
-  const load = useCallback(async () => {
+  const seed = useCallback(async (s) => {
+    try {
+      const res = await fetch('/api/admin/about', { method: 'PUT', headers: { 'x-admin-secret': s } });
+      const data = await res.json();
+      if (data.success) show(`✅ ${data.message}`, 'success');
+    } catch {}
+  }, [show]);
+
+  const load = useCallback(async (s) => {
+    const sec = s || secret;
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/about', { headers: { 'x-admin-secret': secret } });
+      const res = await fetch('/api/admin/about', { headers: { 'x-admin-secret': sec } });
       const data = await res.json();
-      if (data.success) setItems(data.data);
-      else show(data.message, 'error');
+      if (data.success) {
+        // Auto-seed if table is empty
+        if (data.data.length === 0) {
+          await seed(sec);
+          // Reload after seeding
+          const res2 = await fetch('/api/admin/about', { headers: { 'x-admin-secret': sec } });
+          const data2 = await res2.json();
+          if (data2.success) setItems(data2.data);
+        } else {
+          setItems(data.data);
+        }
+      } else show(data.message, 'error');
     } catch { show('Error loading', 'error'); }
     setLoading(false);
-  }, [secret, show]);
+  }, [secret, show, seed]);
 
   useEffect(() => { if (authed) load(); }, [authed, load]);
 
@@ -181,7 +200,7 @@ export default function AdminAboutPage() {
     e.preventDefault(); setAuthBusy(true); setAuthErr('');
     try {
       const r = await fetch('/api/admin/about', { headers: { 'x-admin-secret': secret } });
-      if (r.ok) setAuthed(true); else setAuthErr('Invalid password.');
+      if (r.ok) { setAuthed(true); load(secret); } else setAuthErr('Invalid password.');
     } catch { setAuthErr('Network error.'); }
     setAuthBusy(false);
   };

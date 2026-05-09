@@ -27,26 +27,23 @@ export async function GET() {
     await ensureInit();
     const sql = getDb();
 
-    let rows = await sql`
+    const [countRow] = await sql`SELECT COUNT(*) AS c FROM about_content`;
+    const count = parseInt(countRow.c);
+
+    // Fix: if 0 rows seed; if duplicate rows (>16), wipe and re-seed
+    if (count === 0 || count > 16) {
+      await sql`DELETE FROM about_content`;
+      for (const item of SEED_DATA) {
+        await sql`INSERT INTO about_content (type, icon, title, content, sort_order, is_active)
+          VALUES (${item.type}, ${item.icon}, ${item.title}, ${item.content}, ${item.sort_order}, true)`;
+      }
+    }
+
+    const rows = await sql`
       SELECT * FROM about_content
       WHERE is_active = TRUE
       ORDER BY type, sort_order ASC, created_at ASC
     `;
-
-    // If table is empty, seed defaults and return them
-    if (rows.length === 0) {
-      for (const item of SEED_DATA) {
-        await sql`
-          INSERT INTO about_content (type, icon, title, content, sort_order, is_active)
-          VALUES (${item.type}, ${item.icon}, ${item.title}, ${item.content}, ${item.sort_order}, true)
-        `;
-      }
-      rows = await sql`
-        SELECT * FROM about_content
-        WHERE is_active = TRUE
-        ORDER BY type, sort_order ASC, created_at ASC
-      `;
-    }
 
     const grouped = {
       paragraphs:  rows.filter(r => r.type === 'paragraph'),

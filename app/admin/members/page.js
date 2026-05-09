@@ -382,8 +382,8 @@ function DetailPanel({ m, onClose, onEdit, onDelete }) {
 function MemberModal({ member, secret, onClose, onSave }) {
   const isEdit=!!member;
   const today=new Date().toISOString().split('T')[0];
-  const blank={first_name:'',last_name:'',email:'',phone:'',address:'',city:'',state:'',zip:'',country:'USA',date_of_birth:'',gender:'',photo_url:'',membership_type:'individual',membership_plan:'annual',membership_status:'active',is_active:true,joined_date:today,expiry_date:'',amount_paid:'',payment_method:'',maithili_name:'',village_district:'',occupation:'',notes:''};
-  const norm=m=>({...blank,...m,date_of_birth:m.date_of_birth?.split('T')[0]||'',joined_date:m.joined_date?.split('T')[0]||today,expiry_date:m.expiry_date?.split('T')[0]||'',amount_paid:m.amount_paid||''});
+  const blank={first_name:'',last_name:'',email:'',phone:'',address:'',city:'',state:'',zip:'',country:'USA',date_of_birth:'',gender:'',photo_url:'',membership_type:'individual',membership_plan:'annual',membership_status:'active',is_active:true,joined_date:today,expiry_date:'',amount_paid:'',payment_method:'',maithili_name:'',village_district:'',occupation:'',notes:'',is_committee:false,committee_role:''};
+  const norm=m=>({...blank,...m,date_of_birth:m.date_of_birth?.split('T')[0]||'',joined_date:m.joined_date?.split('T')[0]||today,expiry_date:m.expiry_date?.split('T')[0]||'',amount_paid:m.amount_paid||'',is_committee:m.is_committee||false,committee_role:m.committee_role||''});
   const [form,setForm]=useState(isEdit?norm(member):blank);
   const [errors,setErrors]=useState({});
   const [busy,setBusy]=useState(false);
@@ -447,11 +447,27 @@ function MemberModal({ member, secret, onClose, onSave }) {
           <div className="form-group"><label>Expiry Date</label><input type="date" value={form.expiry_date} onChange={set('expiry_date')}/></div>
         </div>
 
-        <div style={{display:'flex',alignItems:'center',gap:'.85rem',margin:'.5rem 0 1rem',padding:'.75rem 1rem',background:'var(--paper-2)',borderRadius:'var(--radius)'}}>
+        <div style={{display:'flex',alignItems:'center',gap:'.85rem',margin:'.5rem 0 .75rem',padding:'.75rem 1rem',background:'var(--paper-2)',borderRadius:'var(--radius)'}}>
           <Toggle active={form.is_active} onChange={()=>setForm(p=>({...p,is_active:!p.is_active}))}/>
           <span style={{fontWeight:600,fontSize:'.9rem'}}>Is Member Active</span>
           <span style={{marginLeft:'auto',fontSize:'.78rem',color:form.is_active?'var(--forest)':'var(--ink-dim)'}}>{form.is_active?'✓ Active':'✗ Inactive'}</span>
         </div>
+
+        <HR/>{SH('Executive Committee')}
+        <div style={{display:'flex',alignItems:'center',gap:'.85rem',margin:'.25rem 0 .75rem',padding:'.75rem 1rem',background:form.is_committee?'rgba(232,114,12,.08)':'var(--paper-2)',border:`1px solid ${form.is_committee?'rgba(232,114,12,.3)':'var(--border)'}`,borderRadius:'var(--radius)',transition:'var(--trans)'}}>
+          <Toggle active={form.is_committee} onChange={()=>setForm(p=>({...p,is_committee:!p.is_committee}))}/>
+          <div>
+            <span style={{fontWeight:600,fontSize:'.9rem'}}>Executive Committee Member</span>
+            <div style={{fontSize:'.72rem',color:'var(--ink-dim)'}}>Show on About Us page under Executive Committee</div>
+          </div>
+          <span style={{marginLeft:'auto',fontSize:'.78rem',color:form.is_committee?'var(--saffron)':'var(--ink-dim)'}}>{form.is_committee?'🏛️ Committee':'—'}</span>
+        </div>
+        {form.is_committee && (
+          <div className="form-group" style={{marginBottom:'1rem'}}>
+            <label>Committee Role / Title</label>
+            <input value={form.committee_role} onChange={set('committee_role')} placeholder="e.g. President, Vice President, Treasurer, Secretary…"/>
+          </div>
+        )}
 
         <div className="form-group"><label>Notes / Remarks</label><textarea value={form.notes} onChange={set('notes')} rows={3} placeholder="Any additional notes…"/></div>
 

@@ -138,7 +138,7 @@ export default function HomeClient({ events, news, stats }) {
         ) : (
           <div className="grid-2">
             {events.map(ev => {
-              const d   = new Date(ev.event_date + 'T00:00:00');
+              const d   = new Date(String(ev.event_date).split('T')[0] + 'T00:00:00');
               const cat = CAT_BADGE[ev.category] || CAT_BADGE.other;
               const sta = STA_BADGE[ev.status]   || STA_BADGE.upcoming;
               return (

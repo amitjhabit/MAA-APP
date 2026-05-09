@@ -31,7 +31,7 @@ const STATUS_COLORS = {
 };
 
 function EventCard({ event }) {
-  const d = new Date(event.event_date + 'T00:00:00');
+  const d = new Date(String(event.event_date).split('T')[0] + 'T00:00:00');
   const cat = CATEGORY_COLORS[event.category] || CATEGORY_COLORS.other;
   const sta = STATUS_COLORS[event.status] || STATUS_COLORS.upcoming;
   const isPast = event.status === 'completed' || event.status === 'cancelled';
@@ -59,7 +59,7 @@ function EventCard({ event }) {
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '.2rem' }}>
-        {event.event_time && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>🕐 {event.event_time}{event.end_date ? ` — ${new Date(event.end_date + 'T00:00:00').toLocaleDateString()}` : ''}</div>}
+        {event.event_time && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>🕐 {event.event_time}{event.end_date ? ` — ${new Date(String(event.end_date).split('T')[0] + 'T00:00:00').toLocaleDateString()}` : ''}</div>}
         {event.is_online
           ? <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>💻 Online{event.meeting_link ? <a href={event.meeting_link} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)', marginLeft: '.35rem' }}>Join →</a> : ''}</div>
           : <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>📍 {[event.location, event.city, event.state].filter(Boolean).join(', ')}</div>

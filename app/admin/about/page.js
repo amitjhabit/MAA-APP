@@ -148,7 +148,6 @@ export default function AdminAboutPage() {
   const [authBusy, setAuthBusy] = useState(false);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [seeding, setSeeding] = useState(false);
   const [showAdd, setShowAdd] = useState(null); // type string
   const [editItem, setEditItem] = useState(null);
 
@@ -164,17 +163,6 @@ export default function AdminAboutPage() {
   }, [secret, show]);
 
   useEffect(() => { if (authed) load(); }, [authed, load]);
-
-  const seedDefaults = async () => {
-    setSeeding(true);
-    try {
-      const res = await fetch('/api/admin/about', { method: 'PUT', headers: { 'x-admin-secret': secret } });
-      const data = await res.json();
-      if (data.success) { show(`✅ ${data.message}`, 'success'); load(); }
-      else show(data.message, 'error');
-    } catch { show('Seed failed', 'error'); }
-    setSeeding(false);
-  };
 
   const handleLogin = async e => {
     e.preventDefault(); setAuthBusy(true); setAuthErr('');
@@ -236,10 +224,6 @@ export default function AdminAboutPage() {
               <div className="text-sm text-muted">ℹ️ Manage all sections of the public About page</div>
             </div>
             <div style={{ display: 'flex', gap: '.65rem', alignItems: 'center' }}>
-              <button onClick={seedDefaults} disabled={seeding}
-                style={{ background: 'var(--saffron)', color: '#fff', border: 'none', borderRadius: 'var(--radius)', padding: '.4rem 1rem', fontWeight: 600, fontSize: '.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '.4rem' }}>
-                {seeding ? <><span className="spinner" />Loading…</> : '🌱 Load Default Content'}
-              </button>
               <a href="/about" target="_blank" className="btn btn-ghost btn-sm">View Public Page ↗</a>
               <button className="btn btn-ghost btn-sm" onClick={() => { setAuthed(false); setSecret(''); }}>Sign Out</button>
             </div>

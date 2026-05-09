@@ -11,7 +11,7 @@ function Sidebar({active}){
     <div className="admin-nav-section">Main</div>
     <NL href="/admin" icon="🏠" label="Dashboard"/><NL href="/admin/members" icon="👥" label="Members"/><NL href="/admin/events" icon="📅" label="Events"/><NL href="/admin/donations" icon="💰" label="Donations" a/>
     <div className="admin-nav-section">Content</div>
-    <NL href="/admin/news" icon="📰" label="News"/><NL href="/admin/gallery" icon="🖼️" label="Gallery"/>
+    <NL href="/admin/news" icon="📰" label="News"/><NL href="/admin/gallery" icon="🖼️" label="Gallery"/><NL href="/admin/about" icon="📝" label="About Us"/>
     <div className="admin-nav-section">Organization</div>
     <NL href="/admin/volunteers" icon="🙋" label="Volunteers"/><NL href="/admin/committee" icon="🏛️" label="Committee"/><NL href="/admin/inquiries" icon="✉️" label="Inquiries"/>
     <div className="admin-nav-section">Settings</div>

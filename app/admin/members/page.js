@@ -578,6 +578,7 @@ export default function AdminMembersPage() {
             <div className="admin-nav-section">Content</div>
             <NL href="/admin/news" icon="📰" label="News & Posts"/>
             <NL href="/admin/gallery" icon="🖼️" label="Gallery"/>
+            <NL href="/admin/about"   icon="📝" label="About Us"/>
             <div className="admin-nav-section">Organization</div>
             <NL href="/admin/volunteers" icon="🙋" label="Volunteers"/>
             <NL href="/admin/committee" icon="🏛️" label="Committee"/>

@@ -86,6 +86,7 @@ export default function AdminDashboard() {
     { icon: '🙋', title: 'Volunteers', sub: 'स्वयंसेवक',    href: '/admin/volunteers', stat: stats.volunteers, statLabel: 'total',     color: 'var(--crimson)' },
     { icon: '🏛️', title: 'Committee', sub: 'समिति',        href: '/admin/committee',  stat: stats.committee,  statLabel: 'members',   color: 'var(--navy)' },
     { icon: '🖼️', title: 'Gallery',   sub: 'गैलरी',        href: '/admin/gallery',    stat: stats.gallery,    statLabel: 'photos',    color: '#7B1FA2' },
+    { icon: '📝', title: 'About Us',  sub: 'हमारे बारे में', href: '/admin/about',    stat: 'Edit',           statLabel: 'content',   color: 'var(--saffron)' },
     { icon: '✉️', title: 'Inquiries', sub: 'पूछताछ',       href: '/admin/inquiries',  stat: stats.new_inquiries > 0 ? `${stats.new_inquiries} new` : stats.inquiries, statLabel: 'inquiries', color: '#0097A7' },
   ];
 

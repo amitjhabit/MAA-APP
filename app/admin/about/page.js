@@ -148,6 +148,7 @@ export default function AdminAboutPage() {
   const [authBusy, setAuthBusy] = useState(false);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [seeding, setSeeding] = useState(false);
   const [showAdd, setShowAdd] = useState(null); // type string
   const [editItem, setEditItem] = useState(null);
 
@@ -163,6 +164,18 @@ export default function AdminAboutPage() {
   }, [secret, show]);
 
   useEffect(() => { if (authed) load(); }, [authed, load]);
+
+  const seedDefaults = async () => {
+    if (!confirm('This will populate the About page with default content. Continue?')) return;
+    setSeeding(true);
+    try {
+      const res = await fetch('/api/admin/about', { method: 'PUT', headers: { 'x-admin-secret': secret } });
+      const data = await res.json();
+      if (data.success) { show(`✅ ${data.message}`, 'success'); load(); }
+      else show(data.message, 'error');
+    } catch { show('Seed failed', 'error'); }
+    setSeeding(false);
+  };
 
   const handleLogin = async e => {
     e.preventDefault(); setAuthBusy(true); setAuthErr('');
@@ -223,7 +236,15 @@ export default function AdminAboutPage() {
               <div style={{ fontFamily: 'var(--serif)', fontSize: '1.2rem', color: 'var(--navy)', fontWeight: 600 }}>About Us Content</div>
               <div className="text-sm text-muted">ℹ️ Manage all sections of the public About page</div>
             </div>
-            <div style={{ display: 'flex', gap: '.65rem' }}>
+            <div style={{ display: 'flex', gap: '.65rem', alignItems: 'center' }}>
+              <span style={{ fontSize: '.75rem', padding: '.25rem .65rem', borderRadius: 20, background: items.length > 0 ? 'var(--forest-light)' : 'var(--paper-3)', color: items.length > 0 ? 'var(--forest)' : 'var(--ink-dim)', fontWeight: 600 }}>
+                {items.length > 0 ? `✅ ${items.length} items in DB` : '⚠️ DB empty — using defaults'}
+              </span>
+              {items.length === 0 && (
+                <button className="btn btn-gold btn-sm" onClick={seedDefaults} disabled={seeding}>
+                  {seeding ? <><span className="spinner" />Seeding…</> : '🌱 Seed Default Content'}
+                </button>
+              )}
               <a href="/about" target="_blank" className="btn btn-ghost btn-sm">View Public Page ↗</a>
               <button className="btn btn-ghost btn-sm" onClick={() => { setAuthed(false); setSecret(''); }}>Sign Out</button>
             </div>

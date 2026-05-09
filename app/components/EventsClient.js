@@ -3,6 +3,15 @@
 import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 
+// Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
+function localDate(val) {
+  if (!val) return new Date(NaN);
+  if (val instanceof Date) return new Date(val.getFullYear(), val.getMonth(), val.getDate());
+  const m = String(val).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return new Date(NaN);
+  return new Date(+m[1], +m[2] - 1, +m[3]);
+}
+
 function Footer() {
   return (
     <footer className="pub-footer">
@@ -31,7 +40,7 @@ const STATUS_COLORS = {
 };
 
 function EventCard({ event }) {
-  const d = new Date(String(event.event_date).split('T')[0] + 'T00:00:00');
+  const d = localDate(event.event_date);
   const cat = CATEGORY_COLORS[event.category] || CATEGORY_COLORS.other;
   const sta = STATUS_COLORS[event.status] || STATUS_COLORS.upcoming;
   const isPast = event.status === 'completed' || event.status === 'cancelled';
@@ -59,7 +68,7 @@ function EventCard({ event }) {
       )}
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '.2rem' }}>
-        {event.event_time && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>🕐 {event.event_time}{event.end_date ? ` — ${new Date(String(event.end_date).split('T')[0] + 'T00:00:00').toLocaleDateString()}` : ''}</div>}
+        {event.event_time && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>🕐 {event.event_time}{event.end_date ? ` — ${localDate(event.end_date).toLocaleDateString()}` : ''}</div>}
         {event.is_online
           ? <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>💻 Online{event.meeting_link ? <a href={event.meeting_link} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)', marginLeft: '.35rem' }}>Join →</a> : ''}</div>
           : <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>📍 {[event.location, event.city, event.state].filter(Boolean).join(', ')}</div>

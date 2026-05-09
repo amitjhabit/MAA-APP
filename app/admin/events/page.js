@@ -3,6 +3,15 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 
+// Handles Date objects, ISO strings ("2026-05-31T..."), and bare "YYYY-MM-DD" strings
+function localDate(val) {
+  if (!val) return new Date(NaN);
+  if (val instanceof Date) return new Date(val.getFullYear(), val.getMonth(), val.getDate());
+  const m = String(val).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return new Date(NaN);
+  return new Date(+m[1], +m[2] - 1, +m[3]);
+}
+
 /* ══════════════════════════════════════
    HELPERS
 ══════════════════════════════════════ */
@@ -21,8 +30,8 @@ function Toast({ toasts }) {
 
 function fmtDate(d) {
   if (!d) return '—';
-  const s = (d + '').split('T')[0];
-  return new Date(s + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  const dt = localDate(d);
+  return isNaN(dt) ? '—' : dt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 const CAT_COLORS = {
@@ -84,7 +93,7 @@ function DetailPanel({ event, onClose, onEdit, onDelete }) {
   if (!event) return null;
   const cat = CAT_COLORS[event.category] || CAT_COLORS.other;
   const sta = STATUS_COLORS[event.status] || STATUS_COLORS.upcoming;
-  const d   = new Date(String(event.event_date).split('T')[0] + 'T00:00:00');
+  const d   = localDate(event.event_date);
 
   const Row = ({ icon, label, value, link }) => {
     if (!value && value !== 0) return null;
@@ -523,7 +532,7 @@ export default function AdminEventsPage() {
               <>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '1.5rem' }}>
                   {events.map(ev => {
-                    const d   = new Date(String(ev.event_date).split('T')[0] + 'T00:00:00');
+                    const d   = localDate(ev.event_date);
                     const cat = CAT_COLORS[ev.category]  || CAT_COLORS.other;
                     const sta = STATUS_COLORS[ev.status] || STATUS_COLORS.upcoming;
                     const isPast = ev.status === 'completed' || ev.status === 'cancelled';

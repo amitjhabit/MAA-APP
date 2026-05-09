@@ -3,6 +3,15 @@
 import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 
+// Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
+function localDate(val) {
+  if (!val) return new Date(NaN);
+  if (val instanceof Date) return new Date(val.getFullYear(), val.getMonth(), val.getDate());
+  const m = String(val).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return new Date(NaN);
+  return new Date(+m[1], +m[2] - 1, +m[3]);
+}
+
 function InquiryModal({ onClose }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '', inquiry_type: 'general', subject: 'General Inquiry', message: '' });
   const [loading, setLoading] = useState(false);
@@ -138,7 +147,7 @@ export default function HomeClient({ events, news, stats }) {
         ) : (
           <div className="grid-2">
             {events.map(ev => {
-              const d   = new Date(String(ev.event_date).split('T')[0] + 'T00:00:00');
+              const d   = localDate(ev.event_date);
               const cat = CAT_BADGE[ev.category] || CAT_BADGE.other;
               const sta = STA_BADGE[ev.status]   || STA_BADGE.upcoming;
               return (

@@ -152,40 +152,20 @@ export default function AdminAboutPage() {
   const [showAdd, setShowAdd] = useState(null); // type string
   const [editItem, setEditItem] = useState(null);
 
-  const seed = useCallback(async (s) => {
-    try {
-      const res = await fetch('/api/admin/about', { method: 'PUT', headers: { 'x-admin-secret': s } });
-      const data = await res.json();
-      if (data.success) show(`✅ ${data.message}`, 'success');
-    } catch {}
-  }, [show]);
-
-  const load = useCallback(async (s) => {
-    const sec = s || secret;
+  const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/about', { headers: { 'x-admin-secret': sec } });
+      const res = await fetch('/api/admin/about', { headers: { 'x-admin-secret': secret } });
       const data = await res.json();
-      if (data.success) {
-        // Auto-seed if table is empty
-        if (data.data.length === 0) {
-          await seed(sec);
-          // Reload after seeding
-          const res2 = await fetch('/api/admin/about', { headers: { 'x-admin-secret': sec } });
-          const data2 = await res2.json();
-          if (data2.success) setItems(data2.data);
-        } else {
-          setItems(data.data);
-        }
-      } else show(data.message, 'error');
+      if (data.success) setItems(data.data);
+      else show(data.message, 'error');
     } catch { show('Error loading', 'error'); }
     setLoading(false);
-  }, [secret, show, seed]);
+  }, [secret, show]);
 
   useEffect(() => { if (authed) load(); }, [authed, load]);
 
   const seedDefaults = async () => {
-    if (!confirm('This will populate the About page with default content. Continue?')) return;
     setSeeding(true);
     try {
       const res = await fetch('/api/admin/about', { method: 'PUT', headers: { 'x-admin-secret': secret } });
@@ -256,14 +236,10 @@ export default function AdminAboutPage() {
               <div className="text-sm text-muted">ℹ️ Manage all sections of the public About page</div>
             </div>
             <div style={{ display: 'flex', gap: '.65rem', alignItems: 'center' }}>
-              <span style={{ fontSize: '.75rem', padding: '.25rem .65rem', borderRadius: 20, background: items.length > 0 ? 'var(--forest-light)' : 'var(--paper-3)', color: items.length > 0 ? 'var(--forest)' : 'var(--ink-dim)', fontWeight: 600 }}>
-                {items.length > 0 ? `✅ ${items.length} items in DB` : '⚠️ DB empty — using defaults'}
-              </span>
-              {items.length === 0 && (
-                <button className="btn btn-gold btn-sm" onClick={seedDefaults} disabled={seeding}>
-                  {seeding ? <><span className="spinner" />Seeding…</> : '🌱 Seed Default Content'}
-                </button>
-              )}
+              <button onClick={seedDefaults} disabled={seeding}
+                style={{ background: 'var(--saffron)', color: '#fff', border: 'none', borderRadius: 'var(--radius)', padding: '.4rem 1rem', fontWeight: 600, fontSize: '.82rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '.4rem' }}>
+                {seeding ? <><span className="spinner" />Loading…</> : '🌱 Load Default Content'}
+              </button>
               <a href="/about" target="_blank" className="btn btn-ghost btn-sm">View Public Page ↗</a>
               <button className="btn btn-ghost btn-sm" onClick={() => { setAuthed(false); setSecret(''); }}>Sign Out</button>
             </div>

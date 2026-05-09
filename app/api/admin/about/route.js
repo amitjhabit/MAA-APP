@@ -60,10 +60,8 @@ export async function PUT(req) {
   try {
     await ensureInit();
     const sql = getDb();
-    const [existing] = await sql`SELECT COUNT(*) AS c FROM about_content`;
-    if (parseInt(existing.c) > 0) {
-      return NextResponse.json({ success: false, message: 'Content already exists. Clear the table first or edit existing items.' }, { status: 409 });
-    }
+    // Always truncate and re-seed
+    await sql`DELETE FROM about_content`;
     const inserted = [];
     for (const item of SEED_DATA) {
       const [row] = await sql`
@@ -73,7 +71,7 @@ export async function PUT(req) {
       `;
       inserted.push(row);
     }
-    return NextResponse.json({ success: true, data: inserted, message: `${inserted.length} default items added.` });
+    return NextResponse.json({ success: true, data: inserted, message: `${inserted.length} default items loaded into database.` });
   } catch (e) {
     return NextResponse.json({ success: false, message: e.message }, { status: 500 });
   }

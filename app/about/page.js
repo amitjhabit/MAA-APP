@@ -184,24 +184,18 @@ export default function AboutPage() {
 
             {/* Membership Tiers */}
             <div className="section-header">
-              <div><div className="section-eyebrow">सदस्यता</div><h2 className="section-title">Membership <span>Tiers</span></h2></div>
+              <div><div className="section-eyebrow">सदस्यता</div><h2 className="section-title">Membership <span>Plan</span></h2></div>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: '1rem', marginBottom: '3rem' }}>
-              {[
-                { type: 'Student',             annual: '$25',   lifetime: '$200',  color: 'var(--forest)',  desc: 'Full-time students' },
-                { type: 'Individual',          annual: '$50',   lifetime: '$500',  color: 'var(--saffron)', desc: 'Individual adults' },
-                { type: 'Honorary',            annual: 'Free',  lifetime: 'Free',  color: 'var(--gold)',    desc: 'By invitation only' },
-                { type: 'Corporate / Sponsor', annual: '$500+', lifetime: 'N/A',   color: '#0D47A1',        desc: 'Business sponsors' },
-              ].map(t => (
-                <div key={t.type} className="card" style={{ textAlign: 'center', borderTop: `3px solid ${t.color}` }}>
-                  <div style={{ fontFamily: 'var(--serif)', fontWeight: 700, color: 'var(--navy)', marginBottom: '.35rem' }}>{t.type}</div>
-                  <div className="text-sm text-muted" style={{ marginBottom: '.75rem' }}>{t.desc}</div>
-                  <div style={{ color: t.color, fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700 }}>{t.annual}</div>
-                  <div className="text-xs text-muted">Annual</div>
-                  <div style={{ color: t.color, fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 600, marginTop: '.35rem' }}>{t.lifetime}</div>
-                  <div className="text-xs text-muted">Lifetime</div>
-                </div>
-              ))}
+            <div style={{ maxWidth: 480, margin: '0 auto 3rem', background: 'var(--navy)', borderRadius: 'var(--radius-lg)', padding: '2rem 2.5rem', borderTop: '4px solid var(--saffron)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem', flexWrap: 'wrap' }}>
+              <div>
+                <div style={{ color: 'var(--gold)', fontWeight: 600, fontSize: '.8rem', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.25rem' }}>Membership Plan</div>
+                <div style={{ color: '#fff', fontFamily: 'var(--serif)', fontSize: '1.2rem', fontWeight: 700 }}>Annual Membership</div>
+                <div style={{ color: 'rgba(255,255,255,.65)', fontSize: '.875rem', marginTop: '.25rem' }}>Full access to all MAA events, programs &amp; community benefits</div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <div style={{ color: 'var(--gold)', fontFamily: 'var(--serif)', fontSize: '2.5rem', fontWeight: 700, lineHeight: 1 }}>$21</div>
+                <div style={{ color: 'rgba(255,255,255,.55)', fontSize: '.8rem' }}>per year</div>
+              </div>
             </div>
 
             {/* Bottom CTA */}

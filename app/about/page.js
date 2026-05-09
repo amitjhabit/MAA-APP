@@ -56,6 +56,8 @@ const DEFAULT_ACTIVITIES = [
 export default function AboutPage() {
   const [content, setContent]   = useState(null); // null = loading
   const [committee, setCommittee] = useState([]);
+  const currentCommittee = committee.filter(m => m.is_current);
+  const pastCommittee    = committee.filter(m => !m.is_current);
 
   useEffect(() => {
     // Fetch about content and committee in parallel
@@ -156,14 +158,14 @@ export default function AboutPage() {
               </>
             )}
 
-            {/* Executive Committee (live from DB) */}
-            {committee.length > 0 && (
+            {/* Executive Committee — current members */}
+            {currentCommittee.length > 0 && (
               <>
                 <div className="section-header">
                   <div><div className="section-eyebrow">नेतृत्व</div><h2 className="section-title">Executive <span>Committee</span></h2></div>
                 </div>
                 <div className="grid-2" style={{ marginBottom: '3.5rem' }}>
-                  {committee.map(m => (
+                  {currentCommittee.map(m => (
                     <div key={m.id} className="card" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                       <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--saffron-light)', border: '2px solid var(--saffron)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', fontWeight: 700, color: 'var(--saffron)', flexShrink: 0, overflow: 'hidden' }}>
                         {m.photo_url ? <img src={m.photo_url} alt={m.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} /> : m.name[0]}
@@ -174,6 +176,32 @@ export default function AboutPage() {
                         {m.email && <div className="text-xs text-muted">{m.email}</div>}
                         {(m.term_start || m.term_end) && (
                           <div className="text-xs text-muted">Term: {m.term_start ? new Date(m.term_start).getFullYear() : '?'} – {m.term_end ? new Date(m.term_end).getFullYear() : 'Present'}</div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+
+            {/* Past Committee Members */}
+            {pastCommittee.length > 0 && (
+              <>
+                <div className="section-header">
+                  <div><div className="section-eyebrow">पूर्व नेतृत्व</div><h2 className="section-title">Past <span>Committee Members</span></h2></div>
+                </div>
+                <div className="grid-2" style={{ marginBottom: '3.5rem' }}>
+                  {pastCommittee.map(m => (
+                    <div key={m.id} className="card" style={{ display: 'flex', gap: '1rem', alignItems: 'center', opacity: 0.85 }}>
+                      <div style={{ width: 56, height: 56, borderRadius: '50%', background: 'var(--paper-3)', border: '2px solid var(--border-hi)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.3rem', fontWeight: 700, color: 'var(--ink-soft)', flexShrink: 0, overflow: 'hidden' }}>
+                        {m.photo_url ? <img src={m.photo_url} alt={m.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} /> : m.name[0]}
+                      </div>
+                      <div>
+                        <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, color: 'var(--navy)' }}>{m.name}</div>
+                        <div style={{ color: 'var(--ink-soft)', fontSize: '.875rem', fontWeight: 600 }}>{m.role}</div>
+                        {m.email && <div className="text-xs text-muted">{m.email}</div>}
+                        {(m.term_start || m.term_end) && (
+                          <div className="text-xs text-muted">Term: {m.term_start ? new Date(m.term_start).getFullYear() : '?'} – {m.term_end ? new Date(m.term_end).getFullYear() : '?'}</div>
                         )}
                       </div>
                     </div>

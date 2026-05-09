@@ -9,8 +9,7 @@ export async function GET() {
     const sql = getDb();
     const members = await sql`
       SELECT * FROM committee_members
-      WHERE is_current = TRUE
-      ORDER BY sort_order ASC, created_at ASC
+      ORDER BY is_current DESC, sort_order ASC, created_at ASC
     `;
     return NextResponse.json({ success: true, data: members });
   } catch (e) {

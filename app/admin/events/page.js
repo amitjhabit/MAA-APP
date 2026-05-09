@@ -311,7 +311,7 @@ function EventModal({ event, secret, onClose, onSave }) {
         <HR />{SH('Registration & Contact')}
         <div className="form-grid">
           <div className="form-group"><label>Organizer</label><input value={form.organizer} onChange={set('organizer')} placeholder="MAA Events Committee" /></div>
-          <div className="form-group"><label>Contact Email</label><input type="email" value={form.contact_email} onChange={set('contact_email')} placeholder="events@maa-america.org" /></div>
+          <div className="form-group"><label>Contact Email</label><input type="email" value={form.contact_email} onChange={set('contact_email')} placeholder="contributemaa@maithilusa.org" /></div>
           <div className="form-group"><label>Max Attendees</label><input type="number" value={form.max_attendees} onChange={set('max_attendees')} placeholder="200" /></div>
           <div className="form-group"><label>Registration Fee ($)</label><input type="number" value={form.registration_fee} onChange={set('registration_fee')} placeholder="0" min="0" step="0.01" /></div>
           <div className="form-group span-2"><label>Cover Image URL</label><input type="url" value={form.cover_image} onChange={set('cover_image')} placeholder="https://…" /></div>

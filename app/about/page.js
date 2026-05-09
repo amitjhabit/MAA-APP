@@ -173,7 +173,7 @@ export default function AboutPage() {
                       <div>
                         <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, color: 'var(--navy)' }}>{m.name}</div>
                         <div style={{ color: 'var(--saffron)', fontSize: '.875rem', fontWeight: 600 }}>{m.role}</div>
-                        {m.email && <div className="text-xs text-muted">{m.email}</div>}
+                        {m.email && m.email.trim() !== '' && <div className="text-xs text-muted">{m.email}</div>}
                         {(m.term_start || m.term_end) && (
                           <div className="text-xs text-muted">Term: {m.term_start ? new Date(m.term_start).getFullYear() : '?'} – {m.term_end ? new Date(m.term_end).getFullYear() : 'Present'}</div>
                         )}
@@ -199,7 +199,7 @@ export default function AboutPage() {
                       <div>
                         <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, color: 'var(--navy)' }}>{m.name}</div>
                         <div style={{ color: 'var(--ink-soft)', fontSize: '.875rem', fontWeight: 600 }}>{m.role}</div>
-                        {m.email && <div className="text-xs text-muted">{m.email}</div>}
+                        {m.email && m.email.trim() !== '' && <div className="text-xs text-muted">{m.email}</div>}
                         {(m.term_start || m.term_end) && (
                           <div className="text-xs text-muted">Term: {m.term_start ? new Date(m.term_start).getFullYear() : '?'} – {m.term_end ? new Date(m.term_end).getFullYear() : '?'}</div>
                         )}

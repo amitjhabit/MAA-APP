@@ -1,25 +1,7 @@
 'use client';
 // app/donate/page.js
 import { useState } from 'react';
-
-function Nav() {
-  return (
-    <nav className="pub-nav">
-      <div className="pub-nav-inner">
-        <a href="/" className="pub-nav-brand">
-          <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
-        </a>
-        <div className="pub-nav-links">
-          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
-            <a key={h} href={h} className="pub-nav-link">{l}</a>
-          ))}
-          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.5rem' }}>Join / Renew</a>
-        </div>
-      </div>
-    </nav>
-  );
-}
+import PublicNav from '@/app/components/PublicNav';
 
 const AMOUNTS = [25, 50, 100, 250, 500, 1000];
 
@@ -51,7 +33,7 @@ export default function DonatePage() {
 
   return (
     <>
-      <Nav />
+      <PublicNav active="/donate" />
       <section className="hero" style={{ padding: '3.5rem 2rem 3rem' }}>
         <div style={{ position: 'relative', zIndex: 1 }}>
           <span className="hero-eyebrow">दान करें</span>

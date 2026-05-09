@@ -1,6 +1,7 @@
 'use client';
 // app/page.js — MAA Homepage with Inquiry Button
 import { useState, useEffect } from 'react';
+import PublicNav from '@/app/components/PublicNav';
 
 /* ── Inquiry Modal ── */
 function InquiryModal({ onClose }) {
@@ -71,25 +72,6 @@ function InquiryModal({ onClose }) {
   );
 }
 
-function Nav({ onInquiry }) {
-  return (
-    <nav className="pub-nav">
-      <div className="pub-nav-inner">
-        <a href="/" className="pub-nav-brand">
-          <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
-        </a>
-        <div className="pub-nav-links">
-          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
-            <a key={h} href={h} className="pub-nav-link">{l}</a>
-          ))}
-          <button onClick={onInquiry} className="pub-nav-link" style={{ background: 'rgba(255,255,255,.12)', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,.9)' }}>✉️ Inquire</button>
-          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.25rem' }}>Join / Renew</a>
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 function Footer() {
   return (
@@ -131,7 +113,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Nav onInquiry={() => setShowInquiry(true)} />
+      <PublicNav active="/" onInquiry={() => setShowInquiry(true)} />
 
       {/* Hero */}
       <section className="hero">

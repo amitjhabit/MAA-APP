@@ -1,25 +1,7 @@
 'use client';
 // app/contact/page.js
 import { useState } from 'react';
-
-function Nav() {
-  return (
-    <nav className="pub-nav">
-      <div className="pub-nav-inner">
-        <a href="/" className="pub-nav-brand">
-          <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
-        </a>
-        <div className="pub-nav-links">
-          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
-            <a key={h} href={h} className={`pub-nav-link${h === '/contact' ? ' active' : ''}`}>{l}</a>
-          ))}
-          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.5rem' }}>Join / Renew</a>
-        </div>
-      </div>
-    </nav>
-  );
-}
+import PublicNav from '@/app/components/PublicNav';
 
 export default function ContactPage() {
   const [form, setForm]       = useState({ name: '', email: '', phone: '', subject: 'General Inquiry', inquiry_type: 'general', message: '' });
@@ -51,7 +33,7 @@ export default function ContactPage() {
 
   return (
     <>
-      <Nav />
+      <PublicNav active="/contact" />
       <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
           <span className="hero-eyebrow">संपर्क करें</span>

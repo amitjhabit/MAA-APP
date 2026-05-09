@@ -1,25 +1,7 @@
 'use client';
 // app/about/page.js — About Us
 import { useState, useEffect } from 'react';
-
-function Nav() {
-  return (
-    <nav className="pub-nav">
-      <div className="pub-nav-inner">
-        <a href="/" className="pub-nav-brand">
-          <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
-        </a>
-        <div className="pub-nav-links">
-          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
-            <a key={h} href={h} className={`pub-nav-link${h === '/about' ? ' active' : ''}`}>{l}</a>
-          ))}
-          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.5rem' }}>Join / Renew</a>
-        </div>
-      </div>
-    </nav>
-  );
-}
+import PublicNav from '@/app/components/PublicNav';
 
 function Footer() {
   return (
@@ -58,7 +40,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <Nav />
+      <PublicNav active="/about" />
 
       {/* ── Hero ── */}
       <section className="hero">

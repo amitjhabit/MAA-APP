@@ -1,25 +1,7 @@
 'use client';
 // app/join/page.js
 import { useState } from 'react';
-
-function Nav() {
-  return (
-    <nav className="pub-nav">
-      <div className="pub-nav-inner">
-        <a href="/" className="pub-nav-brand">
-          <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
-        </a>
-        <div className="pub-nav-links">
-          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
-            <a key={h} href={h} className="pub-nav-link">{l}</a>
-          ))}
-          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.5rem', background: 'rgba(255,255,255,.2)' }}>Join / Renew</a>
-        </div>
-      </div>
-    </nav>
-  );
-}
+import PublicNav from '@/app/components/PublicNav';
 
 const TIERS = [
   { type: 'student',   label: 'Student',           annual: 25,   lifetime: 200,  desc: 'Full-time students with valid student ID', color: 'var(--forest)' },
@@ -61,7 +43,7 @@ export default function JoinPage() {
 
   return (
     <>
-      <Nav />
+      <PublicNav active="/join" />
       <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
           <span className="hero-eyebrow">सदस्य बनें</span>

@@ -21,7 +21,8 @@ function Toast({ toasts }) {
 
 function fmtDate(d) {
   if (!d) return '—';
-  return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  const s = (d + '').split('T')[0];
+  return new Date(s + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 const CAT_COLORS = {
@@ -83,7 +84,7 @@ function DetailPanel({ event, onClose, onEdit, onDelete }) {
   if (!event) return null;
   const cat = CAT_COLORS[event.category] || CAT_COLORS.other;
   const sta = STATUS_COLORS[event.status] || STATUS_COLORS.upcoming;
-  const d   = new Date(event.event_date);
+  const d   = new Date(event.event_date + 'T00:00:00');
 
   const Row = ({ icon, label, value, link }) => {
     if (!value && value !== 0) return null;
@@ -522,7 +523,7 @@ export default function AdminEventsPage() {
               <>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '1.5rem' }}>
                   {events.map(ev => {
-                    const d   = new Date(ev.event_date);
+                    const d   = new Date(ev.event_date + 'T00:00:00');
                     const cat = CAT_COLORS[ev.category]  || CAT_COLORS.other;
                     const sta = STATUS_COLORS[ev.status] || STATUS_COLORS.upcoming;
                     const isPast = ev.status === 'completed' || ev.status === 'cancelled';

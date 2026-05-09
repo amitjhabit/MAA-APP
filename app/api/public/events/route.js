@@ -47,7 +47,9 @@ export async function GET(request) {
       `;
     }
 
-    return NextResponse.json({ success: true, data: events, count: events.length });
+    const res = NextResponse.json({ success: true, data: events, count: events.length });
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
   } catch (e) {
     console.error('GET /api/public/events:', e.message);
     return NextResponse.json({ success: false, data: [], error: e.message });

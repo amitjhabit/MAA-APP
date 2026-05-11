@@ -25,6 +25,7 @@ export async function POST(req) {
 
     const [tmpl] = await sql`SELECT * FROM receipt_templates WHERE id = ${template_id}`;
     if (!tmpl) return NextResponse.json({ success: false, message: 'Template not found' }, { status: 404 });
+    if (!tmpl.body_html) return NextResponse.json({ success: false, message: 'Template has no body. Please edit the template and add HTML content.' }, { status: 400 });
 
     const txRows = await sql(
       `SELECT t.*, c.name AS category_name
@@ -36,36 +37,48 @@ export async function POST(req) {
 
     const generated = [];
     for (const tx of txRows) {
-      const existing = await sql`SELECT id FROM receipts WHERE transaction_id = ${tx.id}`;
-      const rnum = existing[0]?.receipt_number || receiptNumber();
+      const [existing] = await sql`SELECT * FROM receipts WHERE transaction_id = ${tx.id}`;
+
+      const rnum = existing?.receipt_number || receiptNumber();
+
+      const txDate = tx.transaction_date
+        ? new Date(tx.transaction_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+        : '';
 
       const vars = {
         receipt_number:   rnum,
-        recipient_name:   tx.payer_name || 'Member',
+        recipient_name:   tx.payer_name  || 'Member',
         recipient_email:  tx.payer_email || '',
         amount:           fmtAmount(tx.amount),
-        description:      tx.description,
+        description:      tx.description || '',
         category:         tx.category_name || '',
         payment_method:   tx.payment_method || '',
-        transaction_date: tx.transaction_date
-          ? new Date(tx.transaction_date).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' })
-          : '',
-        generated_date:   new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' }),
-        status:           tx.status,
+        transaction_date: txDate,
+        generated_date:   new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        status:           tx.status || '',
       };
 
       const htmlContent = renderTemplate(tmpl.body_html, vars);
 
-      if (existing[0]) {
-        await sql`UPDATE receipts SET html_content=${htmlContent}, template_id=${template_id}, generated_at=NOW() WHERE transaction_id=${tx.id}`;
-        generated.push({ ...existing[0], transaction_id: tx.id, receipt_number: rnum, recipient_name: vars.recipient_name, recipient_email: vars.recipient_email });
+      let saved;
+      if (existing) {
+        const [updated] = await sql`
+          UPDATE receipts SET
+            html_content  = ${htmlContent},
+            template_id   = ${template_id},
+            recipient_name  = ${vars.recipient_name},
+            recipient_email = ${vars.recipient_email},
+            generated_at  = NOW()
+          WHERE id = ${existing.id} RETURNING *`;
+        saved = updated;
       } else {
-        const [r] = await sql`
+        const [inserted] = await sql`
           INSERT INTO receipts (transaction_id, template_id, receipt_number, recipient_name, recipient_email, html_content)
           VALUES (${tx.id}, ${template_id}, ${rnum}, ${vars.recipient_name}, ${vars.recipient_email}, ${htmlContent})
           RETURNING *`;
-        generated.push(r);
+        saved = inserted;
       }
+      generated.push(saved);
     }
 
     return NextResponse.json({ success: true, generated, count: generated.length });

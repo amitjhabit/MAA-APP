@@ -9,7 +9,7 @@ function Sidebar({active}){
   const NL=({href,icon,label,a})=><a href={href} className={`admin-nav-link${a?' active':''}`}><span className="nav-icon">{icon}</span>{label}</a>;
   return(<aside className="admin-sidebar"><div className="admin-sidebar-brand"><div className="logo-text">MAA CRM</div><div className="logo-sub">मैथिल एसोसिएशन</div></div><nav className="admin-nav">
     <div className="admin-nav-section">Main</div>
-    <NL href="/admin" icon="🏠" label="Dashboard"/><NL href="/admin/members" icon="👥" label="Members"/><NL href="/admin/events" icon="📅" label="Events"/><NL href="/admin/donations" icon="💰" label="Donations" a/>
+    <NL href="/admin" icon="🏠" label="Dashboard"/><NL href="/admin/members" icon="👥" label="Members"/><NL href="/admin/events" icon="📅" label="Events"/><NL href="/admin/donations" icon="💰" label="Donations" a/><NL href="/admin/finance" icon="📊" label="Finance"/>
     <div className="admin-nav-section">Content</div>
     <NL href="/admin/news" icon="📰" label="News"/><NL href="/admin/gallery" icon="🖼️" label="Gallery"/><NL href="/admin/about" icon="📝" label="About Us"/>
     <div className="admin-nav-section">Organization</div>

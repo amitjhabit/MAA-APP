@@ -70,6 +70,7 @@ function Sidebar({ secret, onSignOut }) {
         <NL href="/admin/members" icon="👥" label="Members" />
         <NL href="/admin/events"  icon="📅" label="Events" active />
         <NL href="/admin/donations" icon="💰" label="Donations" />
+        <NL href="/admin/finance" icon="📊" label="Finance" />
         <div className="admin-nav-section">Content</div>
         <NL href="/admin/news"    icon="📰" label="News & Posts" />
         <NL href="/admin/gallery" icon="🖼️" label="Gallery" />

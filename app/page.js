@@ -15,7 +15,9 @@ export default async function HomePage() {
     const [evRows, newsRows, memberCount, eventCount] = await Promise.all([
       sql`
         SELECT id, title, title_maithili, description, event_date, event_time,
-               location, city, state, is_online, category, status
+               end_date, location, address, city, state, is_online, meeting_link,
+               category, status, cover_image, organizer, contact_email,
+               max_attendees, registration_fee
         FROM events
         WHERE status != 'cancelled'
         ORDER BY

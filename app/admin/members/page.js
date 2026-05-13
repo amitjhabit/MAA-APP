@@ -18,8 +18,9 @@ function useToast() {
 function Toast({ toasts }) {
   return <div className="toast-wrap">{toasts.map(t => <div key={t.id} className={`toast toast-${t.type}`}>{t.msg}</div>)}</div>;
 }
-function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}); }
-function calcAge(dob) { if (!dob) return null; return Math.floor((Date.now()-new Date(dob))/(1000*60*60*24*365.25)); }
+function localDate(val) { if (!val) return new Date(NaN); if (val instanceof Date) return new Date(val.getUTCFullYear(), val.getUTCMonth(), val.getUTCDate()); const m = String(val).match(/(\d{4})-(\d{2})-(\d{2})/); if (!m) return new Date(NaN); return new Date(+m[1], +m[2]-1, +m[3]); }
+function fmtDate(d) { if (!d) return '—'; const dt = localDate(d); return isNaN(dt) ? '—' : dt.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}); }
+function calcAge(dob) { if (!dob) return null; return Math.floor((Date.now()-localDate(dob))/(1000*60*60*24*365.25)); }
 
 const TYPE_LABELS = { individual:'Individual', student:'Student', honorary:'Honorary', corporate:'Corporate' };
 const PLAN_LABELS = { annual:'Annual', lifetime:'Lifetime' };
@@ -323,7 +324,7 @@ function Toggle({ active, onChange }) {
    DETAIL PANEL
 ══════════════════════════════════════ */
 function DetailPanel({ m, onClose, onEdit, onDelete }) {
-  const expired=m.expiry_date&&new Date(m.expiry_date)<new Date();
+  const expired=m.expiry_date&&localDate(m.expiry_date)<new Date();
   const age=calcAge(m.date_of_birth);
   const R=({icon,label,value,danger})=>{
     if(!value&&value!==0)return null;
@@ -666,7 +667,7 @@ export default function AdminMembersPage() {
                     </div>
                     <div style={{fontSize:'.75rem',color:'var(--ink-dim)',display:'flex',gap:'1rem'}}>
                       <span>Joined: <b style={{color:'var(--ink)'}}>{fmtDate(m.joined_date)}</b></span>
-                      {m.expiry_date&&<span>Exp: <b style={{color:new Date(m.expiry_date)<new Date()?'var(--crimson)':'var(--ink)'}}>{fmtDate(m.expiry_date)}</b></span>}
+                      {m.expiry_date&&<span>Exp: <b style={{color:localDate(m.expiry_date)<new Date()?'var(--crimson)':'var(--ink)'}}>{fmtDate(m.expiry_date)}</b></span>}
                     </div>
                     {m.amount_paid>0&&<div style={{fontSize:'.75rem',color:'var(--forest)'}}>💰 ${parseFloat(m.amount_paid).toFixed(2)}{m.payment_method?` via ${m.payment_method}`:''}</div>}
                     <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'.4rem',borderTop:'1px solid var(--border)',paddingTop:'.75rem'}}>

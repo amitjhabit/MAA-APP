@@ -98,7 +98,7 @@ function Footer() {
 const CAT_BADGE = { cultural:{bg:'var(--saffron-light)',color:'var(--saffron-dark)'}, religious:{bg:'var(--crimson-light)',color:'var(--crimson)'}, social:{bg:'var(--forest-light)',color:'var(--forest)'}, educational:{bg:'#E3F2FD',color:'#0D47A1'}, fundraiser:{bg:'var(--gold-light)',color:'var(--gold)'}, other:{bg:'var(--paper-3)',color:'var(--ink-soft)'} };
 const STA_BADGE = { upcoming:{bg:'#E3F2FD',color:'#0D47A1'}, ongoing:{bg:'var(--forest-light)',color:'var(--forest)'}, completed:{bg:'var(--paper-3)',color:'var(--ink-soft)'} };
 
-export default function HomeClient({ events: initialEvents, news: initialNews, stats: initialStats }) {
+export default function HomeClient({ events: initialEvents, news: initialNews, stats }) {
   const [events,      setEvents]      = useState(initialEvents  || []);
   const [news,        setNews]        = useState(initialNews    || []);
   const [showInquiry, setShowInquiry] = useState(false);

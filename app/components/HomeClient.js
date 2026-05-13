@@ -1,6 +1,6 @@
 'use client';
 // app/components/HomeClient.js — interactive homepage shell
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 
 // Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
@@ -98,8 +98,18 @@ function Footer() {
 const CAT_BADGE = { cultural:{bg:'var(--saffron-light)',color:'var(--saffron-dark)'}, religious:{bg:'var(--crimson-light)',color:'var(--crimson)'}, social:{bg:'var(--forest-light)',color:'var(--forest)'}, educational:{bg:'#E3F2FD',color:'#0D47A1'}, fundraiser:{bg:'var(--gold-light)',color:'var(--gold)'}, other:{bg:'var(--paper-3)',color:'var(--ink-soft)'} };
 const STA_BADGE = { upcoming:{bg:'#E3F2FD',color:'#0D47A1'}, ongoing:{bg:'var(--forest-light)',color:'var(--forest)'}, completed:{bg:'var(--paper-3)',color:'var(--ink-soft)'} };
 
-export default function HomeClient({ events, news, stats }) {
+export default function HomeClient({ events: initialEvents, news: initialNews, stats: initialStats }) {
+  const [events,      setEvents]      = useState(initialEvents  || []);
+  const [news,        setNews]        = useState(initialNews    || []);
   const [showInquiry, setShowInquiry] = useState(false);
+
+  // Always refetch from API on mount — bypasses Next.js router cache
+  useEffect(() => {
+    fetch('/api/public/events?limit=6', { cache: 'no-store' })
+      .then(r => r.json()).then(d => { if (d.success && d.data?.length) setEvents(d.data); }).catch(() => {});
+    fetch('/api/public/news?limit=3', { cache: 'no-store' })
+      .then(r => r.json()).then(d => { if (d.success && d.data?.length) setNews(d.data); }).catch(() => {});
+  }, []);
 
   return (
     <>

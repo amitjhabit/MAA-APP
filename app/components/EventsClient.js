@@ -1,6 +1,6 @@
 'use client';
 // app/components/EventsClient.js — handles filter UI for the events page
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 
 // Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
@@ -91,12 +91,21 @@ function EventCard({ event }) {
 }
 
 export default function EventsClient({ initialEvents }) {
-  const [filter, setFilter]       = useState('all');
+  const [events,    setEvents]    = useState(initialEvents || []);
+  const [filter,    setFilter]    = useState('all');
   const [catFilter, setCatFilter] = useState('all');
 
-  const filtered  = initialEvents.filter(e => (filter === 'all' || e.status === filter) && (catFilter === 'all' || e.category === catFilter));
-  const upcoming  = initialEvents.filter(e => e.status === 'upcoming').length;
-  const completed = initialEvents.filter(e => e.status === 'completed').length;
+  // Always refetch from API on mount — bypasses Next.js router cache
+  useEffect(() => {
+    fetch('/api/public/events?all=true&limit=100', { cache: 'no-store' })
+      .then(r => r.json())
+      .then(d => { if (d.success && d.data?.length) setEvents(d.data); })
+      .catch(() => {});
+  }, []);
+
+  const filtered  = events.filter(e => (filter === 'all' || e.status === filter) && (catFilter === 'all' || e.category === catFilter));
+  const upcoming  = events.filter(e => e.status === 'upcoming').length;
+  const completed = events.filter(e => e.status === 'completed').length;
 
   return (
     <>
@@ -109,7 +118,7 @@ export default function EventsClient({ initialEvents }) {
           <h1>MAA <em>Events</em></h1>
           <p className="hero-sub">Celebrating culture, community, and heritage through events across America.</p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {[{ num: upcoming, label: 'Upcoming' }, { num: initialEvents.length, label: 'Total' }, { num: completed, label: 'Completed' }].map(s => (
+            {[{ num: upcoming, label: 'Upcoming' }, { num: events.length, label: 'Total' }, { num: completed, label: 'Completed' }].map(s => (
               <div key={s.label} style={{ textAlign: 'center', color: '#fff' }}>
                 <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--gold)' }}>{s.num}</div>
                 <div style={{ fontSize: '.72rem', opacity: .8 }}>{s.label}</div>

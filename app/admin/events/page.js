@@ -327,7 +327,16 @@ function EventModal({ event, secret, onClose, onSave }) {
           <div className="form-group"><label>Contact Email</label><input type="email" value={form.contact_email} onChange={set('contact_email')} placeholder="contributemaa@maithilusa.org" /></div>
           <div className="form-group"><label>Max Attendees</label><input type="number" value={form.max_attendees} onChange={set('max_attendees')} placeholder="200" /></div>
           <div className="form-group"><label>Registration Fee ($)</label><input type="number" value={form.registration_fee} onChange={set('registration_fee')} placeholder="0" min="0" step="0.01" /></div>
-          <div className="form-group span-2"><label>Cover Image URL</label><input type="url" value={form.cover_image} onChange={set('cover_image')} placeholder="https://…" /></div>
+          <div className="form-group span-2">
+            <label>Cover Image URL or Path</label>
+            <input type="text" value={form.cover_image} onChange={set('cover_image')} placeholder="/images/gallery/Graduate.JPG  or  https://…" />
+            {form.cover_image && (
+              <div style={{ marginTop: '.5rem', borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--border)', maxHeight: 180 }}>
+                <img src={form.cover_image} alt="Preview" style={{ width: '100%', objectFit: 'cover', maxHeight: 180, display: 'block' }}
+                  onError={e => { e.currentTarget.style.display='none'; e.currentTarget.insertAdjacentHTML('afterend','<div style="padding:.5rem;font-size:.75rem;color:var(--crimson)">⚠ Image not found at this path</div>'); }} />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Is Public toggle */}

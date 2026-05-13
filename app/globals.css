@@ -65,6 +65,7 @@ html{font-size:16px;} body{font-family:var(--sans);background:var(--paper);color
 /* Cards */
 .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem;box-shadow:var(--shadow);transition:var(--trans);}
 .card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);border-color:var(--border-hi);}
+.card-static:hover{transform:none;box-shadow:var(--shadow);border-color:var(--border);cursor:default;}
 .card-saffron{border-top:3px solid var(--saffron);}.card-gold{border-top:3px solid var(--gold);}
 .event-card-date{background:var(--saffron);color:#fff;border-radius:var(--radius);padding:.5rem .75rem;text-align:center;font-weight:700;min-width:52px;}
 .event-card-date .day{font-size:1.4rem;line-height:1;}.event-card-date .mon{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;opacity:.9;}

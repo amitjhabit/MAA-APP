@@ -46,7 +46,7 @@ function EventCard({ event }) {
   const isPast = event.status === 'completed' || event.status === 'cancelled';
 
   return (
-    <div className="card" style={{ opacity: isPast ? .75 : 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
+    <div className="card card-static" style={{ opacity: isPast ? .75 : 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
 
       {/* Cover image — natural width, max height */}
       {event.cover_image && (

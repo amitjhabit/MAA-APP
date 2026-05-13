@@ -161,7 +161,7 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
               const cat = CAT_BADGE[ev.category] || CAT_BADGE.other;
               const sta = STA_BADGE[ev.status]   || STA_BADGE.upcoming;
               return (
-                <div key={ev.id} className="card card-saffron" style={{ opacity: ev.status === 'completed' ? .82 : 1, padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                <div key={ev.id} className="card card-saffron card-static" style={{ opacity: ev.status === 'completed' ? .82 : 1, padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                   {ev.cover_image && (
                     <img src={ev.cover_image} alt={ev.title} style={{ width: '100%', display: 'block', objectFit: 'cover', maxHeight: 260 }}
                       onError={e => { e.currentTarget.style.display='none'; }} />

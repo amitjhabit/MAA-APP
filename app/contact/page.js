@@ -54,11 +54,6 @@ export default function ContactPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: '2rem' }}>
             {/* Contact info */}
             <div>
-              <div className="card card-saffron" style={{ marginBottom: '1rem' }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>📍</div>
-                <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem' }}>Headquarters</div>
-                <div className="text-sm text-muted">San Ramon, California (CA)</div>
-              </div>
               <div className="card" style={{ marginBottom: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>✉️</div>
                 <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem' }}>Email</div>

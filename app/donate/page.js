@@ -50,7 +50,7 @@ export default function DonatePage() {
             <p className="text-muted" style={{ marginBottom: '.5rem' }}>Your donation of <strong style={{ color: 'var(--saffron)' }}>${finalAmount}</strong> has been recorded.</p>
             <p className="text-muted" style={{ marginBottom: '2rem' }}>
               {method === 'zelle' && <>Please send <strong>${finalAmount}</strong> via Zelle to <strong style={{ color: 'var(--saffron)' }}>{process.env.NEXT_PUBLIC_ZELLE_EMAIL || 'contributemaa@maithilusa.org'}</strong></>}
-              {method === 'check' && <>Please mail a check for <strong>${finalAmount}</strong> to MAA Headquarters.</>}
+              {method === 'check' && <>Please mail a check for <strong>${finalAmount}</strong> payable to Maithil Association of America.</>}
             </p>
             <a href="/" className="btn btn-ghost">Back to Home</a>
           </div>

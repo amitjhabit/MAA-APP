@@ -3,6 +3,21 @@
 import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 
+// Render text with clickable URLs
+function LinkedText({ text }) {
+  if (!text) return null;
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+  return (
+    <>
+      {parts.map((part, i) =>
+        /^https?:\/\//.test(part)
+          ? <a key={i} href={part} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)', wordBreak: 'break-all' }}>{part}</a>
+          : part
+      )}
+    </>
+  );
+}
+
 // Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
 function localDate(val) {
   if (!val) return new Date(NaN);
@@ -172,7 +187,7 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
                       <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{ev.title}</div>
                       {ev.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.3rem' }}>{ev.title_maithili}</div>}
                       <div className="text-sm text-muted">{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
-                      {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem', whiteSpace: 'pre-wrap' }}>{ev.description}</div>}
+                      {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem', whiteSpace: 'pre-wrap' }}><LinkedText text={ev.description} /></div>}
                       {ev.status === 'upcoming' && (
                         <div style={{ marginTop: '.65rem', display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
                           {ev.meeting_link && <a href={ev.meeting_link} target="_blank" rel="noreferrer" className="btn btn-primary btn-sm">Join Online →</a>}

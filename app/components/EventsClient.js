@@ -23,6 +23,21 @@ function Footer() {
   );
 }
 
+// Render text with clickable URLs
+function LinkedText({ text }) {
+  if (!text) return null;
+  const parts = text.split(/(https?:\/\/[^\s]+)/g);
+  return (
+    <>
+      {parts.map((part, i) =>
+        /^https?:\/\//.test(part)
+          ? <a key={i} href={part} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)', wordBreak: 'break-all' }}>{part}</a>
+          : part
+      )}
+    </>
+  );
+}
+
 const CATEGORY_COLORS = {
   cultural:    { bg: 'var(--saffron-light)', color: 'var(--saffron-dark)' },
   religious:   { bg: 'var(--crimson-light)', color: 'var(--crimson)' },
@@ -78,9 +93,11 @@ function EventCard({ event }) {
           {event.title_maithili && <div className="maithili" style={{ fontSize: '.78rem' }}>{event.title_maithili}</div>}
         </div>
 
-        {/* Full description */}
+        {/* Full description with clickable links */}
         {event.description && (
-          <p className="text-sm text-muted" style={{ lineHeight: 1.6, fontSize: '.78rem', whiteSpace: 'pre-wrap' }}>{event.description}</p>
+          <p className="text-sm text-muted" style={{ lineHeight: 1.6, fontSize: '.78rem', whiteSpace: 'pre-wrap' }}>
+            <LinkedText text={event.description} />
+          </p>
         )}
 
         {/* Details */}
@@ -152,7 +169,7 @@ export default function EventsClient({ initialEvents }) {
         </div>
       </section>
 
-      <div className="shell">
+      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '1.75rem 1.5rem 2.5rem' }}>
         {/* Filters */}
         <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', marginBottom: '1.25rem', alignItems: 'center', justifyContent: 'space-between' }}>
           <div className="filter-bar" style={{ marginBottom: 0 }}>
@@ -173,7 +190,7 @@ export default function EventsClient({ initialEvents }) {
         {filtered.length === 0 ? (
           <div className="empty-state"><div className="icon">📅</div><p>No events found.</p></div>
         ) : (
-          <div className="grid-2">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: '1.25rem' }}>
             {filtered.map(e => <EventCard key={e.id} event={e} />)}
           </div>
         )}

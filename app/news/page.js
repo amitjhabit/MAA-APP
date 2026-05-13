@@ -3,6 +3,14 @@
 import { useState, useEffect } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 
+function localDate(val) {
+  if (!val) return new Date(NaN);
+  if (val instanceof Date) return new Date(val.getUTCFullYear(), val.getUTCMonth(), val.getUTCDate());
+  const m = String(val).match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return new Date(NaN);
+  return new Date(+m[1], +m[2] - 1, +m[3]);
+}
+
 function Footer() {
   return (
     <footer className="pub-footer">
@@ -30,7 +38,7 @@ function NewsCard({ post, featured }) {
       )}
       <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
         <span className="badge" style={{ background: cat.bg, color: cat.color }}>{post.category}</span>
-        <span className="text-xs text-muted">{new Date(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        <span className="text-xs text-muted">{localDate(post.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
       </div>
       <div>
         <div style={{ fontFamily: 'var(--serif)', fontWeight: 700, fontSize: featured ? '1.2rem' : '1.05rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.3rem' }}>{post.title}</div>

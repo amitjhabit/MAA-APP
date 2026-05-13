@@ -200,7 +200,7 @@ export default function HomeClient({ events, news, stats }) {
                   <div className="text-sm text-muted" style={{ lineHeight: 1.6, flex: 1 }}>{(n.excerpt||n.content||'').slice(0,130)}{(n.excerpt||n.content||'').length>130?'…':''}</div>
                   <div className="text-xs text-muted" style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '.5rem' }}>
                     <span>{n.author||'MAA Team'}</span>
-                    <span>{n.published_at?new Date(n.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):''}</span>
+                    <span>{n.published_at?localDate(n.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):''}</span>
                   </div>
                 </div>
               );

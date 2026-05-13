@@ -6,7 +6,7 @@ import PublicNav from '@/app/components/PublicNav';
 // Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
 function localDate(val) {
   if (!val) return new Date(NaN);
-  if (val instanceof Date) return new Date(val.getFullYear(), val.getMonth(), val.getDate());
+  if (val instanceof Date) return new Date(val.getUTCFullYear(), val.getUTCMonth(), val.getUTCDate());
   const m = String(val).match(/(\d{4})-(\d{2})-(\d{2})/);
   if (!m) return new Date(NaN);
   return new Date(+m[1], +m[2] - 1, +m[3]);

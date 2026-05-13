@@ -160,13 +160,15 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
               const d   = localDate(ev.event_date);
               const cat = CAT_BADGE[ev.category] || CAT_BADGE.other;
               const sta = STA_BADGE[ev.status]   || STA_BADGE.upcoming;
+              const evLink = ev.meeting_link || (ev.status === 'upcoming' ? `/contact?event=${ev.id}` : null);
+              const CardEl = evLink ? 'a' : 'div';
               return (
-                <div key={ev.id} className="card card-saffron" style={{ opacity: ev.status === 'completed' ? .82 : 1, padding: 0, overflow: 'hidden' }}>
+                <CardEl key={ev.id} href={evLink || undefined} target={ev.meeting_link ? '_blank' : undefined} rel={ev.meeting_link ? 'noreferrer' : undefined}
+                  className="card card-saffron"
+                  style={{ opacity: ev.status === 'completed' ? .82 : 1, padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', textDecoration: 'none', color: 'inherit', cursor: evLink ? 'pointer' : 'default' }}>
                   {ev.cover_image && (
-                    <div style={{ width: '100%', height: 160, overflow: 'hidden' }}>
-                      <img src={ev.cover_image} alt={ev.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                        onError={e => { e.currentTarget.style.display='none'; e.currentTarget.parentElement.style.display='none'; }} />
-                    </div>
+                    <img src={ev.cover_image} alt={ev.title} style={{ width: '100%', display: 'block', objectFit: 'cover', maxHeight: 260 }}
+                      onError={e => { e.currentTarget.style.display='none'; }} />
                   )}
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', padding: '1rem' }}>
                     <div style={{ background: ev.status === 'completed' ? 'var(--ink-soft)' : 'var(--saffron)', color: '#fff', borderRadius: 'var(--radius)', padding: '.5rem .75rem', textAlign: 'center', minWidth: 54, flexShrink: 0 }}>
@@ -182,13 +184,15 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
                       <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{ev.title}</div>
                       {ev.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.3rem' }}>{ev.title_maithili}</div>}
                       <div className="text-sm text-muted">{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
-                      {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem' }}>{ev.description.slice(0,100)}{ev.description.length>100?'…':''}</div>}
-                      {ev.status === 'upcoming' && (
-                        <button onClick={() => setShowInquiry(true)} className="btn btn-primary btn-sm" style={{ marginTop: '.65rem' }}>RSVP / Inquire →</button>
+                      {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem', whiteSpace: 'pre-wrap' }}>{ev.description}</div>}
+                      {evLink && (
+                        <span className="btn btn-primary btn-sm" style={{ marginTop: '.65rem', display: 'inline-flex' }}>
+                          {ev.meeting_link ? 'Join Online →' : 'RSVP / Register →'}
+                        </span>
                       )}
                     </div>
                   </div>
-                </div>
+                </CardEl>
               );
             })}
           </div>

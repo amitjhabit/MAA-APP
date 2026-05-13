@@ -38,7 +38,7 @@ export default function GalleryPage() {
 
   // Fetch all photos from the database on mount
   useEffect(() => {
-    fetch('/api/public/gallery?limit=200')
+    fetch('/api/public/gallery?limit=200', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {
         if (d.success) {

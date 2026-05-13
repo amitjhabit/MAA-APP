@@ -1,10 +1,13 @@
 // app/page.js — server component: fetches data at request time, no client spinner
 import { getDb, ensureInit } from '@/lib/db';
 import HomeClient from '@/app/components/HomeClient';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function HomePage() {
+  noStore();
   let events = [], news = [], stats = { members: 0, events: 0 };
   try {
     await ensureInit();

@@ -1,10 +1,13 @@
 // app/events/page.js — server component: data pre-fetched for instant mobile render
 import { getDb, ensureInit } from '@/lib/db';
 import EventsClient from '@/app/components/EventsClient';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default async function EventsPage() {
+  noStore();
   let events = [];
   try {
     await ensureInit();

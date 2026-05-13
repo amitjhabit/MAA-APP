@@ -11,15 +11,14 @@ export async function GET(request) {
     const limit    = parseInt(searchParams.get('limit') || '50');
     const category = searchParams.get('category');
 
-    let photos;
-    if (category) {
-      photos = await sql`SELECT * FROM gallery WHERE category = ${category} ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`;
-    } else {
-      photos = await sql`SELECT * FROM gallery ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`;
-    }
-    return NextResponse.json({ success: true, data: photos });
-  } catch (e) {
+    const photos = category
+      ? await sql`SELECT * FROM gallery WHERE category = ${category} ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`
+      : await sql`SELECT * FROM gallery ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`;
+
+    const res = NextResponse.json({ success: true, data: photos });
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
+  } catch {
     return NextResponse.json({ success: true, data: [] });
   }
 }
-

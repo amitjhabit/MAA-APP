@@ -60,7 +60,7 @@ export default function NewsPage() {
   const [search, setSearch]     = useState('');
 
   useEffect(() => {
-    fetch('/api/public/news?limit=50')
+    fetch('/api/public/news?limit=50', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => { if (d.success) setPosts(d.data); })
       .finally(() => setLoading(false));

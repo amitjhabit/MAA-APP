@@ -51,7 +51,9 @@ export async function GET() {
       core_values: rows.filter(r => r.type === 'core_value'),
       activities:  rows.filter(r => r.type === 'activity'),
     };
-    return NextResponse.json({ success: true, data: grouped });
+    const res = NextResponse.json({ success: true, data: grouped });
+    res.headers.set('Cache-Control', 'no-store');
+    return res;
   } catch (e) {
     return NextResponse.json({ success: false, data: null, error: e.message });
   }

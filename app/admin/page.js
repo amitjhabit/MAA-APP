@@ -57,7 +57,7 @@ export default function AdminDashboard() {
     <div className="login-wrap">
       <div className="login-card">
         <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
-          <div style={{ width: 64, height: 64, borderRadius: '50%', background: 'var(--saffron)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem', fontWeight: 800, margin: '0 auto .75rem', fontFamily: 'var(--serif)', border: '3px solid var(--gold)' }}>MAA</div>
+          <img src="/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', margin: '0 auto .75rem', border: '3px solid var(--gold)', display: 'block' }} />
         </div>
         <h2>MAA Admin</h2>
         <p>Maithil Association of America — CRM Dashboard</p>
@@ -97,7 +97,7 @@ export default function AdminDashboard() {
       {/* Top bar */}
       <div style={{ background: 'var(--navy)', borderBottom: '3px solid var(--saffron)', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '.85rem' }}>
-          <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'var(--saffron)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.9rem', fontWeight: 800, fontFamily: 'var(--serif)', border: '2px solid var(--gold)' }}>MAA</div>
+          <img src="/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold)', flexShrink: 0 }} />
           <div>
             <div style={{ color: '#fff', fontFamily: 'var(--serif)', fontSize: '1.15rem', fontWeight: 700 }}>MAA Admin Dashboard</div>
             <div style={{ color: 'var(--gold)', fontSize: '.75rem' }}>मैथिल एसोसिएशन ऑफ अमेरिका</div>

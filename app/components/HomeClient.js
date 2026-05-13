@@ -1,6 +1,6 @@
 'use client';
 // app/components/HomeClient.js — interactive homepage shell
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 
 // Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
@@ -102,14 +102,6 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
   const [events,      setEvents]      = useState(initialEvents  || []);
   const [news,        setNews]        = useState(initialNews    || []);
   const [showInquiry, setShowInquiry] = useState(false);
-
-  // Always refetch from API on mount — bypasses Next.js router cache
-  useEffect(() => {
-    fetch('/api/public/events?limit=6', { cache: 'no-store' })
-      .then(r => r.json()).then(d => { if (d.success && d.data?.length) setEvents(d.data); }).catch(() => {});
-    fetch('/api/public/news?limit=3', { cache: 'no-store' })
-      .then(r => r.json()).then(d => { if (d.success && d.data?.length) setNews(d.data); }).catch(() => {});
-  }, []);
 
   return (
     <>

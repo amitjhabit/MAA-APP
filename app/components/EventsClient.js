@@ -1,6 +1,6 @@
 'use client';
 // app/components/EventsClient.js — handles filter UI for the events page
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 
 // Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
@@ -135,14 +135,6 @@ export default function EventsClient({ initialEvents }) {
   const [events,    setEvents]    = useState(initialEvents || []);
   const [filter,    setFilter]    = useState('all');
   const [catFilter, setCatFilter] = useState('all');
-
-  // Always refetch from API on mount — bypasses Next.js router cache
-  useEffect(() => {
-    fetch('/api/public/events?all=true&limit=100', { cache: 'no-store' })
-      .then(r => r.json())
-      .then(d => { if (d.success && d.data?.length) setEvents(d.data); })
-      .catch(() => {});
-  }, []);
 
   const filtered  = events.filter(e => (filter === 'all' || e.status === filter) && (catFilter === 'all' || e.category === catFilter));
   const upcoming  = events.filter(e => e.status === 'upcoming').length;

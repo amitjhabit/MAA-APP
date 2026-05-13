@@ -1,8 +1,10 @@
 // app/about/page.js — Server Component (reads DB directly, no client-side fetch)
 import PublicNav from '@/app/components/PublicNav';
 import { getDb, ensureInit } from '@/lib/db';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 function Footer() {
   return (
@@ -31,6 +33,7 @@ function Footer() {
 }
 
 export default async function AboutPage() {
+  noStore();
   await ensureInit();
   const sql = getDb();
 
@@ -38,8 +41,9 @@ export default async function AboutPage() {
   const [contentRows, committeeRows] = await Promise.all([
     sql`SELECT * FROM about_content WHERE is_active = TRUE ORDER BY type, sort_order ASC, created_at ASC`,
     sql`
-      SELECT id, name, role, committee, bio, photo_url, sort_order,
-             term_start, term_end, is_current,
+      SELECT id, name, role, committee, bio,
+             NULLIF(TRIM(COALESCE(photo_url, '')), '') AS photo_url,
+             sort_order, term_start, term_end, is_current,
              NULLIF(TRIM(COALESCE(email, '')), '') AS email,
              NULLIF(TRIM(COALESCE(phone, '')), '') AS phone
       FROM committee_members

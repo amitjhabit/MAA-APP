@@ -161,24 +161,32 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
               const cat = CAT_BADGE[ev.category] || CAT_BADGE.other;
               const sta = STA_BADGE[ev.status]   || STA_BADGE.upcoming;
               return (
-                <div key={ev.id} className="card card-saffron" style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', opacity: ev.status === 'completed' ? .82 : 1 }}>
-                  <div style={{ background: ev.status === 'completed' ? 'var(--ink-soft)' : 'var(--saffron)', color: '#fff', borderRadius: 'var(--radius)', padding: '.5rem .75rem', textAlign: 'center', minWidth: 54, flexShrink: 0 }}>
-                    <div style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1 }}>{d.getDate()}</div>
-                    <div style={{ fontSize: '.7rem', textTransform: 'uppercase', letterSpacing: '.07em', opacity: .9 }}>{d.toLocaleString('default',{month:'short'})}</div>
-                    <div style={{ fontSize: '.65rem', opacity: .8 }}>{d.getFullYear()}</div>
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap', marginBottom: '.35rem' }}>
-                      <span className="badge" style={{ background: cat.bg, color: cat.color }}>{ev.category}</span>
-                      <span className="badge" style={{ background: sta.bg, color: sta.color }}>{ev.status}</span>
+                <div key={ev.id} className="card card-saffron" style={{ opacity: ev.status === 'completed' ? .82 : 1, padding: 0, overflow: 'hidden' }}>
+                  {ev.cover_image && (
+                    <div style={{ width: '100%', height: 160, overflow: 'hidden' }}>
+                      <img src={ev.cover_image} alt={ev.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        onError={e => { e.currentTarget.style.display='none'; e.currentTarget.parentElement.style.display='none'; }} />
                     </div>
-                    <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{ev.title}</div>
-                    {ev.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.3rem' }}>{ev.title_maithili}</div>}
-                    <div className="text-sm text-muted">{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
-                    {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem' }}>{ev.description.slice(0,100)}{ev.description.length>100?'…':''}</div>}
-                    {ev.status === 'upcoming' && (
-                      <button onClick={() => setShowInquiry(true)} className="btn btn-primary btn-sm" style={{ marginTop: '.65rem' }}>RSVP / Inquire →</button>
-                    )}
+                  )}
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start', padding: '1rem' }}>
+                    <div style={{ background: ev.status === 'completed' ? 'var(--ink-soft)' : 'var(--saffron)', color: '#fff', borderRadius: 'var(--radius)', padding: '.5rem .75rem', textAlign: 'center', minWidth: 54, flexShrink: 0 }}>
+                      <div style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1 }}>{d.getDate()}</div>
+                      <div style={{ fontSize: '.7rem', textTransform: 'uppercase', letterSpacing: '.07em', opacity: .9 }}>{d.toLocaleString('default',{month:'short'})}</div>
+                      <div style={{ fontSize: '.65rem', opacity: .8 }}>{d.getFullYear()}</div>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', gap: '.35rem', flexWrap: 'wrap', marginBottom: '.35rem' }}>
+                        <span className="badge" style={{ background: cat.bg, color: cat.color }}>{ev.category}</span>
+                        <span className="badge" style={{ background: sta.bg, color: sta.color }}>{ev.status}</span>
+                      </div>
+                      <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{ev.title}</div>
+                      {ev.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.3rem' }}>{ev.title_maithili}</div>}
+                      <div className="text-sm text-muted">{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
+                      {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem' }}>{ev.description.slice(0,100)}{ev.description.length>100?'…':''}</div>}
+                      {ev.status === 'upcoming' && (
+                        <button onClick={() => setShowInquiry(true)} className="btn btn-primary btn-sm" style={{ marginTop: '.65rem' }}>RSVP / Inquire →</button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

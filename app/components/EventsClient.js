@@ -45,18 +45,32 @@ function EventCard({ event }) {
   const sta = STATUS_COLORS[event.status] || STATUS_COLORS.upcoming;
   const isPast = event.status === 'completed' || event.status === 'cancelled';
   return (
-    <div className="card" style={{ opacity: isPast ? .75 : 1, display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div className="event-card-date" style={{ background: isPast ? 'var(--ink-soft)' : 'var(--saffron)' }}>
-          <div className="day">{d.getDate()}</div>
-          <div className="mon">{d.toLocaleString('default', { month: 'short' })}</div>
-          <div style={{ fontSize: '.6rem', opacity: .85 }}>{d.getFullYear()}</div>
+    <div className="card" style={{ opacity: isPast ? .75 : 1, display: 'flex', flexDirection: 'column', gap: '.5rem', padding: 0, overflow: 'hidden' }}>
+
+      {/* Cover image */}
+      {event.cover_image && (
+        <div style={{ width: '100%', height: 180, overflow: 'hidden', flexShrink: 0 }}>
+          <img
+            src={event.cover_image}
+            alt={event.title}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            onError={e => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement.style.display = 'none'; }}
+          />
         </div>
-        <div style={{ display: 'flex', gap: '.3rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-          <span className="badge" style={{ background: cat.bg, color: cat.color }}>{event.category}</span>
-          <span className="badge" style={{ background: sta.bg, color: sta.color }}>{event.status}</span>
+      )}
+
+      <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '.5rem', flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <div className="event-card-date" style={{ background: isPast ? 'var(--ink-soft)' : 'var(--saffron)' }}>
+            <div className="day">{d.getDate()}</div>
+            <div className="mon">{d.toLocaleString('default', { month: 'short' })}</div>
+            <div style={{ fontSize: '.6rem', opacity: .85 }}>{d.getFullYear()}</div>
+          </div>
+          <div style={{ display: 'flex', gap: '.3rem', flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+            <span className="badge" style={{ background: cat.bg, color: cat.color }}>{event.category}</span>
+            <span className="badge" style={{ background: sta.bg, color: sta.color }}>{event.status}</span>
+          </div>
         </div>
-      </div>
 
       <div>
         <div style={{ fontFamily: 'var(--serif)', fontWeight: 700, fontSize: '.95rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.15rem' }}>{event.title}</div>
@@ -86,6 +100,7 @@ function EventCard({ event }) {
       {event.contact_email && (
         <div className="text-xs text-muted" style={{ fontSize: '.72rem' }}>Questions? <a href={`mailto:${event.contact_email}`} style={{ color: 'var(--saffron)' }}>{event.contact_email}</a></div>
       )}
+      </div>{/* end inner padding wrapper */}
     </div>
   );
 }

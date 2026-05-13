@@ -45,24 +45,10 @@ function EventCard({ event }) {
   const sta = STATUS_COLORS[event.status] || STATUS_COLORS.upcoming;
   const isPast = event.status === 'completed' || event.status === 'cancelled';
 
-  // Determine the best link for this event
-  const eventLink = event.meeting_link || (event.status === 'upcoming' ? `/contact?event=${event.id}` : null);
+  return (
+    <div className="card" style={{ opacity: isPast ? .75 : 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
 
-  const cardStyle = {
-    opacity: isPast ? .75 : 1,
-    display: 'flex',
-    flexDirection: 'column',
-    padding: 0,
-    overflow: 'hidden',
-    textDecoration: 'none',
-    color: 'inherit',
-    cursor: eventLink ? 'pointer' : 'default',
-    transition: 'var(--trans)',
-  };
-
-  const inner = (
-    <>
-      {/* Cover image — natural size, no fixed height */}
+      {/* Cover image — natural width, max height */}
       {event.cover_image && (
         <img
           src={event.cover_image}
@@ -92,7 +78,7 @@ function EventCard({ event }) {
           {event.title_maithili && <div className="maithili" style={{ fontSize: '.78rem' }}>{event.title_maithili}</div>}
         </div>
 
-        {/* Full description — no truncation */}
+        {/* Full description */}
         {event.description && (
           <p className="text-sm text-muted" style={{ lineHeight: 1.6, fontSize: '.78rem', whiteSpace: 'pre-wrap' }}>{event.description}</p>
         )}
@@ -101,7 +87,7 @@ function EventCard({ event }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '.2rem' }}>
           {event.event_time && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>🕐 {event.event_time}{event.end_date ? ` — ${localDate(event.end_date).toLocaleDateString()}` : ''}</div>}
           {event.is_online
-            ? <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>💻 Online{event.meeting_link ? <> · <span style={{ color: 'var(--saffron)' }}>Click to join →</span></> : ''}</div>
+            ? <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>💻 Online{event.meeting_link ? <> · <a href={event.meeting_link} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)' }}>Join →</a></> : ''}</div>
             : <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>📍 {[event.location, event.city, event.state].filter(Boolean).join(', ')}</div>
           }
           {event.organizer && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>👤 {event.organizer}</div>}
@@ -109,27 +95,23 @@ function EventCard({ event }) {
           {event.max_attendees && <div className="text-sm text-muted" style={{ fontSize: '.78rem' }}>👥 Max {event.max_attendees}</div>}
         </div>
 
-        {/* CTA */}
-        {eventLink && (
-          <div style={{ marginTop: '.5rem' }}>
-            <span className="btn btn-primary btn-sm" style={{ width: '100%', justifyContent: 'center', display: 'flex' }}>
-              {event.meeting_link ? 'Join Online →' : 'Register / RSVP →'}
-            </span>
+        {/* CTA buttons */}
+        {event.status === 'upcoming' && (
+          <div style={{ marginTop: '.5rem', display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+            {event.meeting_link && (
+              <a href={event.meeting_link} target="_blank" rel="noreferrer" className="btn btn-primary btn-sm">Join Online →</a>
+            )}
+            <a href={`/contact?event=${event.id}`} className="btn btn-primary btn-sm" style={{ flex: 1, justifyContent: 'center' }}>Register / RSVP →</a>
           </div>
         )}
         {event.contact_email && (
           <div className="text-xs text-muted" style={{ fontSize: '.72rem' }}>
-            Questions? <a href={`mailto:${event.contact_email}`} onClick={e => e.stopPropagation()} style={{ color: 'var(--saffron)' }}>{event.contact_email}</a>
+            Questions? <a href={`mailto:${event.contact_email}`} style={{ color: 'var(--saffron)' }}>{event.contact_email}</a>
           </div>
         )}
       </div>
-    </>
+    </div>
   );
-
-  // Wrap in <a> if there's a link; otherwise plain div
-  return eventLink
-    ? <a href={eventLink} target={event.meeting_link ? '_blank' : '_self'} rel="noreferrer" className="card" style={cardStyle}>{inner}</a>
-    : <div className="card" style={cardStyle}>{inner}</div>;
 }
 
 export default function EventsClient({ initialEvents }) {

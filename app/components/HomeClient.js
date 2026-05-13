@@ -160,12 +160,8 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
               const d   = localDate(ev.event_date);
               const cat = CAT_BADGE[ev.category] || CAT_BADGE.other;
               const sta = STA_BADGE[ev.status]   || STA_BADGE.upcoming;
-              const evLink = ev.meeting_link || (ev.status === 'upcoming' ? `/contact?event=${ev.id}` : null);
-              const CardEl = evLink ? 'a' : 'div';
               return (
-                <CardEl key={ev.id} href={evLink || undefined} target={ev.meeting_link ? '_blank' : undefined} rel={ev.meeting_link ? 'noreferrer' : undefined}
-                  className="card card-saffron"
-                  style={{ opacity: ev.status === 'completed' ? .82 : 1, padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', textDecoration: 'none', color: 'inherit', cursor: evLink ? 'pointer' : 'default' }}>
+                <div key={ev.id} className="card card-saffron" style={{ opacity: ev.status === 'completed' ? .82 : 1, padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                   {ev.cover_image && (
                     <img src={ev.cover_image} alt={ev.title} style={{ width: '100%', display: 'block', objectFit: 'cover', maxHeight: 260 }}
                       onError={e => { e.currentTarget.style.display='none'; }} />
@@ -185,14 +181,15 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
                       {ev.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.3rem' }}>{ev.title_maithili}</div>}
                       <div className="text-sm text-muted">{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
                       {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem', whiteSpace: 'pre-wrap' }}>{ev.description}</div>}
-                      {evLink && (
-                        <span className="btn btn-primary btn-sm" style={{ marginTop: '.65rem', display: 'inline-flex' }}>
-                          {ev.meeting_link ? 'Join Online →' : 'RSVP / Register →'}
-                        </span>
+                      {ev.status === 'upcoming' && (
+                        <div style={{ marginTop: '.65rem', display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
+                          {ev.meeting_link && <a href={ev.meeting_link} target="_blank" rel="noreferrer" className="btn btn-primary btn-sm">Join Online →</a>}
+                          <a href={`/contact?event=${ev.id}`} className="btn btn-primary btn-sm">RSVP / Register →</a>
+                        </div>
                       )}
                     </div>
                   </div>
-                </CardEl>
+                </div>
               );
             })}
           </div>

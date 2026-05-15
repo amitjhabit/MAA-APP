@@ -113,7 +113,7 @@ export default function AdminDashboard() {
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '2rem 1.5rem' }}>
         {/* Welcome */}
         <div style={{ marginBottom: '2rem' }}>
-          <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.6rem', color: 'var(--navy)', marginBottom: '.25rem' }}>Welcome to MAA CRM</h1>
+          <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.6rem', color: 'var(--navy)', marginBottom: '.25rem' }}>Welcome to MAA Admin</h1>
           <p style={{ color: 'var(--ink-dim)', fontSize: '.9rem' }}>All data is live from your Neon PostgreSQL database.</p>
         </div>
 

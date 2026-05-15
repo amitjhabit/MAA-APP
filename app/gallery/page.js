@@ -51,7 +51,7 @@ export default function GalleryPage() {
 
   // Load albums on mount
   useEffect(() => {
-    fetch('/api/public/gallery/albums')
+    fetch('/api/public/gallery/albums', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {
         if (d.success && d.data.length > 0) {
@@ -75,7 +75,7 @@ export default function GalleryPage() {
     setLightbox(null);
     setLoading(true);
     try {
-      const res = await fetch(`/api/public/gallery?album_id=${album.id}`);
+      const res = await fetch(`/api/public/gallery?album_id=${album.id}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success) setPhotos(data.data);
     } catch {}

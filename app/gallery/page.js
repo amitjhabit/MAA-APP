@@ -49,8 +49,9 @@ export default function GalleryPage() {
   const [loading, setLoading]         = useState(true);
   const [lightbox, setLightbox]       = useState(null);
 
-  // Load albums on mount
+  // Load albums on every visit
   useEffect(() => {
+    setLoading(true);
     fetch('/api/public/gallery/albums', { cache: 'no-store' })
       .then(r => r.json())
       .then(d => {

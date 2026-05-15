@@ -12,7 +12,7 @@ export async function GET() {
       FROM gallery_albums ga
       LEFT JOIN gallery g ON g.album_id = ga.id
       GROUP BY ga.id
-      ORDER BY ga.sort_order ASC, ga.id ASC
+      ORDER BY ga.sort_order ASC, ga.created_at ASC
     `;
     const res = NextResponse.json({ success: true, data: albums, total: albums.length });
     res.headers.set('Cache-Control', 'no-store');

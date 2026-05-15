@@ -1,5 +1,6 @@
 // app/api/gallery/albums/route.js
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { getDb, ensureInit } from '@/lib/db';
 function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
 
@@ -32,6 +33,7 @@ export async function POST(request) {
       VALUES (${b.name.trim()}, ${b.display_name.trim()}, ${b.description || null}, ${b.folder_path || null}, ${b.cover_image_url || null}, ${parseInt(b.sort_order) || 0})
       RETURNING *
     `;
+    revalidateTag('gallery-albums');
     return NextResponse.json({ success: true, data: album }, { status: 201 });
   } catch (e) {
     if (e.message?.includes('unique')) return NextResponse.json({ success: false, errors: { name: 'This slug is already taken' } }, { status: 400 });
@@ -60,6 +62,7 @@ export async function PATCH(request) {
         sort_order = ${b.sort_order !== undefined ? parseInt(b.sort_order) : ex.sort_order}
       WHERE id = ${id} RETURNING *
     `;
+    revalidateTag('gallery-albums');
     return NextResponse.json({ success: true, data: album });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }
@@ -74,6 +77,7 @@ export async function DELETE(request) {
     if (!id) return NextResponse.json({ success: false, message: 'id required' }, { status: 400 });
     const [d] = await sql`DELETE FROM gallery_albums WHERE id = ${id} RETURNING id, display_name`;
     if (!d) return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
+    revalidateTag('gallery-albums');
     return NextResponse.json({ success: true, message: `Album "${d.display_name}" deleted` });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }

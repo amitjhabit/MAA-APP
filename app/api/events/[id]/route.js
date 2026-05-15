@@ -1,5 +1,6 @@
 // app/api/events/[id]/route.js
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { getDb } from '@/lib/db';
 
 function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
@@ -46,6 +47,8 @@ export async function PATCH(req, { params }) {
         is_public        = ${b.is_public        !== undefined ? b.is_public        : ex.is_public}
       WHERE id = ${params.id} RETURNING *
     `;
+    revalidateTag('events');
+    revalidateTag('home');
     return NextResponse.json({ success: true, data: event });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }
@@ -56,6 +59,8 @@ export async function DELETE(req, { params }) {
     const sql = getDb();
     const [d] = await sql`DELETE FROM events WHERE id = ${params.id} RETURNING id, title`;
     if (!d) return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
+    revalidateTag('events');
+    revalidateTag('home');
     return NextResponse.json({ success: true, message: `"${d.title}" deleted` });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }

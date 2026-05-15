@@ -1,5 +1,6 @@
 // app/api/news/route.js
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { getDb, ensureInit } from '@/lib/db';
 function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
 
@@ -41,6 +42,8 @@ export async function POST(request) {
     const slug = b.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'') + '-' + Date.now();
     const published_at = b.status === 'published' ? (b.published_at || new Date().toISOString()) : null;
     const [p] = await sql`INSERT INTO news_posts (title,title_maithili,slug,excerpt,content,content_maithili,category,status,featured_image,author,published_at) VALUES (${b.title.trim()},${b.title_maithili||null},${slug},${b.excerpt||null},${b.content||null},${b.content_maithili||null},${b.category||'general'},${b.status||'draft'},${b.featured_image||null},${b.author||null},${published_at}) RETURNING *`;
+    revalidateTag('news');
+    revalidateTag('home');
     return NextResponse.json({ success: true, data: p }, { status: 201 });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }

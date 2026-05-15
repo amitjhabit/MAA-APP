@@ -1,6 +1,7 @@
 // app/api/events/route.js
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { getDb, ensureInit } from '@/lib/db';
 
 function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
@@ -87,6 +88,8 @@ export async function POST(request) {
         ${b.is_public !== undefined ? b.is_public : true}
       ) RETURNING *
     `;
+    revalidateTag('events');
+    revalidateTag('home');
     return NextResponse.json({ success: true, data: event }, { status: 201 });
   } catch (e) {
     return NextResponse.json({ success: false, message: e.message }, { status: 500 });

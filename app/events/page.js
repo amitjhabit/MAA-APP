@@ -1,18 +1,13 @@
-// app/events/page.js — server component: data pre-fetched for instant mobile render
+// app/events/page.js — server component with tagged cache; revalidates on event changes
+import { unstable_cache } from 'next/cache';
 import { getDb, ensureInit } from '@/lib/db';
 import EventsClient from '@/app/components/EventsClient';
-import { unstable_noStore as noStore } from 'next/cache';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-export default async function EventsPage() {
-  noStore();
-  let events = [];
-  try {
+const getEvents = unstable_cache(
+  async () => {
     await ensureInit();
     const sql = getDb();
-    events = await sql`
+    return await sql`
       SELECT * FROM events
       WHERE status != 'cancelled'
       ORDER BY
@@ -20,9 +15,17 @@ export default async function EventsPage() {
         event_date ASC
       LIMIT 50
     `;
+  },
+  ['events'],
+  { tags: ['events'] }
+);
+
+export default async function EventsPage() {
+  let events = [];
+  try {
+    events = await getEvents();
   } catch (e) {
     console.error('EventsPage data fetch:', e.message);
   }
-
   return <EventsClient initialEvents={events} />;
 }

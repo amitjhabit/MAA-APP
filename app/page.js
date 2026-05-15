@@ -1,15 +1,10 @@
-// app/page.js — server component: fetches data at request time, no client spinner
+// app/page.js — server component with tagged cache; revalidates on event/news/member changes
+import { unstable_cache } from 'next/cache';
 import { getDb, ensureInit } from '@/lib/db';
 import HomeClient from '@/app/components/HomeClient';
-import { unstable_noStore as noStore } from 'next/cache';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
-export default async function HomePage() {
-  noStore();
-  let events = [], news = [], stats = { members: 0, events: 0 };
-  try {
+const getHomeData = unstable_cache(
+  async () => {
     await ensureInit();
     const sql = getDb();
     const [evRows, newsRows, memberCount, eventCount] = await Promise.all([
@@ -35,12 +30,22 @@ export default async function HomePage() {
       sql`SELECT COUNT(*) AS c FROM members WHERE is_active = TRUE`,
       sql`SELECT COUNT(*) AS c FROM events`,
     ]);
-    events = evRows;
-    news   = newsRows;
-    stats  = { members: parseInt(memberCount[0]?.c || 0), events: parseInt(eventCount[0]?.c || 0) };
+    return {
+      events: evRows,
+      news:   newsRows,
+      stats:  { members: parseInt(memberCount[0]?.c || 0), events: parseInt(eventCount[0]?.c || 0) },
+    };
+  },
+  ['home'],
+  { tags: ['home'] }
+);
+
+export default async function HomePage() {
+  let events = [], news = [], stats = { members: 0, events: 0 };
+  try {
+    ({ events, news, stats } = await getHomeData());
   } catch (e) {
     console.error('HomePage data fetch:', e.message);
   }
-
   return <HomeClient events={events} news={news} stats={stats} />;
 }

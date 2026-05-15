@@ -1,6 +1,7 @@
 'use client';
 // app/admin/news/page.js
 import { useState, useCallback, useEffect } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 function localDate(val){if(!val)return new Date(NaN);if(val instanceof Date)return new Date(val.getUTCFullYear(),val.getUTCMonth(),val.getUTCDate());const m=String(val).match(/(\d{4})-(\d{2})-(\d{2})/);if(!m)return new Date(NaN);return new Date(+m[1],+m[2]-1,+m[3]);}
 function useToast(){const[t,setT]=useState([]);const show=useCallback((msg,type='success')=>{const id=Date.now();setT(p=>[...p,{id,msg,type}]);setTimeout(()=>setT(p=>p.filter(x=>x.id!==id)),3500);},[]);return{toasts:t,show};}
 function Toast({toasts}){return<div className="toast-wrap">{toasts.map(t=><div key={t.id} className={`toast toast-${t.type}`}>{t.msg}</div>)}</div>;}
@@ -36,27 +37,23 @@ function NewsModal({post,secret,onClose,onSave}){
 
 export default function NewsPage(){
   const{toasts,show}=useToast();
-  const[secret,setSecret]=useState('');const[authed,setAuthed]=useState(false);const[authErr,setAuthErr]=useState('');const[authBusy,setAuthBusy]=useState(false);
+  const { secret, logout } = useAdminAuth();
   const[posts,setPosts]=useState([]);const[stats,setStats]=useState({total:0,published:0,draft:0});
   const[loading,setLoading]=useState(false);const[search,setSearch]=useState('');const[filterStatus,setFilterStatus]=useState('all');
   const[showAdd,setShowAdd]=useState(false);const[editPost,setEditPost]=useState(null);
 
   const load=useCallback(async(opts={})=>{setLoading(true);try{const qs=new URLSearchParams({limit:'50',search:opts.search??search,status:opts.status??filterStatus});const res=await fetch(`/api/news?${qs}`,{headers:{'x-admin-secret':secret}});const data=await res.json();if(data.success){setPosts(data.data);setStats(data.stats);}else show(data.message,'error');}catch{show('Error','error');}setLoading(false);},[secret,search,filterStatus,show]);
-  useEffect(()=>{if(authed)load();},[authed,load]);
-  useEffect(()=>{if(!authed)return;const t=setTimeout(()=>load({search}),380);return()=>clearTimeout(t);},[search,authed]);
-
-  const handleLogin=async e=>{e.preventDefault();setAuthBusy(true);setAuthErr('');try{const r=await fetch('/api/news?limit=1',{headers:{'x-admin-secret':secret}});if(r.ok)setAuthed(true);else setAuthErr('Invalid password.');}catch{setAuthErr('Network error.');}setAuthBusy(false);};
+  useEffect(()=>{load();},[load]);
+  useEffect(()=>{const t=setTimeout(()=>load({search}),380);return()=>clearTimeout(t);},[search]);
   const handleDelete=async id=>{if(!confirm('Delete this post?'))return;try{const r=await fetch(`/api/news/${id}`,{method:'DELETE',headers:{'x-admin-secret':secret}});const d=await r.json();if(d.success){setPosts(p=>p.filter(x=>x.id!==id));show('Deleted');load();}else show(d.message,'error');}catch{}};
   const handleSave=(saved,isEdit)=>{if(isEdit)setPosts(p=>p.map(x=>x.id===saved.id?saved:x));else setPosts(p=>[saved,...p]);show(isEdit?'Updated!':'Created!');load();};
   const toggleStatus=async(post)=>{const ns=post.status==='published'?'draft':'published';try{const r=await fetch(`/api/news/${post.id}`,{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify({status:ns})});const d=await r.json();if(d.success){setPosts(p=>p.map(x=>x.id===post.id?d.data:x));show(ns==='published'?'Published!':'Moved to Draft');}}catch{}};
-
-  if(!authed)return(<div className="login-wrap"><div className="login-card"><div style={{fontSize:'2rem',marginBottom:'.5rem'}}>📰</div><h2>News & Posts</h2><p>MAA Admin — Content Management</p>{authErr&&<div style={{background:'var(--crimson-light)',borderRadius:'var(--radius)',padding:'.7rem',marginBottom:'1rem',color:'var(--crimson)',fontSize:'.82rem'}}>{authErr}</div>}<form onSubmit={handleLogin}><div className="form-group" style={{marginBottom:'1rem'}}><label>Admin Password</label><input type="password" value={secret} onChange={e=>setSecret(e.target.value)} autoFocus/></div><button type="submit" className="btn btn-primary w-full" disabled={authBusy}>{authBusy?'Verifying…':'Enter →'}</button></form><div style={{textAlign:'center',marginTop:'1rem'}}><a href="/admin" style={{color:'var(--saffron)',fontSize:'.85rem'}}>← Dashboard</a></div></div></div>);
 
   const SC={draft:{bg:'var(--gold-light)',color:'var(--gold)'},published:{bg:'var(--forest-light)',color:'var(--forest)'},archived:{bg:'var(--paper-3)',color:'var(--ink-soft)'}};
   return(<><div className="admin-layout"><Sidebar/>
     <div className="admin-main">
       <div className="admin-topbar"><div><div style={{fontFamily:'var(--serif)',fontSize:'1.2rem',color:'var(--navy)',fontWeight:600}}>News & Announcements</div><div className="text-sm text-muted">समाचार प्रबंधन · {stats.published} published · {stats.draft} drafts</div></div>
-        <div style={{display:'flex',gap:'.65rem'}}><button className="btn btn-primary btn-sm" onClick={()=>setShowAdd(true)}>+ New Post</button><button className="btn btn-ghost btn-sm" onClick={()=>{setAuthed(false);setSecret('');}}>Sign Out</button></div>
+        <div style={{display:'flex',gap:'.65rem'}}><button className="btn btn-primary btn-sm" onClick={()=>setShowAdd(true)}>+ New Post</button><button className="btn btn-ghost btn-sm" onClick={logout}>Sign Out</button></div>
       </div>
       <div className="admin-content">
         <div className="stats-grid">

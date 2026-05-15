@@ -2,6 +2,7 @@
 // app/admin/finance/page.js — MAA Finance Management
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 
 /* ══════════════════════════════════════ HELPERS ══════════════════════════════════════ */
 function useToast() {
@@ -26,7 +27,7 @@ function fmtDate(d) {
 }
 
 /* ══════════════════════════════════════ SIDEBAR ══════════════════════════════════════ */
-function Sidebar({ onSignOut }) {
+function Sidebar() {
   const NL = ({ href, icon, label, active }) => (
     <a href={href} className={`admin-nav-link${active ? ' active' : ''}`}>
       <span className="nav-icon">{icon}</span>{label}
@@ -61,30 +62,6 @@ function Sidebar({ onSignOut }) {
   );
 }
 
-/* ══════════════════════════════════════ AUTH ══════════════════════════════════════ */
-function useAuth() {
-  const [secret, setSecret] = useState('');
-  const [authed, setAuthed] = useState(false);
-  const [checking, setChecking] = useState(true);
-  const [input, setInput] = useState('');
-  const [err, setErr] = useState('');
-
-  useEffect(() => {
-    const s = sessionStorage.getItem('adminSecret') || '';
-    if (s) { setSecret(s); setAuthed(true); }
-    setChecking(false);
-  }, []);
-
-  const login = async () => {
-    const res = await fetch('/api/finance/categories', { headers: { 'x-admin-secret': input } });
-    if (res.ok) { sessionStorage.setItem('adminSecret', input); setSecret(input); setAuthed(true); setErr(''); }
-    else setErr('Invalid secret');
-  };
-
-  const signOut = () => { sessionStorage.removeItem('adminSecret'); setSecret(''); setAuthed(false); setInput(''); };
-
-  return { secret, authed, checking, input, setInput, err, login, signOut };
-}
 
 /* ══════════════════════════════════════ MODAL ══════════════════════════════════════ */
 function Modal({ title, onClose, children, wide }) {
@@ -1032,30 +1009,13 @@ const TABS = [
 ];
 
 export default function FinancePage() {
-  const { secret, authed, checking, input, setInput, err, login, signOut } = useAuth();
+  const { secret, logout } = useAdminAuth();
   const toast = useToast();
   const [tab, setTab] = useState('pl');
 
-  if (checking) return <div className="loading-spinner" style={{ margin: '6rem auto' }} />;
-
-  if (!authed) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--paper-2)' }}>
-        <div style={{ background: '#fff', padding: '2.5rem', borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,.12)', width: 340 }}>
-          <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.25rem' }}>MAA Finance</div>
-          <div style={{ color: 'var(--ink-soft)', fontSize: '.85rem', marginBottom: '1.5rem' }}>Enter admin secret to continue</div>
-          <input className="admin-input" type="password" placeholder="Admin secret" value={input} onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && login()} style={{ marginBottom: '.75rem' }} />
-          {err && <div style={{ color: 'var(--crimson)', fontSize: '.8rem', marginBottom: '.75rem' }}>{err}</div>}
-          <button className="btn btn-primary" style={{ width: '100%' }} onClick={login}>Sign In</button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="admin-layout">
-      <Sidebar onSignOut={signOut} />
+      <Sidebar />
       <main className="admin-main">
         <Toast toasts={toast.toasts} />
 
@@ -1065,7 +1025,7 @@ export default function FinancePage() {
             <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Finance Management</h1>
             <p style={{ color: 'var(--ink-soft)', fontSize: '.85rem', margin: '.2rem 0 0' }}>Transactions, budget, P&L, and receipts</p>
           </div>
-          <button className="btn btn-ghost btn-sm" onClick={signOut}>Sign Out</button>
+          <button className="btn btn-ghost btn-sm" onClick={logout}>Sign Out</button>
         </div>
 
         {/* Tabs */}

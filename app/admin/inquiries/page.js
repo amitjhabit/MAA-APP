@@ -1,6 +1,7 @@
 'use client';
 // app/admin/inquiries/page.js
 import { useState, useCallback, useEffect } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 function useToast(){const[t,setT]=useState([]);const show=useCallback((msg,type='success')=>{const id=Date.now();setT(p=>[...p,{id,msg,type}]);setTimeout(()=>setT(p=>p.filter(x=>x.id!==id)),3500);},[]);return{toasts:t,show};}
 function Toast({toasts}){return<div className="toast-wrap">{toasts.map(t=><div key={t.id} className={`toast toast-${t.type}`}>{t.msg}</div>)}</div>;}
 function Sidebar(){const NL=({href,icon,label,a})=><a href={href} className={`admin-nav-link${a?' active':''}`}><span className="nav-icon">{icon}</span>{label}</a>;return(<aside className="admin-sidebar"><div className="admin-sidebar-brand"><img src="/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style={{width:44,height:44,borderRadius:'50%',objectFit:'cover',flexShrink:0}} /><div className="logo-sub">मैथिल एसोसिएशन</div></div><nav className="admin-nav"><div className="admin-nav-section">Main</div><NL href="/admin" icon="🏠" label="Dashboard"/><NL href="/admin/members" icon="👥" label="Members"/><NL href="/admin/events" icon="📅" label="Events"/><NL href="/admin/donations" icon="💰" label="Donations"/><NL href="/admin/finance" icon="📊" label="Finance"/><NL href="/admin/analytics" icon="📈" label="Analytics"/><div className="admin-nav-section">Content</div><NL href="/admin/news" icon="📰" label="News"/><NL href="/admin/gallery" icon="🖼️" label="Gallery"/><NL href="/admin/about" icon="📝" label="About Us"/><div className="admin-nav-section">Organization</div><NL href="/admin/volunteers" icon="🙋" label="Volunteers"/><NL href="/admin/committee" icon="🏛️" label="Committee"/><NL href="/admin/inquiries" icon="✉️" label="Inquiries" a/><div className="admin-nav-section">Settings</div><NL href="/" icon="🌐" label="Public Site"/></nav></aside>);}
@@ -49,26 +50,22 @@ function DetailPanel({inquiry,onClose,onStatusChange}){
 
 export default function InquiriesPage(){
   const{toasts,show}=useToast();
-  const[secret,setSecret]=useState('');const[authed,setAuthed]=useState(false);const[authErr,setAuthErr]=useState('');const[authBusy,setAuthBusy]=useState(false);
+  const { secret, logout } = useAdminAuth();
   const[inquiries,setInquiries]=useState([]);const[stats,setStats]=useState({total:0,new:0,read:0,replied:0,archived:0});
   const[loading,setLoading]=useState(false);const[search,setSearch]=useState('');const[filterStatus,setFilterStatus]=useState('all');const[filterType,setFilterType]=useState('all');
   const[panel,setPanel]=useState(null);
 
   const load=useCallback(async(opts={})=>{setLoading(true);try{const qs=new URLSearchParams({limit:'50',search:opts.search??search,status:opts.status??filterStatus,type:opts.type??filterType});const res=await fetch(`/api/inquiries?${qs}`,{headers:{'x-admin-secret':secret}});const data=await res.json();if(data.success){setInquiries(data.data);setStats(data.stats);}else show(data.message,'error');}catch{show('Error','error');}setLoading(false);},[secret,search,filterStatus,filterType,show]);
-  useEffect(()=>{if(authed)load();},[authed,load]);
-  useEffect(()=>{if(!authed)return;const t=setTimeout(()=>load({search}),380);return()=>clearTimeout(t);},[search,authed]);
-
-  const handleLogin=async e=>{e.preventDefault();setAuthBusy(true);setAuthErr('');try{const r=await fetch('/api/inquiries?limit=1',{headers:{'x-admin-secret':secret}});if(r.ok)setAuthed(true);else setAuthErr('Invalid password.');}catch{setAuthErr('Network error.');}setAuthBusy(false);};
+  useEffect(()=>{load();},[load]);
+  useEffect(()=>{const t=setTimeout(()=>load({search}),380);return()=>clearTimeout(t);},[search]);
   const handleStatus=async(id,status)=>{try{const r=await fetch(`/api/inquiries/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify({status})});const d=await r.json();if(d.success){setInquiries(p=>p.map(x=>x.id===id?d.data:x));setStats(s=>({...s,[d.data.status]:(s[d.data.status]||0)+1}));show('Status updated!');}else show(d.message,'error');}catch{}};
   const handleDelete=async id=>{if(!confirm('Delete?'))return;try{const r=await fetch(`/api/inquiries/${id}`,{method:'DELETE',headers:{'x-admin-secret':secret}});const d=await r.json();if(d.success){setInquiries(p=>p.filter(x=>x.id!==id));show('Deleted');load();}else show(d.message,'error');}catch{}};
-
-  if(!authed)return(<div className="login-wrap"><div className="login-card"><div style={{fontSize:'2rem',marginBottom:'.5rem'}}>✉️</div><h2>Inquiries</h2><p>MAA Admin — Inquiry Management</p>{authErr&&<div style={{background:'var(--crimson-light)',borderRadius:'var(--radius)',padding:'.7rem',marginBottom:'1rem',color:'var(--crimson)',fontSize:'.82rem'}}>{authErr}</div>}<form onSubmit={handleLogin}><div className="form-group" style={{marginBottom:'1rem'}}><label>Admin Password</label><input type="password" value={secret} onChange={e=>setSecret(e.target.value)} autoFocus/></div><button type="submit" className="btn btn-primary w-full" disabled={authBusy}>{authBusy?'Verifying…':'Enter →'}</button></form><div style={{textAlign:'center',marginTop:'1rem'}}><a href="/admin" style={{color:'var(--saffron)',fontSize:'.85rem'}}>← Dashboard</a></div></div></div>);
 
   const SC={new:{bg:'#E3F2FD',color:'#0D47A1'},read:{bg:'var(--paper-3)',color:'var(--ink-soft)'},replied:{bg:'var(--forest-light)',color:'var(--forest)'},archived:{bg:'var(--gold-light)',color:'var(--gold)'}};
   return(<><div className="admin-layout"><Sidebar/>
     <div className="admin-main" style={{marginRight:panel?380:0,transition:'margin-right .22s'}}>
       <div className="admin-topbar"><div><div style={{fontFamily:'var(--serif)',fontSize:'1.2rem',color:'var(--navy)',fontWeight:600}}>Inquiries & Messages</div><div className="text-sm text-muted">पूछताछ · {stats.new} new · {stats.total} total</div></div>
-        <button className="btn btn-ghost btn-sm" onClick={()=>{setAuthed(false);setSecret('');}}>Sign Out</button>
+        <button className="btn btn-ghost btn-sm" onClick={logout}>Sign Out</button>
       </div>
       <div className="admin-content">
         {stats.new>0&&<div style={{background:'var(--crimson-light)',border:'1px solid rgba(155,29,32,.2)',borderRadius:'var(--radius-lg)',padding:'1rem 1.5rem',marginBottom:'1.5rem',display:'flex',alignItems:'center',gap:'1rem'}}>

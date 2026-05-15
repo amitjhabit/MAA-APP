@@ -1,6 +1,7 @@
 'use client';
 // app/admin/about/page.js
 import { useState, useCallback, useEffect } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 
 function useToast() { const [t, setT] = useState([]); const show = useCallback((msg, type = 'success') => { const id = Date.now(); setT(p => [...p, { id, msg, type }]); setTimeout(() => setT(p => p.filter(x => x.id !== id)), 3500); }, []); return { toasts: t, show }; }
 function Toast({ toasts }) { return <div className="toast-wrap">{toasts.map(t => <div key={t.id} className={`toast toast-${t.type}`}>{t.msg}</div>)}</div>; }
@@ -144,10 +145,7 @@ const SECTIONS = [
 
 export default function AdminAboutPage() {
   const { toasts, show } = useToast();
-  const [secret, setSecret] = useState('');
-  const [authed, setAuthed] = useState(false);
-  const [authErr, setAuthErr] = useState('');
-  const [authBusy, setAuthBusy] = useState(false);
+  const { secret, logout } = useAdminAuth();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showAdd, setShowAdd] = useState(null); // type string
@@ -164,16 +162,7 @@ export default function AdminAboutPage() {
     setLoading(false);
   }, [secret, show]);
 
-  useEffect(() => { if (authed) load(); }, [authed, load]);
-
-  const handleLogin = async e => {
-    e.preventDefault(); setAuthBusy(true); setAuthErr('');
-    try {
-      const r = await fetch('/api/admin/about', { headers: { 'x-admin-secret': secret } });
-      if (r.ok) { setAuthed(true); load(secret); } else setAuthErr('Invalid password.');
-    } catch { setAuthErr('Network error.'); }
-    setAuthBusy(false);
-  };
+  useEffect(() => { load(); }, [load]);
 
   const handleSave = (saved, isEdit) => {
     if (isEdit) setItems(p => p.map(x => x.id === saved.id ? saved : x));
@@ -199,22 +188,6 @@ export default function AdminAboutPage() {
     } catch {}
   };
 
-  if (!authed) return (
-    <div className="login-wrap">
-      <div className="login-card">
-        <div style={{ fontSize: '2rem', marginBottom: '.5rem' }}>ℹ️</div>
-        <h2>About Us</h2>
-        <p>MAA Admin — About Page Content</p>
-        {authErr && <div style={{ background: 'var(--crimson-light)', borderRadius: 'var(--radius)', padding: '.7rem', marginBottom: '1rem', color: 'var(--crimson)', fontSize: '.82rem' }}>{authErr}</div>}
-        <form onSubmit={handleLogin}>
-          <div className="form-group" style={{ marginBottom: '1rem' }}><label>Admin Password</label><input type="password" value={secret} onChange={e => setSecret(e.target.value)} autoFocus /></div>
-          <button type="submit" className="btn btn-primary w-full" disabled={authBusy}>{authBusy ? 'Verifying…' : 'Enter →'}</button>
-        </form>
-        <div style={{ textAlign: 'center', marginTop: '1rem' }}><a href="/admin" style={{ color: 'var(--saffron)', fontSize: '.85rem' }}>← Dashboard</a></div>
-      </div>
-    </div>
-  );
-
   return (
     <>
       <div className="admin-layout">
@@ -227,7 +200,7 @@ export default function AdminAboutPage() {
             </div>
             <div style={{ display: 'flex', gap: '.65rem', alignItems: 'center' }}>
               <a href="/about" target="_blank" className="btn btn-ghost btn-sm">View Public Page ↗</a>
-              <button className="btn btn-ghost btn-sm" onClick={() => { setAuthed(false); setSecret(''); }}>Sign Out</button>
+              <button className="btn btn-ghost btn-sm" onClick={logout}>Sign Out</button>
             </div>
           </div>
 

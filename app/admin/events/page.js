@@ -2,6 +2,7 @@
 // app/admin/events/page.js — MAA Events Management
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 
 // Handles Date objects, ISO strings ("2026-05-31T..."), and bare "YYYY-MM-DD" strings
 function localDate(val) {
@@ -52,7 +53,7 @@ const STATUS_COLORS = {
 /* ══════════════════════════════════════
    SIDEBAR NAV
 ══════════════════════════════════════ */
-function Sidebar({ secret, onSignOut }) {
+function Sidebar() {
   const NL = ({ href, icon, label, active }) => (
     <a href={href} className={`admin-nav-link${active ? ' active' : ''}`}>
       <span className="nav-icon">{icon}</span>{label}
@@ -364,12 +365,7 @@ function EventModal({ event, secret, onClose, onSave }) {
 ══════════════════════════════════════ */
 export default function AdminEventsPage() {
   const { toasts, show } = useToast();
-
-  // Auth
-  const [secret, setSecret]     = useState('');
-  const [authed, setAuthed]     = useState(false);
-  const [authErr, setAuthErr]   = useState('');
-  const [authBusy, setAuthBusy] = useState(false);
+  const { secret, logout } = useAdminAuth();
 
   // Data
   const [events, setEvents]         = useState([]);
@@ -405,23 +401,11 @@ export default function AdminEventsPage() {
     setLoading(false);
   }, [secret, search, filterStatus, filterCat, show]);
 
-  useEffect(() => { if (authed) fetchEvents(); }, [authed, fetchEvents]);
+  useEffect(() => { fetchEvents(); }, [fetchEvents]);
   useEffect(() => {
-    if (!authed) return;
     const t = setTimeout(() => fetchEvents({ search }), 380);
     return () => clearTimeout(t);
-  }, [search, authed]);
-
-  const handleLogin = async e => {
-    e.preventDefault(); if (!secret.trim()) return;
-    setAuthBusy(true); setAuthErr('');
-    try {
-      const res = await fetch('/api/events?limit=1', { headers: { 'x-admin-secret': secret } });
-      if (res.ok) setAuthed(true);
-      else setAuthErr('Invalid password.');
-    } catch { setAuthErr('Network error.'); }
-    setAuthBusy(false);
-  };
+  }, [search]);
 
   const handleDelete = async id => {
     if (!confirm('Delete this event permanently?')) return;
@@ -448,37 +432,10 @@ export default function AdminEventsPage() {
     } catch { show('Failed', 'error'); }
   };
 
-  /* ── Login ── */
-  if (!authed) return (
-    <div className="login-wrap">
-      <div className="login-card">
-        <div style={{ fontSize: '2rem', marginBottom: '.5rem' }}>📅</div>
-        <h2>Events Management</h2>
-        <p>Maithil Association of America — Admin CRM</p>
-        {authErr && <div style={{ background: 'var(--crimson-light)', borderRadius: 'var(--radius)', padding: '.7rem', marginBottom: '1rem', color: 'var(--crimson)', fontSize: '.82rem' }}>{authErr}</div>}
-        <form onSubmit={handleLogin}>
-          <div className="form-group" style={{ marginBottom: '1rem' }}>
-            <label>Admin Password</label>
-            <input type="password" value={secret} onChange={e => setSecret(e.target.value)} placeholder="ADMIN_SECRET" autoFocus />
-          </div>
-          <button type="submit" className="btn btn-primary w-full" disabled={authBusy}>
-            {authBusy ? <><span className="spinner" />Verifying…</> : 'Enter CRM →'}
-          </button>
-        </form>
-        <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '.8rem' }}>
-          <a href="/" style={{ color: 'var(--saffron)' }}>← Public Site</a>
-          {' · '}
-          <a href="/admin/members" style={{ color: 'var(--saffron)' }}>Members</a>
-        </div>
-      </div>
-    </div>
-  );
-
-  /* ── Dashboard ── */
   return (
     <>
       <div className="admin-layout">
-        <Sidebar secret={secret} onSignOut={() => { setAuthed(false); setSecret(''); setEvents([]); }} />
+        <Sidebar />
 
         <div className="admin-main">
           {/* Top bar */}
@@ -489,7 +446,7 @@ export default function AdminEventsPage() {
             </div>
             <div style={{ display: 'flex', gap: '.65rem', alignItems: 'center' }}>
               <button className="btn btn-primary btn-sm" onClick={() => setShowAdd(true)}>+ Add Event</button>
-              <button className="btn btn-ghost btn-sm" onClick={() => { setAuthed(false); setSecret(''); setEvents([]); }}>Sign Out</button>
+              <button className="btn btn-ghost btn-sm" onClick={logout}>Sign Out</button>
             </div>
           </div>
 

@@ -2,6 +2,7 @@
 // app/admin/analytics/page.js — MAA Analytics & Reports
 
 import { useState, useEffect, useCallback } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 
 /* ══════════════════════════════════════ HELPERS ══════════════════════════════════════ */
 function fmt(n, decimals = 0) {
@@ -11,25 +12,6 @@ function fmtUSD(n) { return '$' + fmt(n, 2); }
 
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-function useAuth() {
-  const [secret, setSecret] = useState('');
-  const [authed, setAuthed] = useState(false);
-  const [checking, setChecking] = useState(true);
-  const [input, setInput] = useState('');
-  const [err, setErr] = useState('');
-  useEffect(() => {
-    const s = sessionStorage.getItem('adminSecret') || '';
-    if (s) { setSecret(s); setAuthed(true); }
-    setChecking(false);
-  }, []);
-  const login = async () => {
-    const res = await fetch('/api/analytics', { headers: { 'x-admin-secret': input } });
-    if (res.ok) { sessionStorage.setItem('adminSecret', input); setSecret(input); setAuthed(true); setErr(''); }
-    else setErr('Invalid secret');
-  };
-  const signOut = () => { sessionStorage.removeItem('adminSecret'); setSecret(''); setAuthed(false); setInput(''); };
-  return { secret, authed, checking, input, setInput, err, login, signOut };
-}
 
 /* ══════════════════════════════════════ SIDEBAR ══════════════════════════════════════ */
 function Sidebar() {
@@ -463,7 +445,7 @@ const TABS = [
 ];
 
 export default function AnalyticsPage() {
-  const { secret, authed, checking, input, setInput, err, login, signOut } = useAuth();
+  const { secret, logout } = useAdminAuth();
   const [tab, setTab]     = useState('overview');
   const [year, setYear]   = useState(new Date().getFullYear());
   const [data, setData]   = useState(null);
@@ -472,32 +454,14 @@ export default function AnalyticsPage() {
   const years = Array.from({ length: 6 }, (_, i) => new Date().getFullYear() - 2 + i);
 
   const load = useCallback(async () => {
-    if (!authed) return;
     setLoading(true);
     const res = await fetch(`/api/analytics?year=${year}`, { headers: { 'x-admin-secret': secret } });
     const j = await res.json();
     if (j.success) setData(j);
     setLoading(false);
-  }, [authed, secret, year]);
+  }, [secret, year]);
 
   useEffect(() => { load(); }, [load]);
-
-  if (checking) return <div className="loading-spinner" style={{ margin: '6rem auto' }} />;
-
-  if (!authed) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--paper-2)' }}>
-        <div style={{ background: '#fff', padding: '2.5rem', borderRadius: 16, boxShadow: '0 4px 24px rgba(0,0,0,.12)', width: 340 }}>
-          <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.25rem' }}>MAA Analytics</div>
-          <div style={{ color: 'var(--ink-soft)', fontSize: '.85rem', marginBottom: '1.5rem' }}>Enter admin secret to continue</div>
-          <input className="admin-input" type="password" placeholder="Admin secret" value={input} onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && login()} style={{ marginBottom: '.75rem' }} />
-          {err && <div style={{ color: 'var(--crimson)', fontSize: '.8rem', marginBottom: '.75rem' }}>{err}</div>}
-          <button className="btn btn-primary" style={{ width: '100%' }} onClick={login}>Sign In</button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="admin-layout">
@@ -514,7 +478,7 @@ export default function AnalyticsPage() {
               {years.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
             <button className="btn btn-primary btn-sm" onClick={load} disabled={loading}>{loading ? 'Loading…' : 'Refresh'}</button>
-            <button className="btn btn-ghost btn-sm" onClick={signOut}>Sign Out</button>
+            <button className="btn btn-ghost btn-sm" onClick={logout}>Sign Out</button>
           </div>
         </div>
 

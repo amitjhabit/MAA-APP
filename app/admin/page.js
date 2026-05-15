@@ -1,21 +1,19 @@
 'use client';
 // app/admin/page.js — MAA Admin Dashboard with live DB stats
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 
 export default function AdminDashboard() {
-  const [secret,  setSecret]  = useState('');
-  const [authed,  setAuthed]  = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [authErr, setAuthErr] = useState('');
+  const { secret, logout } = useAdminAuth();
   const [stats,   setStats]   = useState({
     members: 0, events: 0, news: 0, donations: 0,
     volunteers: 0, committee: 0, gallery: 0, inquiries: 0,
     total_donations: 0, new_inquiries: 0,
   });
 
-  const fetchStats = async (s) => {
+  const fetchStats = useCallback(async () => {
     try {
-      const headers = { 'x-admin-secret': s };
+      const headers = { 'x-admin-secret': secret };
       const [mRes, eRes, nRes, dRes, vRes, cRes, gRes, iRes] = await Promise.all([
         fetch('/api/members?limit=1',   { headers }).then(r => r.json()),
         fetch('/api/events?limit=1',    { headers }).then(r => r.json()),
@@ -39,44 +37,9 @@ export default function AdminDashboard() {
         new_inquiries:   iRes.stats?.new          || 0,
       });
     } catch {}
-  };
+  }, [secret]);
 
-  const handleLogin = async e => {
-    e.preventDefault();
-    if (!secret.trim()) return;
-    setLoading(true); setAuthErr('');
-    try {
-      const res = await fetch('/api/members?limit=1', { headers: { 'x-admin-secret': secret } });
-      if (res.ok) { setAuthed(true); await fetchStats(secret); }
-      else setAuthErr('Invalid password. Check ADMIN_SECRET in .env.local');
-    } catch { setAuthErr('Network error'); }
-    setLoading(false);
-  };
-
-  if (!authed) return (
-    <div className="login-wrap">
-      <div className="login-card">
-        <div style={{ textAlign: 'center', marginBottom: '1.25rem' }}>
-          <img src="/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', margin: '0 auto .75rem', border: '3px solid var(--gold)', display: 'block' }} />
-        </div>
-        <h2>MAA Admin</h2>
-        <p>Maithil Association of America — CRM Dashboard</p>
-        {authErr && <div style={{ background: 'var(--crimson-light)', borderRadius: 'var(--radius)', padding: '.7rem', marginBottom: '1rem', color: 'var(--crimson)', fontSize: '.82rem' }}>{authErr}</div>}
-        <form onSubmit={handleLogin}>
-          <div className="form-group" style={{ marginBottom: '1rem' }}>
-            <label>Admin Password</label>
-            <input type="password" value={secret} onChange={e => setSecret(e.target.value)} placeholder="ADMIN_SECRET" autoFocus />
-          </div>
-          <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-            {loading ? <><span className="spinner" />Verifying…</> : 'Enter Admin Dashboard →'}
-          </button>
-        </form>
-        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-          <a href="/" style={{ color: 'var(--saffron)', fontSize: '.85rem' }}>← Public Website</a>
-        </div>
-      </div>
-    </div>
-  );
+  useEffect(() => { fetchStats(); }, [fetchStats]);
 
   const modules = [
     { icon: '👥', title: 'Members',    sub: 'सदस्य',        href: '/admin/members',    stat: stats.members,    statLabel: 'total',     color: 'var(--saffron)' },
@@ -106,7 +69,7 @@ export default function AdminDashboard() {
         <div style={{ display: 'flex', gap: '.75rem' }}>
           <a href="/" className="btn btn-ghost btn-sm" style={{ color: 'rgba(255,255,255,.8)', borderColor: 'rgba(255,255,255,.2)' }}>🌐 Public Site</a>
           <a href="/api/health" target="_blank" className="btn btn-ghost btn-sm" style={{ color: 'rgba(255,255,255,.8)', borderColor: 'rgba(255,255,255,.2)' }}>⚡ Health</a>
-          <button className="btn btn-ghost btn-sm" style={{ color: 'rgba(255,255,255,.8)', borderColor: 'rgba(255,255,255,.2)' }} onClick={() => { setAuthed(false); setSecret(''); }}>Sign Out</button>
+          <button className="btn btn-ghost btn-sm" style={{ color: 'rgba(255,255,255,.8)', borderColor: 'rgba(255,255,255,.2)' }} onClick={logout}>Sign Out</button>
         </div>
       </div>
 

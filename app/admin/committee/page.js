@@ -1,6 +1,7 @@
 'use client';
 // app/admin/committee/page.js
 import { useState, useCallback, useEffect } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 function useToast(){const[t,setT]=useState([]);const show=useCallback((msg,type='success')=>{const id=Date.now();setT(p=>[...p,{id,msg,type}]);setTimeout(()=>setT(p=>p.filter(x=>x.id!==id)),3500);},[]);return{toasts:t,show};}
 function Toast({toasts}){return<div className="toast-wrap">{toasts.map(t=><div key={t.id} className={`toast toast-${t.type}`}>{t.msg}</div>)}</div>;}
 function Sidebar(){const NL=({href,icon,label,a})=><a href={href} className={`admin-nav-link${a?' active':''}`}><span className="nav-icon">{icon}</span>{label}</a>;return(<aside className="admin-sidebar"><div className="admin-sidebar-brand"><img src="/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style={{width:44,height:44,borderRadius:'50%',objectFit:'cover',flexShrink:0}} /><div className="logo-sub">मैथिल एसोसिएशन</div></div><nav className="admin-nav"><div className="admin-nav-section">Main</div><NL href="/admin" icon="🏠" label="Dashboard"/><NL href="/admin/members" icon="👥" label="Members"/><NL href="/admin/events" icon="📅" label="Events"/><NL href="/admin/donations" icon="💰" label="Donations"/><NL href="/admin/finance" icon="📊" label="Finance"/><NL href="/admin/analytics" icon="📈" label="Analytics"/><div className="admin-nav-section">Content</div><NL href="/admin/news" icon="📰" label="News"/><NL href="/admin/gallery" icon="🖼️" label="Gallery"/><NL href="/admin/about" icon="📝" label="About Us"/><div className="admin-nav-section">Organization</div><NL href="/admin/volunteers" icon="🙋" label="Volunteers"/><NL href="/admin/committee" icon="🏛️" label="Committee" a/><NL href="/admin/inquiries" icon="✉️" label="Inquiries"/><div className="admin-nav-section">Settings</div><NL href="/" icon="🌐" label="Public Site"/></nav></aside>);}
@@ -34,23 +35,20 @@ function Modal({member,secret,onClose,onSave}){
 
 export default function CommitteePage(){
   const{toasts,show}=useToast();
-  const[secret,setSecret]=useState('');const[authed,setAuthed]=useState(false);const[authErr,setAuthErr]=useState('');const[authBusy,setAuthBusy]=useState(false);
+  const { secret, logout } = useAdminAuth();
   const[members,setMembers]=useState([]);const[stats,setStats]=useState({total:0,current:0,past:0});
   const[loading,setLoading]=useState(false);const[filterCommittee,setFilterCommittee]=useState('all');
   const[showAdd,setShowAdd]=useState(false);const[editM,setEditM]=useState(null);
 
   const load=useCallback(async(opts={})=>{setLoading(true);try{const qs=new URLSearchParams({committee:opts.committee??filterCommittee});const res=await fetch(`/api/committee?${qs}`,{headers:{'x-admin-secret':secret}});const data=await res.json();if(data.success){setMembers(data.data);setStats(data.stats);}else show(data.message,'error');}catch{show('Error','error');}setLoading(false);},[secret,filterCommittee,show]);
-  useEffect(()=>{if(authed)load();},[authed,load]);
-  const handleLogin=async e=>{e.preventDefault();setAuthBusy(true);setAuthErr('');try{const r=await fetch('/api/committee',{headers:{'x-admin-secret':secret}});if(r.ok)setAuthed(true);else setAuthErr('Invalid password.');}catch{setAuthErr('Network error.');}setAuthBusy(false);};
+  useEffect(()=>{load();},[load]);
   const handleDelete=async id=>{if(!confirm('Remove?'))return;try{const r=await fetch(`/api/committee/${id}`,{method:'DELETE',headers:{'x-admin-secret':secret}});const d=await r.json();if(d.success){setMembers(p=>p.filter(x=>x.id!==id));show('Removed');load();}else show(d.message,'error');}catch{}};
   const handleSave=(saved,isEdit)=>{if(isEdit)setMembers(p=>p.map(x=>x.id===saved.id?saved:x));else setMembers(p=>[...p,saved].sort((a,b)=>a.sort_order-b.sort_order));show(isEdit?'Updated!':'Added!');load();};
-
-  if(!authed)return(<div className="login-wrap"><div className="login-card"><div style={{fontSize:'2rem',marginBottom:'.5rem'}}>🏛️</div><h2>Committee</h2><p>MAA Admin — Committee Management</p>{authErr&&<div style={{background:'var(--crimson-light)',borderRadius:'var(--radius)',padding:'.7rem',marginBottom:'1rem',color:'var(--crimson)',fontSize:'.82rem'}}>{authErr}</div>}<form onSubmit={handleLogin}><div className="form-group" style={{marginBottom:'1rem'}}><label>Admin Password</label><input type="password" value={secret} onChange={e=>setSecret(e.target.value)} autoFocus/></div><button type="submit" className="btn btn-primary w-full" disabled={authBusy}>{authBusy?'Verifying…':'Enter →'}</button></form><div style={{textAlign:'center',marginTop:'1rem'}}><a href="/admin" style={{color:'var(--saffron)',fontSize:'.85rem'}}>← Dashboard</a></div></div></div>);
 
   return(<><div className="admin-layout"><Sidebar/>
     <div className="admin-main">
       <div className="admin-topbar"><div><div style={{fontFamily:'var(--serif)',fontSize:'1.2rem',color:'var(--navy)',fontWeight:600}}>Committee & Board</div><div className="text-sm text-muted">समिति · {stats.current} currently serving</div></div>
-        <div style={{display:'flex',gap:'.65rem'}}><button className="btn btn-primary btn-sm" onClick={()=>setShowAdd(true)}>+ Add Member</button><button className="btn btn-ghost btn-sm" onClick={()=>{setAuthed(false);setSecret('');}}>Sign Out</button></div>
+        <div style={{display:'flex',gap:'.65rem'}}><button className="btn btn-primary btn-sm" onClick={()=>setShowAdd(true)}>+ Add Member</button><button className="btn btn-ghost btn-sm" onClick={logout}>Sign Out</button></div>
       </div>
       <div className="admin-content">
         <div className="stats-grid">{[{label:'Total',num:stats.total,color:'var(--saffron)'},{label:'Currently Serving',num:stats.current,color:'var(--forest)'},{label:'Past Members',num:stats.past,color:'var(--gold)'}].map(s=>(<div className="stat-card" key={s.label}><div className="stat-num" style={{color:s.color}}>{s.num}</div><div className="stat-label">{s.label}</div></div>))}</div>

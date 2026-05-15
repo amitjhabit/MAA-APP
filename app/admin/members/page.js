@@ -2,6 +2,7 @@
 // app/admin/members/page.js — MAA Members CRM with CSV/Excel Import
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useAdminAuth } from '@/app/admin/layout';
 
 /* ══════════════════════════════════════
    HELPERS
@@ -486,10 +487,7 @@ function MemberModal({ member, secret, onClose, onSave }) {
 ══════════════════════════════════════ */
 export default function AdminMembersPage() {
   const {toasts,show}=useToast();
-  const [secret,setSecret]=useState('');
-  const [authed,setAuthed]=useState(false);
-  const [authErr,setAuthErr]=useState('');
-  const [authBusy,setAuthBusy]=useState(false);
+  const { secret, logout } = useAdminAuth();
 
   const [members,setMembers]=useState([]);
   const [stats,setStats]=useState({total:0,active:0,individual:0,student:0,honorary:0,corporate:0,annual:0,lifetime:0});
@@ -519,15 +517,8 @@ export default function AdminMembersPage() {
     setLoading(false);
   },[secret,search,filterType,filterStatus,filterPlan,show]);
 
-  useEffect(()=>{if(authed)fetchMembers();},[authed,fetchMembers]);
-  useEffect(()=>{if(!authed)return;const t=setTimeout(()=>fetchMembers({search}),380);return()=>clearTimeout(t);},[search,authed]);
-
-  const handleLogin=async e=>{
-    e.preventDefault();if(!secret.trim())return;setAuthBusy(true);setAuthErr('');
-    try{const res=await fetch('/api/members?limit=1',{headers:{'x-admin-secret':secret}});if(res.ok)setAuthed(true);else setAuthErr('Invalid password. Check ADMIN_SECRET in .env.local');}
-    catch{setAuthErr('Network error');}
-    setAuthBusy(false);
-  };
+  useEffect(()=>{fetchMembers();},[fetchMembers]);
+  useEffect(()=>{const t=setTimeout(()=>fetchMembers({search}),380);return()=>clearTimeout(t);},[search]);
 
   const handleDelete=async id=>{
     if(!confirm('Delete this member permanently?'))return;
@@ -544,23 +535,6 @@ export default function AdminMembersPage() {
     try{const res=await fetch(`/api/members/${m.id}`,{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify({is_active:!m.is_active})});const data=await res.json();if(data.success){setMembers(p=>p.map(x=>x.id===m.id?data.data:x));if(panelMember?.id===m.id)setPanelMember(data.data);show('Updated!');}}
     catch{show('Failed','error');}
   };
-
-  /* ── Login ── */
-  if(!authed)return(
-    <div className="login-wrap">
-      <div className="login-card">
-        <div style={{fontSize:'2rem',marginBottom:'.5rem'}}>🏛️</div>
-        <h2>MAA Admin CRM</h2>
-        <p>Maithil Association of America — Member Management</p>
-        {authErr&&<div style={{background:'var(--crimson-light)',borderRadius:'var(--radius)',padding:'.7rem',marginBottom:'1rem',color:'var(--crimson)',fontSize:'.82rem'}}>{authErr}</div>}
-        <form onSubmit={handleLogin}>
-          <div className="form-group" style={{marginBottom:'1rem'}}><label>Admin Password</label><input type="password" value={secret} onChange={e=>setSecret(e.target.value)} placeholder="ADMIN_SECRET" autoFocus/></div>
-          <button type="submit" className="btn btn-primary w-full" disabled={authBusy}>{authBusy?<><span className="spinner"/>Verifying…</>:'Enter CRM →'}</button>
-        </form>
-        <div style={{textAlign:'center',marginTop:'1rem',fontSize:'.8rem',color:'var(--ink-dim)'}}><a href="/" style={{color:'var(--saffron)'}}>← Public Website</a>{' · '}<a href="/api/health" target="_blank" style={{color:'var(--saffron)'}}>Health Check</a></div>
-      </div>
-    </div>
-  );
 
   const NL=({href,icon,label,active})=><a href={href} className={`admin-nav-link${active?' active':''}`}><span className="nav-icon">{icon}</span>{label}</a>;
 
@@ -607,7 +581,7 @@ export default function AdminMembersPage() {
               </div>
               <button className="btn btn-ghost btn-sm" onClick={()=>setShowImport(true)} style={{borderColor:'var(--saffron)',color:'var(--saffron)'}}>📊 Import CSV</button>
               <button className="btn btn-primary btn-sm" onClick={()=>setShowAdd(true)}>+ Add Member</button>
-              <button className="btn btn-ghost btn-sm" onClick={()=>{setAuthed(false);setSecret('');setMembers([]);}}>Sign Out</button>
+              <button className="btn btn-ghost btn-sm" onClick={logout}>Sign Out</button>
             </div>
           </div>
 

@@ -1,35 +1,8 @@
 'use client';
 // app/components/GalleryClient.js
 import { useState } from 'react';
-
-function Nav() {
-  return (
-    <nav className="pub-nav">
-      <div className="pub-nav-inner">
-        <a href="/" className="pub-nav-brand">
-          <div className="emblem">MAA</div>
-          <div className="org-name">Maithil Association of America<span>मैथिल एसोसिएशन ऑफ अमेरिका</span></div>
-        </a>
-        <div className="pub-nav-links">
-          {[['/', 'Home'], ['/events', 'Events'], ['/news', 'News'], ['/gallery', 'Gallery'], ['/about', 'About Us'], ['/contact', 'Contact']].map(([h, l]) => (
-            <a key={h} href={h} className={`pub-nav-link${h === '/gallery' ? ' active' : ''}`}>{l}</a>
-          ))}
-          <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.5rem' }}>Join / Renew</a>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="pub-footer">
-      <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem' }}>
-        © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
-      </div>
-    </footer>
-  );
-}
+import PublicNav from '@/app/components/PublicNav';
+import PublicFooter from '@/app/components/PublicFooter';
 
 const samplePhotos = [
   { id: 1, title: 'Chhath Puja 2024', description: 'Annual Chhath Puja celebration at the waterfront', category: 'religious', image_url: 'https://photos.fife.usercontent.google.com/pw/AP1GczPb4uHKK9Vg0FTr-FBuqLKDX4AwNCwz3UmQQzCvnv7U26nPtt-C7iTxLA=w1892-h1420-s-no-gm?authuser=0' },
@@ -75,7 +48,7 @@ export default function GalleryClient({ initialAlbums }) {
 
   return (
     <>
-      <Nav />
+      <PublicNav active="/gallery" />
 
       <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
@@ -203,7 +176,7 @@ export default function GalleryClient({ initialAlbums }) {
         </div>
       )}
 
-      <Footer />
+      <PublicFooter />
     </>
   );
 }

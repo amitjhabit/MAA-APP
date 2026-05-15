@@ -2,6 +2,7 @@
 // app/components/EventsClient.js — handles filter UI for the events page
 import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
+import PublicFooter from '@/app/components/PublicFooter';
 
 // Handles Date objects (from RSC props), ISO strings, and bare YYYY-MM-DD strings
 function localDate(val) {
@@ -10,17 +11,6 @@ function localDate(val) {
   const m = String(val).match(/(\d{4})-(\d{2})-(\d{2})/);
   if (!m) return new Date(NaN);
   return new Date(+m[1], +m[2] - 1, +m[3]);
-}
-
-function Footer() {
-  return (
-    <footer className="pub-footer">
-      <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.75rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1rem' }}>
-        © {new Date().getFullYear()} Maithil Association of America ·
-        <a href="/admin" style={{ color: 'var(--gold)', marginLeft: '.5rem' }}>Admin</a>
-      </div>
-    </footer>
-  );
 }
 
 // Render text with clickable URLs
@@ -188,7 +178,7 @@ export default function EventsClient({ initialEvents }) {
         )}
       </div>
 
-      <Footer />
+      <PublicFooter />
     </>
   );
 }

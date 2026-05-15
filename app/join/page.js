@@ -2,6 +2,7 @@
 // app/join/page.js
 import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
+import PublicFooter from '@/app/components/PublicFooter';
 
 const ANNUAL_FEE = 21;
 
@@ -106,11 +107,7 @@ export default function JoinPage() {
         )}
       </div>
 
-      <footer className="pub-footer">
-        <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem' }}>
-          © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
-        </div>
-      </footer>
+      <PublicFooter />
     </>
   );
 }

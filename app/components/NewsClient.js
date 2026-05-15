@@ -2,6 +2,7 @@
 // app/components/NewsClient.js
 import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
+import PublicFooter from '@/app/components/PublicFooter';
 
 function localDate(val) {
   if (!val) return new Date(NaN);
@@ -11,15 +12,6 @@ function localDate(val) {
   return new Date(+m[1], +m[2] - 1, +m[3]);
 }
 
-function Footer() {
-  return (
-    <footer className="pub-footer">
-      <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center', color: 'rgba(255,255,255,.45)', fontSize: '.8rem', borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem' }}>
-        © {new Date().getFullYear()} Maithil Association of America · <a href="/admin" style={{ color: 'var(--gold)' }}>Admin</a>
-      </div>
-    </footer>
-  );
-}
 
 const CAT_COLORS = {
   general:      { bg: 'var(--paper-3)',       color: 'var(--ink-soft)' },
@@ -102,7 +94,7 @@ export default function NewsClient({ initialPosts }) {
         )}
       </div>
 
-      <Footer />
+      <PublicFooter />
     </>
   );
 }

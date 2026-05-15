@@ -8,17 +8,16 @@ export async function GET() {
     await ensureInit();
     const sql = getDb();
     const albums = await sql`
-      SELECT ga.id, ga.name, ga.display_name, ga.description, ga.cover_image_url,
-             ga.sort_order, COUNT(g.id)::int AS photo_count
+      SELECT ga.*, COUNT(g.id)::int AS photo_count
       FROM gallery_albums ga
       LEFT JOIN gallery g ON g.album_id = ga.id
       GROUP BY ga.id
-      ORDER BY ga.sort_order ASC, ga.created_at DESC
+      ORDER BY ga.sort_order ASC, ga.id ASC
     `;
-    const res = NextResponse.json({ success: true, data: albums });
+    const res = NextResponse.json({ success: true, data: albums, total: albums.length });
     res.headers.set('Cache-Control', 'no-store');
     return res;
-  } catch {
-    return NextResponse.json({ success: true, data: [] });
+  } catch (e) {
+    return NextResponse.json({ success: false, error: e.message, data: [] });
   }
 }

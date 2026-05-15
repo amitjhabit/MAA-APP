@@ -10,10 +10,13 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const limit    = parseInt(searchParams.get('limit') || '50');
     const category = searchParams.get('category');
+    const albumId  = searchParams.get('album_id');
 
-    const photos = category
-      ? await sql`SELECT * FROM gallery WHERE category = ${category} ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`
-      : await sql`SELECT * FROM gallery ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`;
+    const photos = albumId
+      ? await sql`SELECT * FROM gallery WHERE album_id = ${albumId} ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`
+      : category
+        ? await sql`SELECT * FROM gallery WHERE category = ${category} ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`
+        : await sql`SELECT * FROM gallery ORDER BY is_featured DESC, sort_order ASC, created_at DESC LIMIT ${limit}`;
 
     const res = NextResponse.json({ success: true, data: photos });
     res.headers.set('Cache-Control', 'no-store');

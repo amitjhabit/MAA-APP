@@ -14,6 +14,7 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
+    const folderPath = formData.get('folder_path') || '';
 
     if (!file || typeof file === 'string') {
       return NextResponse.json({ success: false, message: 'No file provided' }, { status: 400 });
@@ -40,13 +41,17 @@ export async function POST(request) {
     const baseName = origName.slice(0, origName.lastIndexOf('.')) || 'photo';
     const filename = `${Date.now()}-${baseName.slice(0, 30)}.${ext}`;
 
-    const uploadDir = join(process.cwd(), 'public', 'images', 'gallery');
+    // Sanitize folder path (no path traversal)
+    const safeFolderPath = folderPath && !folderPath.includes('..') && !folderPath.startsWith('/') ? folderPath : '';
+    const uploadDir = safeFolderPath
+      ? join(process.cwd(), 'public', 'images', 'gallery', safeFolderPath)
+      : join(process.cwd(), 'public', 'images', 'gallery');
     await mkdir(uploadDir, { recursive: true });
 
     const filepath = join(uploadDir, filename);
     await writeFile(filepath, buffer);
 
-    const url = `/images/gallery/${filename}`;
+    const url = safeFolderPath ? `/images/gallery/${safeFolderPath}/${filename}` : `/images/gallery/${filename}`;
     return NextResponse.json({ success: true, url, filename });
   } catch (err) {
     console.error('Upload error:', err);

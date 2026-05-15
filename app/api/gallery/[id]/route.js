@@ -8,7 +8,7 @@ export async function PATCH(req, { params }) {
     const sql = getDb(), b = await req.json();
     const [ex] = await sql`SELECT * FROM gallery WHERE id = ${params.id}`;
     if (!ex) return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
-    const [p] = await sql`UPDATE gallery SET title=${b.title??ex.title},description=${b.description??ex.description},image_url=${b.image_url??ex.image_url},category=${b.category??ex.category},is_featured=${b.is_featured!==undefined?b.is_featured:ex.is_featured},sort_order=${b.sort_order!==undefined?parseInt(b.sort_order):ex.sort_order} WHERE id=${params.id} RETURNING *`;
+    const [p] = await sql`UPDATE gallery SET title=${b.title??ex.title},description=${b.description??ex.description},image_url=${b.image_url??ex.image_url},category=${b.category??ex.category},is_featured=${b.is_featured!==undefined?b.is_featured:ex.is_featured},sort_order=${b.sort_order!==undefined?parseInt(b.sort_order):ex.sort_order},album_id=${b.album_id!==undefined?b.album_id:ex.album_id} WHERE id=${params.id} RETURNING *`;
     return NextResponse.json({ success: true, data: p });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }

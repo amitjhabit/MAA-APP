@@ -7,7 +7,7 @@ const getHomeData = unstable_cache(
   async () => {
     await ensureInit();
     const sql = getDb();
-    const [evRows, newsRows, memberCount, eventCount] = await Promise.all([
+    const [evRows, newsRows, memberCount, eventCount, contentRows] = await Promise.all([
       sql`
         SELECT id, title, title_maithili, description, event_date, event_time,
                end_date, location, address, city, state, is_online, meeting_link,
@@ -29,11 +29,15 @@ const getHomeData = unstable_cache(
       `,
       sql`SELECT COUNT(*) AS c FROM members WHERE is_active = TRUE`,
       sql`SELECT COUNT(*) AS c FROM events`,
+      sql`SELECT section, key, value FROM homepage_content WHERE is_active = TRUE`,
     ]);
+    const content = {};
+    for (const row of contentRows) content[`${row.section}.${row.key}`] = row.value;
     return {
-      events: evRows,
-      news:   newsRows,
-      stats:  { members: parseInt(memberCount[0]?.c || 0), events: parseInt(eventCount[0]?.c || 0) },
+      events:  evRows,
+      news:    newsRows,
+      stats:   { members: parseInt(memberCount[0]?.c || 0), events: parseInt(eventCount[0]?.c || 0) },
+      content,
     };
   },
   ['home'],
@@ -41,11 +45,11 @@ const getHomeData = unstable_cache(
 );
 
 export default async function HomePage() {
-  let events = [], news = [], stats = { members: 0, events: 0 };
+  let events = [], news = [], stats = { members: 0, events: 0 }, content = {};
   try {
-    ({ events, news, stats } = await getHomeData());
+    ({ events, news, stats, content } = await getHomeData());
   } catch (e) {
     console.error('HomePage data fetch:', e.message);
   }
-  return <HomeClient events={events} news={news} stats={stats} />;
+  return <HomeClient events={events} news={news} stats={stats} content={content} />;
 }

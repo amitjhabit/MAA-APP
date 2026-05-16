@@ -100,10 +100,12 @@ function InquiryModal({ onClose }) {
 const CAT_BADGE = { cultural:{bg:'var(--saffron-light)',color:'var(--saffron-dark)'}, religious:{bg:'var(--crimson-light)',color:'var(--crimson)'}, social:{bg:'var(--forest-light)',color:'var(--forest)'}, educational:{bg:'#E3F2FD',color:'#0D47A1'}, fundraiser:{bg:'var(--gold-light)',color:'var(--gold)'}, other:{bg:'var(--paper-3)',color:'var(--ink-soft)'} };
 const STA_BADGE = { upcoming:{bg:'#E3F2FD',color:'#0D47A1'}, ongoing:{bg:'var(--forest-light)',color:'var(--forest)'}, completed:{bg:'var(--paper-3)',color:'var(--ink-soft)'} };
 
-export default function HomeClient({ events: initialEvents, news: initialNews, stats }) {
+export default function HomeClient({ events: initialEvents, news: initialNews, stats, content = {} }) {
   const [events,      setEvents]      = useState(initialEvents  || []);
   const [news,        setNews]        = useState(initialNews    || []);
   const [showInquiry, setShowInquiry] = useState(false);
+
+  const get = (section, key, fallback) => content[`${section}.${key}`] || fallback;
 
   return (
     <>
@@ -112,10 +114,10 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
       {/* Hero */}
       <section className="hero">
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <span className="hero-eyebrow">Est. 2004 · Connecting Communities</span>
-          <h1>Celebrating <em>Maithili</em><br />Culture &amp; Heritage</h1>
-          <span className="hero-maithili">मैथिली संस्कृति आ विरासतक उत्सव</span>
-          <p className="hero-sub">Uniting the Maithili-speaking community across America — preserving our language, traditions, and cultural identity for future generations.</p>
+          <span className="hero-eyebrow">{get('hero', 'eyebrow', 'Est. 2004 · Connecting Communities')}</span>
+          <h1>{get('hero', 'title', 'Celebrating Maithili Culture & Heritage')}</h1>
+          <span className="hero-maithili">{get('hero', 'title_maithili', 'मैथिली संस्कृति आ विरासतक उत्सव')}</span>
+          <p className="hero-sub">{get('hero', 'subtitle', 'Uniting the Maithili-speaking community across America — preserving our language, traditions, and cultural identity for future generations.')}</p>
           <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '.5rem' }}>
             <a href="/join" className="btn btn-primary btn-lg">Become a Member</a>
             <a href="/events" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.12)', color: '#fff', borderColor: 'rgba(255,255,255,.3)' }}>View Events</a>
@@ -225,18 +227,18 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
       {/* Inquiry CTA strip */}
       <section style={{ background: 'var(--paper-2)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '1.25rem 2rem', textAlign: 'center' }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <h3 style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', color: 'var(--navy)', marginBottom: '.35rem' }}>✉️ Have a Question?</h3>
-          <p className="text-muted" style={{ marginBottom: '.85rem', fontSize: '.82rem' }}>We'd love to hear from you — whether it's about membership, events, or just to say hello.</p>
-          <button onClick={() => setShowInquiry(true)} className="btn btn-primary btn-sm">Send an Inquiry →</button>
+          <h3 style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', color: 'var(--navy)', marginBottom: '.35rem' }}>{get('inquiry_cta', 'heading', '✉️ Have a Question?')}</h3>
+          <p className="text-muted" style={{ marginBottom: '.85rem', fontSize: '.82rem' }}>{get('inquiry_cta', 'subtext', "We'd love to hear from you — whether it's about membership, events, or just to say hello.")}</p>
+          <button onClick={() => setShowInquiry(true)} className="btn btn-primary btn-sm">{get('inquiry_cta', 'button_label', 'Send an Inquiry →')}</button>
         </div>
       </section>
 
       {/* Join CTA */}
       <section style={{ background: 'var(--navy)', padding: '2rem 2rem', textAlign: 'center' }}>
         <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <div className="section-eyebrow" style={{ color: 'var(--gold)' }}>सदस्य बनें</div>
-          <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', color: '#fff', margin: '.4rem 0' }}>Join the MAA Family Today</h2>
-          <p style={{ color: 'rgba(255,255,255,.7)', marginBottom: '1.25rem', fontSize: '.82rem' }}>Annual Membership · <strong style={{ color: 'var(--gold)' }}>$21/year</strong></p>
+          <div className="section-eyebrow" style={{ color: 'var(--gold)' }}>{get('join_cta', 'eyebrow', 'सदस्य बनें')}</div>
+          <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', color: '#fff', margin: '.4rem 0' }}>{get('join_cta', 'heading', 'Join the MAA Family Today')}</h2>
+          <p style={{ color: 'rgba(255,255,255,.7)', marginBottom: '1.25rem', fontSize: '.82rem' }}>{get('join_cta', 'price_text', 'Annual Membership · $21/year')}</p>
           <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a href="/join" className="btn btn-primary">Join Now</a>
             <a href="/donate" className="btn btn-gold">Donate</a>

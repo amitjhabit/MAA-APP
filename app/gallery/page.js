@@ -1,26 +1,22 @@
-// app/gallery/page.js  — server component, fetches albums server-side with cache tag
-import { unstable_cache } from 'next/cache';
+// app/gallery/page.js — server component, always fetches fresh from DB
+export const dynamic = 'force-dynamic';
 import { getDb, ensureInit } from '@/lib/db';
 import GalleryClient from '@/app/components/GalleryClient';
 
-const getAlbums = unstable_cache(
-  async () => {
+export default async function GalleryPage() {
+  let albums = [];
+  try {
     await ensureInit();
     const sql = getDb();
-    return await sql`
+    albums = await sql`
       SELECT ga.*, COUNT(g.id)::int AS photo_count
       FROM gallery_albums ga
       LEFT JOIN gallery g ON g.album_id = ga.id
       GROUP BY ga.id
       ORDER BY ga.sort_order ASC, ga.created_at ASC
     `;
-  },
-  ['gallery-albums'],
-  { tags: ['gallery-albums'] }
-);
-
-export default async function GalleryPage() {
-  let albums = [];
-  try { albums = await getAlbums(); } catch {}
+  } catch (e) {
+    console.error('GalleryPage data fetch:', e.message);
+  }
   return <GalleryClient initialAlbums={albums} />;
 }

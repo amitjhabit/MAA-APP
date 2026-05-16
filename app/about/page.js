@@ -1,15 +1,16 @@
-// app/about/page.js — server component with tagged cache
-import { unstable_cache } from 'next/cache';
+// app/about/page.js — server component, always fetches fresh from DB
+export const dynamic = 'force-dynamic';
 import { getDb, ensureInit } from '@/lib/db';
 import PublicNav from '@/app/components/PublicNav';
 import PublicFooter from '@/app/components/PublicFooter';
 import CommitteeSection from '@/app/components/CommitteeSection';
 
-const getAboutData = unstable_cache(
-  async () => {
+export default async function AboutPage() {
+  let contentRows = [], committeeRows = [];
+  try {
     await ensureInit();
     const sql = getDb();
-    const [contentRows, committeeRows] = await Promise.all([
+    [contentRows, committeeRows] = await Promise.all([
       sql`SELECT * FROM about_content WHERE is_active = TRUE ORDER BY type, sort_order ASC, created_at ASC`,
       sql`
         SELECT id, name, role, committee, bio,
@@ -21,16 +22,6 @@ const getAboutData = unstable_cache(
         ORDER BY is_current DESC, sort_order ASC, created_at ASC
       `,
     ]);
-    return { contentRows, committeeRows };
-  },
-  ['about'],
-  { tags: ['about'] }
-);
-
-export default async function AboutPage() {
-  let contentRows = [], committeeRows = [];
-  try {
-    ({ contentRows, committeeRows } = await getAboutData());
   } catch (e) {
     console.error('AboutPage data fetch:', e.message);
   }

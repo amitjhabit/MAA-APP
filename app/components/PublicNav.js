@@ -45,7 +45,6 @@ export default function PublicNav({ active, onInquiry }) {
               </button>
             )}
             <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.25rem' }}>Join / Renew</a>
-            <a href="/admin" className="pub-nav-link" style={{ marginLeft: '.25rem', background: 'rgba(255,255,255,.12)', borderRadius: 6, padding: '.3rem .75rem', fontSize: '.8rem', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase' }}>Admin</a>
           </div>
 
           {/* Mobile right side: Join button + hamburger */}
@@ -77,7 +76,6 @@ export default function PublicNav({ active, onInquiry }) {
               </button>
             )}
             <a href="/join" className="btn btn-primary" style={{ margin: '.75rem 1.25rem', display: 'block', textAlign: 'center' }}>Join / Renew</a>
-            <a href="/admin" className="pub-nav-drawer-link" style={{ fontWeight: 700, fontSize: '.85rem', letterSpacing: '.05em', textTransform: 'uppercase' }}>Admin</a>
           </div>
         </div>
       )}

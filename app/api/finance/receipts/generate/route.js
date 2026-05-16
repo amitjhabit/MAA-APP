@@ -57,6 +57,7 @@ export async function POST(req) {
         transaction_date: txDate,
         generated_date:   new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
         status:           tx.status || '',
+        app_url:          process.env.NEXT_PUBLIC_APP_URL || '',
       };
 
       const htmlContent = renderTemplate(tmpl.body_html, vars);

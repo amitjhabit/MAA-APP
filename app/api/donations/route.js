@@ -1,6 +1,7 @@
 // app/api/donations/route.js
 import { NextResponse } from 'next/server';
 import { getDb, ensureInit } from '@/lib/db';
+import { autoGenerateAndSendReceipt } from '@/lib/receipts';
 function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
 
 export async function GET(request) {
@@ -40,6 +41,28 @@ export async function POST(request) {
     if (!b.donor_name?.trim()) return NextResponse.json({ success: false, errors: { donor_name: 'Required' } }, { status: 400 });
     if (!b.amount || parseFloat(b.amount) <= 0) return NextResponse.json({ success: false, errors: { amount: 'Valid amount required' } }, { status: 400 });
     const [d] = await sql`INSERT INTO donations (donor_name,donor_email,donor_phone,amount,currency,payment_method,campaign,purpose,status,transaction_id,receipt_sent,notes,donated_at) VALUES (${b.donor_name.trim()},${b.donor_email||null},${b.donor_phone||null},${parseFloat(b.amount)},${b.currency||'USD'},${b.payment_method||null},${b.campaign||null},${b.purpose||null},${b.status||'received'},${b.transaction_id||null},${b.receipt_sent||false},${b.notes||null},${b.donated_at||new Date().toISOString()}) RETURNING *`;
-    return NextResponse.json({ success: true, data: d }, { status: 201 });
+
+    // Auto-generate and email receipt if donor has an email address
+    let receiptNumber = null;
+    if (d.donor_email) {
+      const result = await autoGenerateAndSendReceipt({
+        sql,
+        recipientName:   d.donor_name,
+        recipientEmail:  d.donor_email,
+        amount:          d.amount,
+        description:     d.campaign ? `Donation — ${d.campaign}` : 'Donation to Maithil Association of America',
+        paymentMethod:   d.payment_method || '',
+        transactionDate: d.donated_at,
+        referenceType:   'donation',
+        referenceId:     d.id,
+      });
+      if (result) {
+        receiptNumber = result.receiptNumber;
+        await sql`UPDATE donations SET receipt_sent = TRUE WHERE id = ${d.id}`;
+        d.receipt_sent = true;
+      }
+    }
+
+    return NextResponse.json({ success: true, data: d, receipt_number: receiptNumber }, { status: 201 });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }

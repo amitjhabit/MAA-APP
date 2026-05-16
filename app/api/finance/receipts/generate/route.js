@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getDb, ensureInit } from '@/lib/db';
 import { renderTemplate, fmtAmount } from '@/lib/email';
+import { generateReceiptPdf } from '@/lib/pdf';
 
 function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
 
@@ -64,11 +65,12 @@ export async function POST(req) {
       if (existing) {
         const [updated] = await sql`
           UPDATE receipts SET
-            html_content  = ${htmlContent},
-            template_id   = ${template_id},
+            html_content    = ${htmlContent},
+            template_id     = ${template_id},
             recipient_name  = ${vars.recipient_name},
             recipient_email = ${vars.recipient_email},
-            generated_at  = NOW()
+            generated_at    = NOW(),
+            pdf_base64      = NULL
           WHERE id = ${existing.id} RETURNING *`;
         saved = updated;
       } else {
@@ -78,6 +80,16 @@ export async function POST(req) {
           RETURNING *`;
         saved = inserted;
       }
+
+      // Generate PDF and store as base64
+      try {
+        const pdfBuffer = await generateReceiptPdf(htmlContent);
+        const [withPdf] = await sql`UPDATE receipts SET pdf_base64 = ${pdfBuffer.toString('base64')} WHERE id = ${saved.id} RETURNING *`;
+        saved = withPdf;
+      } catch (pdfErr) {
+        console.error(`PDF generation failed for receipt ${saved.receipt_number}:`, pdfErr.message);
+      }
+
       generated.push(saved);
     }
 

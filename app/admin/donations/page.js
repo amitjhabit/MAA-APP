@@ -63,6 +63,8 @@ export default function DonationsPage(){
   const handleDelete=async id=>{if(!confirm('Delete?'))return;try{const r=await fetch(`/api/donations/${id}`,{method:'DELETE',headers:{'x-admin-secret':secret}});const d=await r.json();if(d.success){setDonations(p=>p.filter(x=>x.id!==id));show('Deleted');load();}else show(d.message,'error');}catch{}};
   const handleSave=(saved,isEdit)=>{if(isEdit)setDonations(p=>p.map(x=>x.id===saved.id?saved:x));else setDonations(p=>[saved,...p]);show(isEdit?'Updated!':'Recorded!');load();};
   const toggleReceipt=async(id,sent)=>{try{const r=await fetch(`/api/donations/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify({receipt_sent:sent})});const d=await r.json();if(d.success){setDonations(p=>p.map(x=>x.id===id?d.data:x));show('Updated!');}}catch{}};
+  const[sendingReceipt,setSendingReceipt]=useState(null);
+  const sendReceipt=async(d)=>{if(!d.donor_email){show('No email address for this donor','error');return;}setSendingReceipt(d.id);try{const r=await fetch(`/api/donations/${d.id}`,{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-secret':secret},body:JSON.stringify({action:'resend_receipt'})});const res=await r.json();if(res.success){setDonations(p=>p.map(x=>x.id===d.id?{...x,receipt_sent:true}:x));show(`Receipt ${res.receipt_number} sent to ${d.donor_email}`);}else show(res.message,'error');}catch{show('Error sending receipt','error');}setSendingReceipt(null);};
 
   const STATUS_C={received:{bg:'var(--forest-light)',color:'var(--forest)'},pending:{bg:'var(--gold-light)',color:'var(--gold)'},failed:{bg:'var(--crimson-light)',color:'var(--crimson)'},refunded:{bg:'var(--paper-3)',color:'var(--ink-soft)'}};
   return(<><div className="admin-layout"><Sidebar/>
@@ -92,7 +94,11 @@ export default function DonationsPage(){
               <td><span className="badge" style={{background:sc.bg,color:sc.color}}>{d.status}</span></td>
               <td><button onClick={()=>toggleReceipt(d.id,!d.receipt_sent)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'1.1rem'}}>{d.receipt_sent?'✅':'⬜'}</button></td>
               <td className="text-xs text-muted">{d.donated_at?new Date(d.donated_at).toLocaleDateString():''}</td>
-              <td><div style={{display:'flex',gap:'.3rem'}}><button className="btn btn-primary btn-sm" style={{padding:'.3rem .6rem'}} onClick={()=>setEditD(d)}>✏️</button><button className="btn btn-danger btn-sm" style={{padding:'.3rem .6rem'}} onClick={()=>handleDelete(d.id)}>🗑</button></div></td>
+              <td><div style={{display:'flex',gap:'.3rem'}}>
+                <button className="btn btn-ghost btn-sm" style={{padding:'.3rem .6rem',fontSize:'.72rem'}} onClick={()=>sendReceipt(d)} disabled={sendingReceipt===d.id} title={d.donor_email?`Send receipt to ${d.donor_email}`:'No email on file'}>{sendingReceipt===d.id?<span className="spinner"/>:'📄'}</button>
+                <button className="btn btn-primary btn-sm" style={{padding:'.3rem .6rem'}} onClick={()=>setEditD(d)}>✏️</button>
+                <button className="btn btn-danger btn-sm" style={{padding:'.3rem .6rem'}} onClick={()=>handleDelete(d.id)}>🗑</button>
+              </div></td>
             </tr>);})}
             </tbody>
           </table></div>

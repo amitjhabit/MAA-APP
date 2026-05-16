@@ -1,6 +1,7 @@
 // app/api/members/route.js
 import { NextResponse } from 'next/server';
 import { getDb, ensureInit } from '@/lib/db';
+import { autoGenerateAndSendReceipt } from '@/lib/receipts';
 function auth(req){return req.headers.get('x-admin-secret')===process.env.ADMIN_SECRET;}
 
 export async function GET(request) {
@@ -41,6 +42,22 @@ export async function POST(request) {
     const [dup]=await sql`SELECT id FROM members WHERE email=${b.email.toLowerCase()}`;
     if(dup)return NextResponse.json({success:false,errors:{email:'Email already registered'}},{status:409});
     const [m]=await sql`INSERT INTO members (first_name,last_name,email,phone,address,city,state,zip,country,date_of_birth,gender,photo_url,membership_type,membership_plan,membership_status,is_active,joined_date,expiry_date,amount_paid,payment_method,maithili_name,village_district,occupation,notes,is_committee,committee_role) VALUES (${b.first_name.trim()},${b.last_name.trim()},${b.email.toLowerCase()},${b.phone||null},${b.address||null},${b.city||null},${b.state||null},${b.zip||null},${b.country||'USA'},${b.date_of_birth||null},${b.gender||null},${b.photo_url||null},${b.membership_type||'individual'},${b.membership_plan||'annual'},${b.membership_status||'active'},${b.is_active!==undefined?b.is_active:true},${b.joined_date||null},${b.expiry_date||null},${parseFloat(b.amount_paid)||0},${b.payment_method||null},${b.maithili_name||null},${b.village_district||null},${b.occupation||null},${b.notes||null},${b.is_committee||false},${b.committee_role||null}) RETURNING *`;
+
+    // Auto-generate membership receipt if payment amount recorded
+    if (parseFloat(b.amount_paid) > 0 && m.email) {
+      autoGenerateAndSendReceipt({
+        sql,
+        recipientName:   `${m.first_name} ${m.last_name}`,
+        recipientEmail:  m.email,
+        amount:          m.amount_paid,
+        description:     `${m.membership_plan === 'lifetime' ? 'Lifetime' : 'Annual'} Membership — ${m.first_name} ${m.last_name}`,
+        paymentMethod:   m.payment_method || '',
+        transactionDate: m.joined_date || new Date().toISOString(),
+        referenceType:   'membership',
+        referenceId:     m.id,
+      }).catch(err => console.error('Member receipt error:', err.message));
+    }
+
     return NextResponse.json({success:true,data:m},{status:201});
   } catch(e){return NextResponse.json({success:false,message:e.message},{status:500});}
 }

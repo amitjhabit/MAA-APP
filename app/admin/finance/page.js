@@ -743,7 +743,18 @@ function ReceiptsTab({ secret, toast }) {
                   <td style={{ fontSize: '.8rem' }}>{fmtDate(r.generated_at)}</td>
                   <td style={{ fontSize: '.8rem' }}>{r.emailed_at ? fmtDate(r.emailed_at) : <span style={{ color: 'var(--ink-dim)' }}>Not sent</span>}</td>
                   <td>
-                    <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(r.html_content)}>Preview</button>
+                    <div style={{ display: 'flex', gap: '.35rem' }}>
+                      <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(r.html_content)}>Preview</button>
+                      {r.pdf_base64 && (
+                        <a
+                          href={`/api/finance/receipts/${r.id}/pdf`}
+                          download
+                          className="btn btn-ghost btn-sm"
+                          style={{ fontSize: '.75rem' }}
+                          onClick={e => { e.currentTarget.setAttribute('download', `${r.receipt_number}.pdf`); }}
+                        >⬇️ PDF</a>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

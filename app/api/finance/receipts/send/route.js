@@ -28,7 +28,12 @@ export async function POST(req) {
         continue;
       }
       try {
-        await sendEmail({ to: r.recipient_email, subject: r.subject, html: r.html_content });
+        const attachments = r.pdf_base64 ? [{
+          filename: `${r.receipt_number}.pdf`,
+          content: Buffer.from(r.pdf_base64, 'base64'),
+          contentType: 'application/pdf',
+        }] : [];
+        await sendEmail({ to: r.recipient_email, subject: r.subject, html: r.html_content, attachments });
         await sql`UPDATE receipts SET emailed_at = NOW() WHERE id = ${r.id}`;
         results.push({ id: r.id, success: true, to: r.recipient_email });
       } catch (err) {

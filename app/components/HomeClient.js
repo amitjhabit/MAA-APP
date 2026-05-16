@@ -224,28 +224,6 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
         )}
       </section>
 
-      {/* Inquiry CTA strip */}
-      <section style={{ background: 'var(--paper-2)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '1.25rem 2rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <h3 style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', color: 'var(--navy)', marginBottom: '.35rem' }}>{get('inquiry_cta', 'heading', '✉️ Have a Question?')}</h3>
-          <p className="text-muted" style={{ marginBottom: '.85rem', fontSize: '.82rem' }}>{get('inquiry_cta', 'subtext', "We'd love to hear from you — whether it's about membership, events, or just to say hello.")}</p>
-          <button onClick={() => setShowInquiry(true)} className="btn btn-primary btn-sm">{get('inquiry_cta', 'button_label', 'Send an Inquiry →')}</button>
-        </div>
-      </section>
-
-      {/* Join CTA */}
-      <section style={{ background: 'var(--navy)', padding: '2rem 2rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <div className="section-eyebrow" style={{ color: 'var(--gold)' }}>{get('join_cta', 'eyebrow', 'सदस्य बनें')}</div>
-          <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', color: '#fff', margin: '.4rem 0' }}>{get('join_cta', 'heading', 'Join the MAA Family Today')}</h2>
-          <p style={{ color: 'rgba(255,255,255,.7)', marginBottom: '1.25rem', fontSize: '.82rem' }}>{get('join_cta', 'price_text', 'Annual Membership · $21/year')}</p>
-          <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/join" className="btn btn-primary">Join Now</a>
-            <a href="/donate" className="btn btn-gold">Donate</a>
-          </div>
-        </div>
-      </section>
-
       {/* Floating inquiry button */}
       <button
         onClick={() => setShowInquiry(true)}

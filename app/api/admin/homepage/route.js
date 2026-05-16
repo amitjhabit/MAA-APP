@@ -11,7 +11,7 @@ export async function GET(req) {
     await ensureInit();
     const sql = getDb();
     const rows = await sql`SELECT * FROM homepage_content ORDER BY section, key`;
-    return NextResponse.json({ success: true, data: rows });
+    return NextResponse.json({ success: true, data: rows }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (e) {
     return NextResponse.json({ success: false, message: e.message }, { status: 500 });
   }

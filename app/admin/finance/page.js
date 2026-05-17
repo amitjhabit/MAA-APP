@@ -755,19 +755,16 @@ function ReceiptsTab({ secret, toast }) {
                   <td>
                     <div style={{ display: 'flex', gap: '.35rem' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(r.html_content)}>Preview</button>
-                      {r.html_content && (
-                        <a
-                          href={`/api/finance/receipts/${r.id}/pdf?secret=${encodeURIComponent(secret)}`}
-                          download={`${r.receipt_number}.pdf`}
-                          className="btn btn-ghost btn-sm"
-                          style={{ fontSize: '.75rem' }}
-                        >⬇️ PDF</a>
-                      )}
+                      <a
+                        href={r.html_content ? `/api/finance/receipts/${r.id}/pdf?secret=${encodeURIComponent(secret)}` : '#'}
+                        download={r.html_content ? `${r.receipt_number}.pdf` : undefined}
+                        className="btn btn-ghost btn-sm"
+                        style={{ fontSize: '.75rem', opacity: r.html_content ? 1 : 0.35, pointerEvents: r.html_content ? 'auto' : 'none' }}
+                      >PDF</a>
                       <button
-                        className="btn btn-danger btn-sm"
-                        style={{ fontSize: '.75rem' }}
+                        style={{ fontSize: '.75rem', padding: '3px 8px', background: '#dc2626', color: '#fff', border: 'none', borderRadius: 4, cursor: 'pointer' }}
                         onClick={() => deleteReceipt(r)}
-                      >🗑️</button>
+                      >Delete</button>
                     </div>
                   </td>
                 </tr>

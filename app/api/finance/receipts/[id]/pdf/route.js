@@ -16,16 +16,11 @@ export async function GET(req, { params }) {
     const [receipt] = await sql`SELECT * FROM receipts WHERE id = ${params.id}`;
     if (!receipt) return new Response('Receipt not found', { status: 404 });
 
-    // Use stored PDF if available, else generate on-the-fly
-    let pdfBuffer;
-    if (receipt.pdf_base64) {
-      pdfBuffer = Buffer.from(receipt.pdf_base64, 'base64');
-    } else {
-      if (!receipt.html_content) return new Response('No HTML content to generate PDF from', { status: 400 });
-      pdfBuffer = await generateReceiptPdf(receipt.html_content);
-      // Cache it for next time
-      await sql`UPDATE receipts SET pdf_base64 = ${pdfBuffer.toString('base64')} WHERE id = ${params.id}`;
-    }
+    // Always regenerate from html_content so logo/images are always inlined fresh
+    if (!receipt.html_content) return new Response('No HTML content to generate PDF from', { status: 400 });
+    const pdfBuffer = await generateReceiptPdf(receipt.html_content);
+    // Update cached copy
+    await sql`UPDATE receipts SET pdf_base64 = ${pdfBuffer.toString('base64')} WHERE id = ${params.id}`;
 
     const filename = `${receipt.receipt_number || `receipt-${params.id}`}.pdf`;
     return new Response(pdfBuffer, {

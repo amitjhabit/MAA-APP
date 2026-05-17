@@ -40,3 +40,17 @@ export async function GET(req) {
     });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }
+
+export async function DELETE(req) {
+  if (!auth(req)) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+  try {
+    await ensureInit();
+    const sql = getDb();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
+    if (!id) return NextResponse.json({ success: false, message: 'id required' }, { status: 400 });
+    const [deleted] = await sql`DELETE FROM receipts WHERE id = ${id} RETURNING id, receipt_number`;
+    if (!deleted) return NextResponse.json({ success: false, message: 'Receipt not found' }, { status: 404 });
+    return NextResponse.json({ success: true, message: `Receipt ${deleted.receipt_number} deleted` });
+  } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
+}

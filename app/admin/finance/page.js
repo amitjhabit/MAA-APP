@@ -702,6 +702,16 @@ function ReceiptsTab({ secret, toast }) {
     else toast.show(j.message || 'Error', 'error');
   };
 
+  const deleteReceipt = async (r) => {
+    if (!confirm(`Delete receipt ${r.receipt_number}? This cannot be undone.`)) return;
+    const res = await fetch(`/api/finance/receipts?id=${r.id}`, {
+      method: 'DELETE', headers: { 'x-admin-secret': secret },
+    });
+    const j = await res.json();
+    if (j.success) { toast.show('Receipt deleted'); load(page); }
+    else toast.show(j.message || 'Delete failed', 'error');
+  };
+
   return (
     <div>
       <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap', marginBottom: '1rem', alignItems: 'center' }}>
@@ -745,15 +755,19 @@ function ReceiptsTab({ secret, toast }) {
                   <td>
                     <div style={{ display: 'flex', gap: '.35rem' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(r.html_content)}>Preview</button>
-                      {r.pdf_base64 && (
+                      {r.html_content && (
                         <a
-                          href={`/api/finance/receipts/${r.id}/pdf`}
-                          download
+                          href={`/api/finance/receipts/${r.id}/pdf?secret=${encodeURIComponent(secret)}`}
+                          download={`${r.receipt_number}.pdf`}
                           className="btn btn-ghost btn-sm"
                           style={{ fontSize: '.75rem' }}
-                          onClick={e => { e.currentTarget.setAttribute('download', `${r.receipt_number}.pdf`); }}
                         >⬇️ PDF</a>
                       )}
+                      <button
+                        className="btn btn-danger btn-sm"
+                        style={{ fontSize: '.75rem' }}
+                        onClick={() => deleteReceipt(r)}
+                      >🗑️</button>
                     </div>
                   </td>
                 </tr>

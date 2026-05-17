@@ -3,7 +3,11 @@ export const dynamic = 'force-dynamic';
 import { getDb } from '@/lib/db';
 import { generateReceiptPdf } from '@/lib/pdf';
 
-function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
+function auth(req) {
+  const secret = process.env.ADMIN_SECRET;
+  return req.headers.get('x-admin-secret') === secret ||
+         new URL(req.url).searchParams.get('secret') === secret;
+}
 
 export async function GET(req, { params }) {
   if (!auth(req)) return new Response('Unauthorized', { status: 401 });

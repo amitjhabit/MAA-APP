@@ -2,6 +2,9 @@
 const nextConfig = {
   images: { remotePatterns: [{ protocol: 'https', hostname: '**' }] },
 
+  // Prevent Next.js from bundling native binaries — must run as external Node modules
+  serverExternalPackages: ['puppeteer-core', '@sparticuz/chromium-min'],
+
   // Tell browsers and CDN never to cache public page HTML
   async headers() {
     return [

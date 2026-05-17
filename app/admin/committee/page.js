@@ -21,7 +21,7 @@ function Modal({member,secret,onClose,onSave}){
       <div className="form-group"><label>Role / Title <span className="req">*</span></label><input value={form.role} onChange={set('role')} placeholder="President, Treasurer…"/></div>
       <div className="form-group"><label>Email</label><input type="email" value={form.email} onChange={set('email')}/></div>
       <div className="form-group"><label>Phone</label><input value={form.phone} onChange={set('phone')}/></div>
-      <div className="form-group"><label>Committee</label><select value={form.committee} onChange={set('committee')}><option value="executive">Executive</option><option value="board">Board</option><option value="cultural">Cultural</option><option value="finance">Finance</option><option value="events">Events</option><option value="youth">Technology</option><option value="other">Other</option></select></div>
+      <div className="form-group"><label>Committee</label><select value={form.committee} onChange={set('committee')}><option value="executive">Executive</option><option value="board">Board</option><option value="cultural">Cultural</option><option value="finance">Finance</option><option value="events">Events</option><option value="youth">Youth</option><option value="technology">Technology</option><option value="other">Other</option></select></div>
       <div className="form-group"><label>Sort Order</label><input type="number" value={form.sort_order} onChange={set('sort_order')} min="0"/></div>
       <div className="form-group"><label>Term Start</label><input type="date" value={form.term_start} onChange={set('term_start')}/></div>
       <div className="form-group"><label>Term End</label><input type="date" value={form.term_end} onChange={set('term_end')}/></div>
@@ -53,7 +53,7 @@ export default function CommitteePage(){
       <div className="admin-content">
         <div className="stats-grid">{[{label:'Total',num:stats.total,color:'var(--saffron)'},{label:'Currently Serving',num:stats.current,color:'var(--forest)'},{label:'Past Members',num:stats.past,color:'var(--gold)'}].map(s=>(<div className="stat-card" key={s.label}><div className="stat-num" style={{color:s.color}}>{s.num}</div><div className="stat-label">{s.label}</div></div>))}</div>
         <div style={{marginBottom:'1.25rem'}}>
-          <div className="filter-bar" style={{marginBottom:0}}>{[['all','All'],['executive','Executive'],['board','Board'],['cultural','Cultural'],['finance','Finance'],['events','Events'],['youth','Technology']].map(([v,l])=>(<button key={v} className={`filter-btn${filterCommittee===v?' active':''}`} onClick={()=>{setFilterCommittee(v);load({committee:v});}}>{l}</button>))}</div>
+          <div className="filter-bar" style={{marginBottom:0}}>{[['all','All'],['executive','Executive'],['board','Board'],['cultural','Cultural'],['finance','Finance'],['events','Events'],['youth','Youth'],['technology','Technology']].map(([v,l])=>(<button key={v} className={`filter-btn${filterCommittee===v?' active':''}`} onClick={()=>{setFilterCommittee(v);load({committee:v});}}>{l}</button>))}</div>
         </div>
         {loading?(<div className="loading-state"><span className="spinner"/>Loading…</div>):members.length===0?(<div className="empty-state"><div className="icon">🏛️</div><p>No members yet.</p><button className="btn btn-primary btn-sm" style={{marginTop:'1rem'}} onClick={()=>setShowAdd(true)}>+ Add First Member</button></div>):(
           <div className="grid-2">

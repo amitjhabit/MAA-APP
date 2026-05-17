@@ -21,8 +21,9 @@ export async function GET(req) {
     const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
 
     const rows = await sql(
-      `SELECT r.*, t.description AS transaction_description, t.amount AS transaction_amount, t.transaction_date,
-              tmpl.name AS template_name
+      `SELECT r.*, t.description AS transaction_description,
+              COALESCE(t.amount, r.amount, 0) AS transaction_amount,
+              t.transaction_date, tmpl.name AS template_name
        FROM receipts r
        LEFT JOIN finance_transactions t ON t.id = r.transaction_id
        LEFT JOIN receipt_templates tmpl ON tmpl.id = r.template_id

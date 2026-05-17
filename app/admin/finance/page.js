@@ -957,7 +957,7 @@ function TemplatesTab({ secret, toast }) {
                 <span style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '1rem' }}>{t.name}</span>
                 {t.is_default && <span className="badge" style={{ background: 'var(--saffron-light)', color: 'var(--saffron-dark)' }}>Default</span>}
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: '.5rem' }}>
-                  <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(t.body_html)}>Preview</button>
+                  <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(t.body_html.replace(/\{\{app_url\}\}/g, window.location.origin))}>Preview</button>
                   <button className="btn btn-ghost btn-sm" onClick={() => openEdit(t)}>Edit</button>
                   <button className="btn btn-ghost btn-sm" style={{ color: 'var(--crimson)' }} onClick={() => deleteTmpl(t.id, t.name)}>Delete</button>
                 </div>

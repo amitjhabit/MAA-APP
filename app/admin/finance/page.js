@@ -664,13 +664,15 @@ function BudgetTab({ secret, toast }) {
 
 /* ══════════════════════════════════════ RECEIPTS TAB ══════════════════════════════════════ */
 function ReceiptsTab({ secret, toast }) {
-  const [rows, setRows]     = useState([]);
-  const [pages, setPages]   = useState(1);
-  const [page, setPage]     = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState('');
+  const [rows, setRows]         = useState([]);
+  const [pages, setPages]       = useState(1);
+  const [page, setPage]         = useState(1);
+  const [loading, setLoading]   = useState(false);
+  const [search, setSearch]     = useState('');
   const [selected, setSelected] = useState(new Set());
-  const [sending, setSending] = useState(false);
+  const [sending, setSending]   = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [driveResults, setDriveResults] = useState(null);
   const [previewHtml, setPreviewHtml] = useState(null);
 
   const load = useCallback(async (p = 1) => {
@@ -702,6 +704,22 @@ function ReceiptsTab({ secret, toast }) {
     else toast.show(j.message || 'Error', 'error');
   };
 
+  const uploadToDrive = async () => {
+    if (!selected.size) return;
+    setUploading(true);
+    try {
+      const res = await fetch('/api/finance/receipts/upload-drive', {
+        method: 'POST',
+        headers: { 'x-admin-secret': secret, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ receipt_ids: [...selected] }),
+      });
+      const j = await res.json();
+      if (j.success) { setDriveResults(j.results); setSelected(new Set()); }
+      else toast.show(j.message || 'Upload failed', 'error');
+    } catch (e) { toast.show(e.message || 'Upload failed', 'error'); }
+    setUploading(false);
+  };
+
   const deleteReceipt = async (r) => {
     if (!confirm(`Delete receipt ${r.receipt_number}? This cannot be undone.`)) return;
     const res = await fetch(`/api/finance/receipts?id=${r.id}`, {
@@ -717,11 +735,19 @@ function ReceiptsTab({ secret, toast }) {
       <div style={{ display: 'flex', gap: '.5rem', flexWrap: 'wrap', marginBottom: '1rem', alignItems: 'center' }}>
         <input className="admin-input" placeholder="Search receipts…" value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} style={{ width: 200 }} />
         <div style={{ marginLeft: 'auto', display: 'flex', gap: '.5rem' }}>
-          {selected.size > 0 && (
+          {selected.size > 0 && (<>
             <button className="btn btn-primary btn-sm" onClick={sendReceipts} disabled={sending}>
               {sending ? 'Sending…' : `Email ${selected.size} Receipt(s)`}
             </button>
-          )}
+            <button
+              className="btn btn-sm"
+              style={{ background: '#1a73e8', color: '#fff', border: 'none' }}
+              onClick={uploadToDrive}
+              disabled={uploading}
+            >
+              {uploading ? 'Uploading…' : `⬆ Drive (${selected.size})`}
+            </button>
+          </>)}
         </div>
       </div>
 
@@ -781,6 +807,26 @@ function ReceiptsTab({ secret, toast }) {
           <span style={{ padding: '.35rem .75rem', fontSize: '.85rem', color: 'var(--ink-soft)' }}>Page {page} / {pages}</span>
           <button className="btn btn-ghost btn-sm" disabled={page === pages} onClick={() => setPage(p => p + 1)}>Next →</button>
         </div>
+      )}
+
+      {/* Google Drive Upload Results Modal */}
+      {driveResults && (
+        <Modal title="Uploaded to Google Drive" onClose={() => setDriveResults(null)} wide>
+          <div style={{ padding: '1rem', overflowY: 'auto', maxHeight: 400 }}>
+            {driveResults.map((r, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.75rem', padding: '.6rem 0', borderBottom: '1px solid var(--border)' }}>
+                <span style={{ fontSize: '1.1rem' }}>{r.success ? '✅' : '❌'}</span>
+                <span style={{ flex: 1, fontSize: '.875rem', color: 'var(--navy)' }}>{r.name || `Receipt #${r.id}`}</span>
+                {r.success
+                  ? <a href={r.link} target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm" style={{ fontSize: '.75rem' }}>Open in Drive ↗</a>
+                  : <span style={{ fontSize: '.8rem', color: 'var(--crimson)' }}>{r.error}</span>}
+              </div>
+            ))}
+          </div>
+          <div style={{ padding: '1rem', borderTop: '1px solid var(--border)', textAlign: 'right' }}>
+            <button className="btn btn-primary btn-sm" onClick={() => setDriveResults(null)}>Done</button>
+          </div>
+        </Modal>
       )}
 
       {/* HTML Preview Modal */}

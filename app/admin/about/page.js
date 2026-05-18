@@ -49,7 +49,7 @@ function ItemModal({ item, secret, onClose, onSave }) {
   const [form, setForm] = useState(isEdit ? { ...item, sort_order: String(item.sort_order || 0) } : { ...BLANK });
   const [busy, setBusy] = useState(false);
   const set = k => e => setForm(p => ({ ...p, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
-  const needsIcon  = form.type === 'core_value' || form.type === 'activity';
+  const needsIcon  = form.type === 'core_value' || form.type === 'activity' || form.type === 'goals';
   const needsTitle = form.type !== 'paragraph';
 
   const submit = async () => {
@@ -84,6 +84,7 @@ function ItemModal({ item, secret, onClose, onSave }) {
               <option value="quote">💬 Closing Quote</option>
               <option value="core_value">⭐ Core Value</option>
               <option value="activity">🎯 What We Do</option>
+              <option value="goals">🏆 Goals and Objectives</option>
             </select>
           </div>
           <div className="form-group"><label>Sort Order</label>

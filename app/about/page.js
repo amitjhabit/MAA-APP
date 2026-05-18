@@ -30,6 +30,7 @@ export default async function AboutPage() {
   const quote            = contentRows.find(r => r.type === 'quote') || null;
   const coreValues       = contentRows.filter(r => r.type === 'core_value');
   const activities       = contentRows.filter(r => r.type === 'activity');
+  const goals            = contentRows.filter(r => r.type === 'goals');
 
   return (
     <>
@@ -90,6 +91,23 @@ export default async function AboutPage() {
                 <div key={item.id} className="card" style={{ textAlign: 'center' }}>
                   {item.icon && <div style={{ fontSize: '2.2rem', marginBottom: '.75rem' }}>{item.icon}</div>}
                   {item.title && <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, color: 'var(--navy)', marginBottom: '.5rem' }}>{item.title}</div>}
+                  <div className="text-sm text-muted" style={{ lineHeight: 1.7 }}>{item.content}</div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
+        {goals.length > 0 && (
+          <>
+            <div className="section-header">
+              <div><div className="section-eyebrow">हमारे लक्ष्य</div><h2 className="section-title">Goals & <span>Objectives</span></h2></div>
+            </div>
+            <div className="grid-3" style={{ marginBottom: '3.5rem' }}>
+              {goals.map(item => (
+                <div key={item.id} className="card" style={{ textAlign: 'center' }}>
+                  {item.icon && <div style={{ fontSize: '2.2rem', marginBottom: '.75rem' }}>{item.icon}</div>}
+                  {item.title && <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, color: 'var(--navy)', marginBottom: '.5rem', fontSize: '1rem' }}>{item.title}</div>}
                   <div className="text-sm text-muted" style={{ lineHeight: 1.7 }}>{item.content}</div>
                 </div>
               ))}

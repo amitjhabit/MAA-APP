@@ -21,9 +21,12 @@ function Toast({ toasts }) {
 function fmt(n) { return parseFloat(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 function fmtDate(d) {
   if (!d) return '—';
-  const m = String(d).match(/(\d{4})-(\d{2})-(\d{2})/);
-  if (!m) return '—';
-  return new Date(+m[1], +m[2]-1, +m[3]).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const s = String(d);
+  // Date-only strings (YYYY-MM-DD) must be parsed at UTC noon to avoid PST day-shift.
+  // Timestamp strings are passed as-is and converted to PST via timeZone option.
+  const dt = /^\d{4}-\d{2}-\d{2}$/.test(s) ? new Date(s + 'T12:00:00Z') : new Date(s);
+  if (isNaN(dt)) return '—';
+  return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/Los_Angeles' });
 }
 
 /* ══════════════════════════════════════ SIDEBAR ══════════════════════════════════════ */
@@ -415,7 +418,7 @@ function TransactionForm({ secret, tx, categories, onClose, onSaved, toast }) {
     payer_name: tx?.payer_name || '',
     payer_email: tx?.payer_email || '',
     payment_method: tx?.payment_method || '',
-    transaction_date: tx?.transaction_date ? String(tx.transaction_date).slice(0,10) : new Date().toISOString().slice(0,10),
+    transaction_date: tx?.transaction_date ? String(tx.transaction_date).slice(0,10) : new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' }),
     status: tx?.status || 'completed',
     notes: tx?.notes || '',
     reference_type: tx?.reference_type || '',

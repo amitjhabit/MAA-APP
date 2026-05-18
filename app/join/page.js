@@ -77,66 +77,69 @@ export default function JoinPage() {
               </div>
             </div>
 
-            {/* Form */}
-            <div className="card">
-              <h3 style={{ fontFamily: 'var(--serif)', color: 'var(--navy)', marginBottom: '1.5rem' }}>Your Information</h3>
-              {serverErr && <div style={{ background: 'var(--crimson-light)', borderRadius: 'var(--radius)', padding: '.75rem', marginBottom: '1rem', color: 'var(--crimson)', fontSize: '.83rem' }}>{serverErr}</div>}
-              <form onSubmit={submit}>
-                <div className="form-grid">
-                  <div className="form-group"><label>First Name <span className="req">*</span></label><input value={form.first_name} onChange={set('first_name')} />{errors.first_name && <span className="field-error">{errors.first_name}</span>}</div>
-                  <div className="form-group"><label>Last Name <span className="req">*</span></label><input value={form.last_name} onChange={set('last_name')} />{errors.last_name && <span className="field-error">{errors.last_name}</span>}</div>
-                  <div className="form-group"><label>Maithili Name (मैथिली नाम)</label><input value={form.maithili_name} onChange={set('maithili_name')} placeholder="राजेश झा" /></div>
-                  <div className="form-group"><label>Email <span className="req">*</span></label><input type="email" value={form.email} onChange={set('email')} />{errors.email && <span className="field-error">{errors.email}</span>}</div>
-                  <div className="form-group"><label>Phone</label><input type="tel" value={form.phone} onChange={set('phone')} /></div>
-                  <div className="form-group"><label>Occupation</label><input value={form.occupation} onChange={set('occupation')} /></div>
-                  <div className="form-group"><label>City</label><input value={form.city} onChange={set('city')} /></div>
-                  <div className="form-group"><label>State</label><input value={form.state} onChange={set('state')} /></div>
-                  <div className="form-group span-2"><label>Village / District (गाम / जिला)</label><input value={form.village_district} onChange={set('village_district')} placeholder="Darbhanga, Bihar" /></div>
-                  <div className="form-group span-2"><label>Additional Notes</label><textarea value={form.notes} onChange={set('notes')} rows={3} placeholder="Anything you'd like us to know?" /></div>
-                </div>
+            {/* Form + QR side by side */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '2rem', alignItems: 'start' }}>
 
-                <div style={{ background: 'var(--saffron-light)', border: '1px solid rgba(232,114,12,.25)', borderRadius: 'var(--radius)', padding: '.85rem 1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="text-sm" style={{ color: 'var(--ink)' }}>Annual Membership Fee</span>
-                  <span style={{ fontFamily: 'var(--serif)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--saffron)' }}>${ANNUAL_FEE}/year</span>
-                </div>
+              {/* Form */}
+              <div className="card">
+                <h3 style={{ fontFamily: 'var(--serif)', color: 'var(--navy)', marginBottom: '1.5rem' }}>Your Information</h3>
+                {serverErr && <div style={{ background: 'var(--crimson-light)', borderRadius: 'var(--radius)', padding: '.75rem', marginBottom: '1rem', color: 'var(--crimson)', fontSize: '.83rem' }}>{serverErr}</div>}
+                <form onSubmit={submit}>
+                  <div className="form-grid">
+                    <div className="form-group"><label>First Name <span className="req">*</span></label><input value={form.first_name} onChange={set('first_name')} />{errors.first_name && <span className="field-error">{errors.first_name}</span>}</div>
+                    <div className="form-group"><label>Last Name <span className="req">*</span></label><input value={form.last_name} onChange={set('last_name')} />{errors.last_name && <span className="field-error">{errors.last_name}</span>}</div>
+                    <div className="form-group"><label>Maithili Name (मैथिली नाम)</label><input value={form.maithili_name} onChange={set('maithili_name')} placeholder="राजेश झा" /></div>
+                    <div className="form-group"><label>Email <span className="req">*</span></label><input type="email" value={form.email} onChange={set('email')} />{errors.email && <span className="field-error">{errors.email}</span>}</div>
+                    <div className="form-group"><label>Phone</label><input type="tel" value={form.phone} onChange={set('phone')} /></div>
+                    <div className="form-group"><label>Occupation</label><input value={form.occupation} onChange={set('occupation')} /></div>
+                    <div className="form-group"><label>City</label><input value={form.city} onChange={set('city')} /></div>
+                    <div className="form-group"><label>State</label><input value={form.state} onChange={set('state')} /></div>
+                    <div className="form-group span-2"><label>Village / District (गाम / जिला)</label><input value={form.village_district} onChange={set('village_district')} placeholder="Darbhanga, Bihar" /></div>
+                    <div className="form-group span-2"><label>Additional Notes</label><textarea value={form.notes} onChange={set('notes')} rows={3} placeholder="Anything you'd like us to know?" /></div>
+                  </div>
 
-                <button type="submit" className="btn btn-primary w-full" disabled={loading}>
-                  {loading ? <><span className="spinner" />Submitting…</> : 'Submit Application →'}
-                </button>
-              </form>
-            </div>
+                  <div style={{ background: 'var(--saffron-light)', border: '1px solid rgba(232,114,12,.25)', borderRadius: 'var(--radius)', padding: '.85rem 1rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span className="text-sm" style={{ color: 'var(--ink)' }}>Annual Membership Fee</span>
+                    <span style={{ fontFamily: 'var(--serif)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--saffron)' }}>${ANNUAL_FEE}/year</span>
+                  </div>
 
-            {/* Zelle QR card */}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '1rem', paddingBottom: '2rem' }}>
-              <p style={{ color: 'var(--ink-soft)', fontSize: '.9rem', textAlign: 'center', marginBottom: '1.25rem' }}>
-                Pay your membership fee via Zelle — scan the QR code in your banking app.
-              </p>
-              <div style={{
-                background: '#fff',
-                border: '1px solid var(--border)',
-                borderRadius: 16,
-                padding: '1.5rem 2rem 1.25rem',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '0.5rem',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                width: 280,
-              }}>
-                <p style={{ color: '#6d4aff', fontSize: '.85rem', fontWeight: 500, margin: 0 }}>Send Money with Zelle®</p>
-                <p style={{ color: '#aaa', fontSize: '.78rem', margin: 0 }}>Scan in your banking app to pay.</p>
-                <div style={{ width: '100%', height: 1, background: '#f0f0f0', margin: '0.2rem 0' }} />
-                <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#222', margin: 0, textAlign: 'center' }}>Maithil Association Of America</p>
-                <p style={{ color: '#666', fontSize: '.78rem', margin: 0 }}>{ZELLE_EMAIL}</p>
-                <div style={{ border: '1px solid #eee', borderRadius: 8, padding: 6, marginTop: 4 }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={QR_URL} alt="Zelle QR Code" width={180} height={180} />
-                </div>
-                <div style={{ width: '100%', height: 1, background: '#f0f0f0', margin: '0.2rem 0' }} />
-                <p style={{ color: '#6d4aff', fontWeight: 800, fontSize: '1.3rem', fontStyle: 'italic', margin: 0 }}>
-                  Zelle<sup style={{ fontSize: '.55rem', fontWeight: 600 }}>®</sup>
-                </p>
+                  <button type="submit" className="btn btn-primary w-full" disabled={loading}>
+                    {loading ? <><span className="spinner" />Submitting…</> : 'Submit Application →'}
+                  </button>
+                </form>
               </div>
+
+              {/* Zelle QR card */}
+              <div style={{ position: 'sticky', top: '6rem' }}>
+                <p style={{ color: 'var(--ink-soft)', fontSize: '.82rem', textAlign: 'center', marginBottom: '.75rem' }}>Pay membership fee via Zelle</p>
+                <div style={{
+                  background: '#fff',
+                  border: '1px solid var(--border)',
+                  borderRadius: 16,
+                  padding: '1.25rem 1.5rem 1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  width: 240,
+                }}>
+                  <p style={{ color: '#6d4aff', fontSize: '.8rem', fontWeight: 500, margin: 0 }}>Send Money with Zelle®</p>
+                  <p style={{ color: '#aaa', fontSize: '.72rem', margin: 0 }}>Scan in your banking app to pay.</p>
+                  <div style={{ width: '100%', height: 1, background: '#f0f0f0', margin: '0.15rem 0' }} />
+                  <p style={{ fontWeight: 700, fontSize: '.82rem', color: '#222', margin: 0, textAlign: 'center' }}>Maithil Association Of America</p>
+                  <p style={{ color: '#666', fontSize: '.72rem', margin: 0 }}>{ZELLE_EMAIL}</p>
+                  <div style={{ border: '1px solid #eee', borderRadius: 8, padding: 5, marginTop: 3 }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={QR_URL} alt="Zelle QR Code" width={160} height={160} />
+                  </div>
+                  <div style={{ width: '100%', height: 1, background: '#f0f0f0', margin: '0.15rem 0' }} />
+                  <p style={{ color: '#6d4aff', fontWeight: 800, fontSize: '1.2rem', fontStyle: 'italic', margin: 0 }}>
+                    Zelle<sup style={{ fontSize: '.5rem', fontWeight: 600 }}>®</sup>
+                  </p>
+                </div>
+              </div>
+
             </div>
           </>
         )}

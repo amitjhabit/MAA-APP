@@ -44,13 +44,13 @@ export default function PublicNav({ active, onInquiry }) {
                 Inquire
               </button>
             )}
-            <a href="/donate" className={`pub-nav-link${active === '/donate' ? ' active' : ''}`} style={{ background: 'rgba(255,255,255,.12)', borderRadius: 6, padding: '.35rem .85rem' }}>Donate</a>
+            <a href="/donate" className={`pub-nav-link${active === '/donate' ? ' active' : ''}`}>Donate</a>
             <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.25rem' }}>Join / Renew</a>
           </div>
 
           {/* Mobile right side: Join button + hamburger */}
           <div className="pub-nav-mobile-right">
-            <a href="/donate" className="pub-nav-cta" style={{ fontSize: '.75rem', padding: '.35rem .75rem', background: 'var(--forest)', marginRight: '.25rem' }}>Donate</a>
+            <a href="/donate" className="pub-nav-cta" style={{ fontSize: '.75rem', padding: '.35rem .75rem', marginRight: '.25rem' }}>Donate</a>
             <a href="/join" className="pub-nav-cta" style={{ fontSize: '.75rem', padding: '.35rem .75rem' }}>Join / Renew</a>
             <button
               className="pub-nav-hamburger"

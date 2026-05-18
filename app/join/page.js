@@ -4,6 +4,9 @@ import { useState } from 'react';
 import PublicNav from '@/app/components/PublicNav';
 import PublicFooter from '@/app/components/PublicFooter';
 
+const ZELLE_EMAIL = process.env.NEXT_PUBLIC_ZELLE_EMAIL || 'maithilformithila@gmail.com';
+const QR_URL = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(ZELLE_EMAIL)}&margin=10&color=000000&bgcolor=ffffff&format=png&ecc=M`;
+
 const ANNUAL_FEE = 21;
 
 export default function JoinPage() {
@@ -97,11 +100,43 @@ export default function JoinPage() {
                   <span style={{ fontFamily: 'var(--serif)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--saffron)' }}>${ANNUAL_FEE}/year</span>
                 </div>
 
-                <p className="text-xs text-muted" style={{ marginBottom: '1rem' }}>Payment via Zelle or check — instructions will be sent to your email after approval.</p>
                 <button type="submit" className="btn btn-primary w-full" disabled={loading}>
                   {loading ? <><span className="spinner" />Submitting…</> : 'Submit Application →'}
                 </button>
               </form>
+            </div>
+
+            {/* Zelle QR card */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '1rem', paddingBottom: '2rem' }}>
+              <p style={{ color: 'var(--ink-soft)', fontSize: '.9rem', textAlign: 'center', marginBottom: '1.25rem' }}>
+                Pay your membership fee via Zelle — scan the QR code in your banking app.
+              </p>
+              <div style={{
+                background: '#fff',
+                border: '1px solid var(--border)',
+                borderRadius: 16,
+                padding: '1.5rem 2rem 1.25rem',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                width: 280,
+              }}>
+                <p style={{ color: '#6d4aff', fontSize: '.85rem', fontWeight: 500, margin: 0 }}>Send Money with Zelle®</p>
+                <p style={{ color: '#aaa', fontSize: '.78rem', margin: 0 }}>Scan in your banking app to pay.</p>
+                <div style={{ width: '100%', height: 1, background: '#f0f0f0', margin: '0.2rem 0' }} />
+                <p style={{ fontWeight: 700, fontSize: '.9rem', color: '#222', margin: 0, textAlign: 'center' }}>Maithil Association Of America</p>
+                <p style={{ color: '#666', fontSize: '.78rem', margin: 0 }}>{ZELLE_EMAIL}</p>
+                <div style={{ border: '1px solid #eee', borderRadius: 8, padding: 6, marginTop: 4 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={QR_URL} alt="Zelle QR Code" width={180} height={180} />
+                </div>
+                <div style={{ width: '100%', height: 1, background: '#f0f0f0', margin: '0.2rem 0' }} />
+                <p style={{ color: '#6d4aff', fontWeight: 800, fontSize: '1.3rem', fontStyle: 'italic', margin: 0 }}>
+                  Zelle<sup style={{ fontSize: '.55rem', fontWeight: 600 }}>®</sup>
+                </p>
+              </div>
             </div>
           </>
         )}

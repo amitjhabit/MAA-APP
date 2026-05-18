@@ -22,7 +22,7 @@ function Sidebar({active}){
 
 function Modal({donation, secret, onClose, onSave}){
   const isEdit=!!donation;
-  const blank={donor_name:'',donor_email:'',donor_phone:'',amount:'',payment_method:'zelle',campaign:'',purpose:'',status:'received',transaction_id:'',receipt_sent:false,notes:'',donated_at:new Date().toISOString().split('T')[0]};
+  const blank={donor_name:'',donor_email:'',donor_phone:'',amount:'',payment_method:'zelle',campaign:'',purpose:'',status:'received',transaction_id:'',receipt_sent:false,notes:'',donated_at:new Date().toLocaleDateString('en-CA',{timeZone:'America/Los_Angeles'})};
   const[form,setForm]=useState(isEdit?{...blank,...donation,donated_at:donation.donated_at?.split('T')[0]||blank.donated_at,amount:donation.amount||''}:blank);
   const[busy,setBusy]=useState(false);
   const set=k=>e=>setForm(p=>({...p,[k]:e.target.type==='checkbox'?e.target.checked:e.target.value}));

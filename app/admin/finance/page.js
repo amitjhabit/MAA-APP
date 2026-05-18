@@ -1023,7 +1023,12 @@ function TemplatesTab({ secret, toast }) {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '.5rem', marginBottom: '1rem' }}>
+        <button className="btn btn-ghost btn-sm" onClick={async () => {
+          const r = await fetch('/api/admin/reseed-templates', { method: 'POST', headers: { 'x-admin-secret': secret } });
+          const j = await r.json();
+          if (j.success) { toast.show('Templates resynced'); load(); } else toast.show(j.message, 'error');
+        }}>↺ Resync Templates</button>
         <button className="btn btn-primary btn-sm" onClick={openAdd}>+ Add Template</button>
       </div>
       {loading ? <div className="loading-spinner" style={{ margin: '2rem auto' }} /> : (
@@ -1034,7 +1039,27 @@ function TemplatesTab({ secret, toast }) {
                 <span style={{ fontWeight: 700, color: 'var(--navy)', fontSize: '1rem' }}>{t.name}</span>
                 {t.is_default && <span className="badge" style={{ background: 'var(--saffron-light)', color: 'var(--saffron-dark)' }}>Default</span>}
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: '.5rem' }}>
-                  <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(t.body_html.replace(/\{\{app_url\}\}/g, window.location.origin))}>Preview</button>
+                  <button className="btn btn-ghost btn-sm" onClick={() => {
+                    const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' });
+                    const logoUrl = `${window.location.origin}/images/gallery/Mithila_logo.jpeg`;
+                    const logoTag = `<img src="${logoUrl}" alt="MAA Logo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 12px;border:3px solid #E8720C;">`;
+                    const preview = t.body_html
+                      .replace(/\{\{logo_img\}\}/g, logoTag)
+                      .replace(/\{\{app_url\}\}/g, window.location.origin)
+                      .replace(/\{\{receipt_number\}\}/g, 'RCP-20260517-ABCDE')
+                      .replace(/\{\{recipient_name\}\}/g, 'Sample Donor')
+                      .replace(/\{\{recipient_email\}\}/g, 'donor@example.com')
+                      .replace(/\{\{amount\}\}/g, '150.00')
+                      .replace(/\{\{amount_words\}\}/g, 'One Hundred Fifty and 00/100')
+                      .replace(/\{\{description\}\}/g, 'Annual Donation')
+                      .replace(/\{\{payment_method\}\}/g, 'Zelle')
+                      .replace(/\{\{transaction_date\}\}/g, today)
+                      .replace(/\{\{generated_date\}\}/g, today)
+                      .replace(/\{\{representative_name\}\}/g, 'Sunil Jha')
+                      .replace(/\{\{status\}\}/g, 'received')
+                      .replace(/\{\{\w+\}\}/g, '');
+                    setPreviewHtml(preview);
+                  }}>Preview</button>
                   <button className="btn btn-ghost btn-sm" onClick={() => openEdit(t)}>Edit</button>
                   <button className="btn btn-ghost btn-sm" style={{ color: 'var(--crimson)' }} onClick={() => deleteTmpl(t.id, t.name)}>Delete</button>
                 </div>

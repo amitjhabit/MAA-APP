@@ -58,6 +58,7 @@ export default async function HomePage() {
           <h1>{title}</h1>
           <div className="hero-maithili">{titleMaithili}</div>
           <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1.25rem' }}>
+            <a href="/events" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.12)', color: '#fff', borderColor: 'rgba(255,255,255,.3)' }}>View Events</a>
             <a href="/contact" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.08)', color: 'rgba(255,255,255,.85)', borderColor: 'rgba(255,255,255,.2)' }}>Contact Us</a>
           </div>
         </div>

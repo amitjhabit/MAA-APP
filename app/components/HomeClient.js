@@ -118,10 +118,6 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
           <h1>{get('hero', 'title', 'Celebrating Maithili Culture & Heritage')}</h1>
           <span className="hero-maithili">{get('hero', 'title_maithili', 'मैथिली संस्कृति आ विरासतक उत्सव')}</span>
           <p className="hero-sub">{get('hero', 'subtitle', 'Uniting the Maithili-speaking community across America — preserving our language, traditions, and cultural identity for future generations.')}</p>
-          <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '.5rem' }}>
-            <a href="/events" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.12)', color: '#fff', borderColor: 'rgba(255,255,255,.3)' }}>View Events</a>
-            <button onClick={() => setShowInquiry(true)} className="btn btn-lg" style={{ background: 'rgba(255,255,255,.08)', color: 'rgba(255,255,255,.9)', borderColor: 'rgba(255,255,255,.25)' }}>Contact Us</button>
-          </div>
         </div>
       </section>
 

@@ -24,8 +24,15 @@ function EmailAutocomplete({ value, onChange, onSelect, secret }) {
   const [suggestions, setSuggestions] = useState([]);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  const [dropPos, setDropPos] = useState({ top: 0, left: 0, width: 0 });
   const timer = useRef(null);
-  const wrapRef = useRef(null);
+  const inputRef = useRef(null);
+
+  const updatePos = () => {
+    if (!inputRef.current) return;
+    const r = inputRef.current.getBoundingClientRect();
+    setDropPos({ top: r.bottom + window.scrollY, left: r.left + window.scrollX, width: r.width });
+  };
 
   const search = (q) => {
     clearTimeout(timer.current);
@@ -34,16 +41,13 @@ function EmailAutocomplete({ value, onChange, onSelect, secret }) {
       try {
         const res = await fetch(`/api/members/lookup?q=${encodeURIComponent(q)}`, { headers: { 'x-admin-secret': secret } });
         const d = await res.json();
-        if (d.success && d.data.length) { setSuggestions(d.data); setOpen(true); setActive(-1); }
+        if (d.success && d.data.length) { updatePos(); setSuggestions(d.data); setOpen(true); setActive(-1); }
         else { setSuggestions([]); setOpen(false); }
       } catch {}
     }, 220);
   };
 
-  const pick = (member) => {
-    onSelect(member);
-    setSuggestions([]); setOpen(false);
-  };
+  const pick = (member) => { onSelect(member); setSuggestions([]); setOpen(false); };
 
   const onKey = (e) => {
     if (!open) return;
@@ -54,27 +58,29 @@ function EmailAutocomplete({ value, onChange, onSelect, secret }) {
   };
 
   useEffect(() => {
-    const handler = (e) => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false); };
+    const handler = (e) => { if (inputRef.current && !inputRef.current.contains(e.target)) setOpen(false); };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   return (
-    <div ref={wrapRef} style={{ position: 'relative' }}>
+    <>
       <input
+        ref={inputRef}
         type="email"
         value={value}
         onChange={e => { onChange(e); search(e.target.value); }}
         onKeyDown={onKey}
-        onFocus={() => suggestions.length && setOpen(true)}
+        onFocus={() => { if (suggestions.length) { updatePos(); setOpen(true); } }}
         autoComplete="off"
         placeholder="Type to search members…"
       />
       {open && suggestions.length > 0 && (
         <ul style={{
-          position: 'absolute', zIndex: 9999, top: '100%', left: 0, right: 0,
+          position: 'fixed', zIndex: 99999,
+          top: dropPos.top, left: dropPos.left, width: dropPos.width,
           background: '#fff', border: '1px solid #e0c97f', borderRadius: 6,
-          boxShadow: '0 4px 16px rgba(0,0,0,.12)', margin: 0, padding: 0,
+          boxShadow: '0 4px 16px rgba(0,0,0,.15)', margin: 0, padding: 0,
           listStyle: 'none', maxHeight: 220, overflowY: 'auto',
         }}>
           {suggestions.map((m, i) => (
@@ -83,7 +89,7 @@ function EmailAutocomplete({ value, onChange, onSelect, secret }) {
               onMouseDown={() => pick(m)}
               style={{
                 padding: '8px 12px', cursor: 'pointer',
-                background: i === active ? '#fdf6e3' : 'transparent',
+                background: i === active ? '#fdf6e3' : '#fff',
                 borderBottom: '1px solid #f0f0f0',
               }}
             >
@@ -93,7 +99,7 @@ function EmailAutocomplete({ value, onChange, onSelect, secret }) {
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
 }
 

@@ -87,9 +87,16 @@ export async function POST(req) {
 
       const rnum = existing?.receipt_number || receiptNumber();
 
-      const txDate = tx.transaction_date
-        ? new Date(tx.transaction_date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-        : '';
+      const PST = { timeZone: 'America/Los_Angeles' };
+      const fmtDate = d => {
+        if (!d) return new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', ...PST });
+        const dt = typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)
+          ? new Date(d + 'T12:00:00Z')
+          : new Date(d);
+        return isNaN(dt) ? String(d) : dt.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', ...PST });
+      };
+
+      const txDate = fmtDate(tx.transaction_date);
 
       const vars = {
         receipt_number:      rnum,
@@ -101,7 +108,7 @@ export async function POST(req) {
         category:            tx.category_name || '',
         payment_method:      tx.payment_method || '',
         transaction_date:    txDate,
-        generated_date:      new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        generated_date:      new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', ...PST }),
         status:              tx.status || '',
         app_url:             process.env.NEXT_PUBLIC_APP_URL || '',
         representative_name: representativeName,

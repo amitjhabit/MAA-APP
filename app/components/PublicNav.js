@@ -45,13 +45,11 @@ export default function PublicNav({ active, onInquiry }) {
               </button>
             )}
             <a href="/donate" className={`pub-nav-link${active === '/donate' ? ' active' : ''}`}>Donate</a>
-            <a href="/join" className="pub-nav-cta" style={{ marginLeft: '.25rem' }}>Join / Renew</a>
+            <a href="/join" className={`pub-nav-link${active === '/join' ? ' active' : ''}`}>Join / Renew</a>
           </div>
 
           {/* Mobile right side: Join button + hamburger */}
           <div className="pub-nav-mobile-right">
-            <a href="/donate" className="pub-nav-cta" style={{ fontSize: '.75rem', padding: '.35rem .75rem', marginRight: '.25rem' }}>Donate</a>
-            <a href="/join" className="pub-nav-cta" style={{ fontSize: '.75rem', padding: '.35rem .75rem' }}>Join / Renew</a>
             <button
               className="pub-nav-hamburger"
               onClick={() => setOpen(o => !o)}
@@ -115,8 +113,8 @@ export default function PublicNav({ active, onInquiry }) {
                 Inquire
               </button>
             )}
-            <a href="/donate" className="btn btn-gold" style={{ margin: '.75rem 1.25rem 0', display: 'block', textAlign: 'center' }}>Donate</a>
-            <a href="/join" className="btn btn-primary" style={{ margin: '.5rem 1.25rem .75rem', display: 'block', textAlign: 'center' }}>Join / Renew</a>
+            <a href="/donate" className={`pub-nav-drawer-link${active === '/donate' ? ' active' : ''}`}>Donate</a>
+            <a href="/join" className={`pub-nav-drawer-link${active === '/join' ? ' active' : ''}`}>Join / Renew</a>
           </div>
         </div>
       )}

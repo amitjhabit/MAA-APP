@@ -49,8 +49,12 @@ export async function DELETE(req) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
     if (!id) return NextResponse.json({ success: false, message: 'id required' }, { status: 400 });
-    const [deleted] = await sql`DELETE FROM receipts WHERE id = ${id} RETURNING id, receipt_number`;
+    const [deleted] = await sql`DELETE FROM receipts WHERE id = ${id} RETURNING id, receipt_number, donation_id`;
     if (!deleted) return NextResponse.json({ success: false, message: 'Receipt not found' }, { status: 404 });
+    // Reset receipt_sent on the linked donation so it no longer shows a receipt
+    if (deleted.donation_id) {
+      await sql`UPDATE donations SET receipt_sent = FALSE WHERE id = ${deleted.donation_id}`;
+    }
     return NextResponse.json({ success: true, message: `Receipt ${deleted.receipt_number} deleted` });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }

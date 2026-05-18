@@ -58,6 +58,8 @@ export async function DELETE(req, { params }) {
   if (!auth(req)) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
   try {
     const sql = getDb();
+    // Delete linked receipts first so Finance → Receipts stays in sync
+    await sql`DELETE FROM receipts WHERE donation_id = ${params.id}`;
     const [d] = await sql`DELETE FROM donations WHERE id = ${params.id} RETURNING id, donor_name`;
     if (!d) return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
     return NextResponse.json({ success: true, message: `Donation from ${d.donor_name} deleted` });

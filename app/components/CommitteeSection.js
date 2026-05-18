@@ -5,15 +5,16 @@ import { useState, useEffect } from 'react';
 
 function MemberCard({ m, past }) {
   return (
-    <div className="card" style={{ display: 'flex', gap: '1rem', alignItems: 'center', opacity: past ? 0.85 : 1 }}>
+    <div className="card" style={{ display: 'flex', gap: '1.25rem', alignItems: 'center', opacity: past ? 0.85 : 1 }}>
       <div style={{
-        width: 56, height: 56, borderRadius: '50%',
+        width: 96, height: 96, borderRadius: '50%',
         background: past ? 'var(--paper-3)' : 'var(--saffron-light)',
-        border: `2px solid ${past ? 'var(--border-hi)' : 'var(--saffron)'}`,
+        border: `3px solid ${past ? 'var(--border-hi)' : 'var(--saffron)'}`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: '1.3rem', fontWeight: 700,
+        fontSize: '2rem', fontWeight: 700,
         color: past ? 'var(--ink-soft)' : 'var(--saffron)',
         flexShrink: 0, overflow: 'hidden',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.10)',
       }}>
         {m.photo_url
           ? <img src={m.photo_url} alt={m.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />

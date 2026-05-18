@@ -78,7 +78,7 @@ export default async function HomePage() {
             "Together, let's stand tall as proud Maithils."
           </div>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/join" className="btn btn-primary btn-lg">Join MAA Today</a>
+            <a href="/join" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.4)', fontWeight: 600 }}>Join MAA Today</a>
             <a href="/about" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.1)', color: '#fff', borderColor: 'rgba(255,255,255,.25)' }}>Learn More →</a>
           </div>
         </div>

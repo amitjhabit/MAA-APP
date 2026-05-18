@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 import { getDb, ensureInit } from '@/lib/db';
 import { renderTemplate, fmtAmount } from '@/lib/email';
 import { generateReceiptPdf } from '@/lib/pdf';
+import { uploadReceiptToDrive } from '@/lib/drive';
 
 function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
 
@@ -137,11 +138,13 @@ export async function POST(req) {
         saved = inserted;
       }
 
-      // Generate PDF and store as base64
+      // Generate PDF, store as base64, and upload to Drive
       try {
         const pdfBuffer = await generateReceiptPdf(htmlContent);
         const [withPdf] = await sql`UPDATE receipts SET pdf_base64 = ${pdfBuffer.toString('base64')} WHERE id = ${saved.id} RETURNING *`;
         saved = withPdf;
+        try { await uploadReceiptToDrive(sql, saved.id, pdfBuffer, saved.receipt_number); }
+        catch (driveErr) { console.error('Drive upload failed (non-fatal):', driveErr.message); }
       } catch (pdfErr) {
         console.error(`PDF generation failed for receipt ${saved.receipt_number}:`, pdfErr.message);
       }

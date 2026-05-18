@@ -50,7 +50,7 @@ export default function DonatePage() {
             <h2 style={{ fontFamily: 'var(--serif)', color: 'var(--navy)', marginBottom: '.75rem' }}>Thank You!</h2>
             <p className="text-muted" style={{ marginBottom: '.5rem' }}>Your donation of <strong style={{ color: 'var(--saffron)' }}>${finalAmount}</strong> has been recorded.</p>
             <p className="text-muted" style={{ marginBottom: '2rem' }}>
-              {method === 'zelle' && <>Please send <strong>${finalAmount}</strong> via Zelle to <strong style={{ color: 'var(--saffron)' }}>{process.env.NEXT_PUBLIC_ZELLE_EMAIL || 'contributemaa@maithilusa.org'}</strong></>}
+              {method === 'zelle' && <>Please send <strong>${finalAmount}</strong> via Zelle to <strong style={{ color: 'var(--saffron)' }}>{process.env.NEXT_PUBLIC_ZELLE_EMAIL || 'info@maithilusa.org'}</strong></>}
               {method === 'check' && <>Please mail a check for <strong>${finalAmount}</strong> payable to Maithil Association of America.</>}
             </p>
             <a href="/" className="btn btn-ghost">Back to Home</a>
@@ -92,7 +92,7 @@ export default function DonatePage() {
                 <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.35rem' }}>💸 Zelle Instructions</div>
                 <div className="text-sm" style={{ color: 'var(--ink-soft)' }}>After submitting, send your donation via Zelle to:</div>
                 <div style={{ fontFamily: 'var(--serif)', fontSize: '1.05rem', fontWeight: 700, color: 'var(--saffron)', marginTop: '.35rem' }}>
-                  {process.env.NEXT_PUBLIC_ZELLE_EMAIL || 'contributemaa@maithilusa.org'}
+                  {process.env.NEXT_PUBLIC_ZELLE_EMAIL || 'info@maithilusa.org'}
                 </div>
                 {process.env.NEXT_PUBLIC_ZELLE_PHONE && (
                   <div style={{ color: 'var(--saffron)', fontWeight: 600 }}>{process.env.NEXT_PUBLIC_ZELLE_PHONE}</div>

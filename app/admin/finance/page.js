@@ -717,7 +717,7 @@ function ReceiptsTab({ secret, toast }) {
         body: JSON.stringify({ receipt_ids: [...selected] }),
       });
       const j = await res.json();
-      if (j.success) { setDriveResults(j.results); setSelected(new Set()); }
+      if (j.success) { setDriveResults(j.results); setSelected(new Set()); load(page); }
       else toast.show(j.message || 'Upload failed', 'error');
     } catch (e) { toast.show(e.message || 'Upload failed', 'error'); }
     setUploading(false);
@@ -767,6 +767,7 @@ function ReceiptsTab({ secret, toast }) {
                 <th style={{ textAlign: 'right' }}>Amount</th>
                 <th>Generated</th>
                 <th>Emailed</th>
+                <th>Drive</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -781,6 +782,11 @@ function ReceiptsTab({ secret, toast }) {
                   <td style={{ textAlign: 'right', fontWeight: 600, fontSize: '.875rem' }}>${fmt(r.transaction_amount)}</td>
                   <td style={{ fontSize: '.8rem' }}>{fmtDate(r.generated_at)}</td>
                   <td style={{ fontSize: '.8rem' }}>{r.emailed_at ? fmtDate(r.emailed_at) : <span style={{ color: 'var(--ink-dim)' }}>Not sent</span>}</td>
+                  <td style={{ fontSize: '.8rem' }}>
+                    {r.drive_link
+                      ? <a href={r.drive_link} target="_blank" rel="noreferrer" style={{ color: '#1a73e8' }}>↗ Drive</a>
+                      : <span style={{ color: 'var(--ink-dim)' }}>—</span>}
+                  </td>
                   <td>
                     <div style={{ display: 'flex', gap: '.35rem' }}>
                       <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(r.html_content)}>Preview</button>
@@ -798,7 +804,7 @@ function ReceiptsTab({ secret, toast }) {
                   </td>
                 </tr>
               ))}
-              {rows.length === 0 && <tr><td colSpan={9} style={{ textAlign: 'center', color: 'var(--ink-dim)', padding: '2rem' }}>No receipts yet. Generate them from the Transactions tab.</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={10} style={{ textAlign: 'center', color: 'var(--ink-dim)', padding: '2rem' }}>No receipts yet. Generate them from the Transactions tab.</td></tr>}
             </tbody>
           </table>
         </div>

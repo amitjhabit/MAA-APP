@@ -58,7 +58,7 @@ export default function ContactPage() {
               <div className="card" style={{ marginBottom: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>✉️</div>
                 <div style={{ fontWeight: 600, color: 'var(--navy)', marginBottom: '.25rem' }}>Email</div>
-                <a href="mailto:contributemaa@maithilusa.org" className="text-sm" style={{ color: 'var(--saffron)' }}>contributemaa@maithilusa.org</a>
+                <a href="mailto:info@maithilusa.org" className="text-sm" style={{ color: 'var(--saffron)' }}>info@maithilusa.org</a>
               </div>
               <div className="card">
                 <div style={{ fontSize: '1.5rem', marginBottom: '.5rem' }}>🙋</div>

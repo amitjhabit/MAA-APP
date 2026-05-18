@@ -58,6 +58,9 @@ export async function POST(req) {
         generated_date:   new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
         status:           tx.status || '',
         app_url:          process.env.NEXT_PUBLIC_APP_URL || '',
+        signature:        tmpl.signature_base64
+          ? `<img src="${tmpl.signature_base64}" alt="Authorized Signature" style="max-height:48px;max-width:180px;display:block;">`
+          : '',
       };
 
       const htmlContent = renderTemplate(tmpl.body_html, vars);

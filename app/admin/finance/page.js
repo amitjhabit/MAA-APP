@@ -965,6 +965,8 @@ function TemplatesTab({ secret, toast }) {
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
   const [previewHtml, setPreviewHtml] = useState(null);
+  const [uploadingId, setUploadingId] = useState(null);
+  const fileRefs = useRef({});
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const load = useCallback(async () => {
@@ -999,7 +1001,25 @@ function TemplatesTab({ secret, toast }) {
     else toast.show(j.message, 'error');
   };
 
-  const VARS = ['receipt_number','recipient_name','recipient_email','amount','description','category','payment_method','transaction_date','generated_date','status'];
+  const uploadSignature = async (tmplId, file) => {
+    setUploadingId(tmplId);
+    const fd = new FormData();
+    fd.append('file', file);
+    const res = await fetch(`/api/finance/templates/${tmplId}/signature`, { method: 'POST', headers: { 'x-admin-secret': secret }, body: fd });
+    const j = await res.json();
+    setUploadingId(null);
+    if (j.success) { toast.show('Signature saved'); load(); }
+    else toast.show(j.message || 'Upload failed', 'error');
+  };
+
+  const clearSignature = async (tmplId) => {
+    const res = await fetch(`/api/finance/templates/${tmplId}/signature`, { method: 'DELETE', headers: { 'x-admin-secret': secret } });
+    const j = await res.json();
+    if (j.success) { toast.show('Signature removed'); load(); }
+    else toast.show(j.message || 'Error', 'error');
+  };
+
+  const VARS = ['receipt_number','recipient_name','recipient_email','amount','description','category','payment_method','transaction_date','generated_date','status','signature'];
 
   return (
     <div>
@@ -1020,6 +1040,20 @@ function TemplatesTab({ secret, toast }) {
                 </div>
               </div>
               <div style={{ fontSize: '.8rem', color: 'var(--ink-soft)' }}>Subject: <em>{t.subject}</em></div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginTop: '.75rem', paddingTop: '.75rem', borderTop: '1px solid var(--border)' }}>
+                <span style={{ fontSize: '.8rem', color: 'var(--ink-soft)', fontWeight: 600, flexShrink: 0 }}>Signature:</span>
+                {t.signature_base64
+                  ? <>
+                      <img src={t.signature_base64} alt="Signature" style={{ maxHeight: 38, maxWidth: 160, border: '1px solid var(--border)', borderRadius: 4, background: '#fff', padding: 3 }} />
+                      <button className="btn btn-ghost btn-sm" style={{ color: 'var(--crimson)', fontSize: '.75rem' }} onClick={() => clearSignature(t.id)}>✕ Remove</button>
+                    </>
+                  : <span style={{ fontSize: '.8rem', color: 'var(--ink-dim)', fontStyle: 'italic' }}>No signature</span>
+                }
+                <input type="file" accept="image/*" style={{ display: 'none' }} ref={el => { if (el) fileRefs.current[t.id] = el; }} onChange={e => { if (e.target.files[0]) uploadSignature(t.id, e.target.files[0]); e.target.value = ''; }} />
+                <button className="btn btn-ghost btn-sm" style={{ marginLeft: 'auto', fontSize: '.75rem' }} disabled={uploadingId === t.id} onClick={() => fileRefs.current[t.id]?.click()}>
+                  {uploadingId === t.id ? 'Uploading…' : '⬆ Upload Signature'}
+                </button>
+              </div>
             </div>
           ))}
           {tmpls.length === 0 && <div style={{ textAlign: 'center', color: 'var(--ink-dim)', padding: '2rem' }}>No templates</div>}

@@ -4,7 +4,7 @@ const nextConfig = {
 
   // Prevent Next.js from bundling native binaries — must run as external Node modules
   experimental: {
-    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium-min'],
+    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
   },
 
   // Tell browsers and CDN never to cache public page HTML

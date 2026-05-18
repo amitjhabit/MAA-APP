@@ -36,17 +36,18 @@ function Sidebar() {
 }
 
 const TYPE_LABELS = {
-  paragraph:  { label: 'About Paragraph', icon: '📝', color: 'var(--navy)' },
-  quote:      { label: 'Closing Quote',   icon: '💬', color: 'var(--gold)' },
-  core_value: { label: 'Core Value',      icon: '⭐', color: 'var(--saffron)' },
-  activity:   { label: 'What We Do',      icon: '🎯', color: 'var(--forest)' },
+  paragraph:  { label: 'About Paragraph',     icon: '📝', color: 'var(--navy)' },
+  quote:      { label: 'Closing Quote',        icon: '💬', color: 'var(--gold)' },
+  core_value: { label: 'Core Value',           icon: '⭐', color: 'var(--saffron)' },
+  activity:   { label: 'What We Do',           icon: '🎯', color: 'var(--forest)' },
+  goals:      { label: 'Goals and Objectives', icon: '🏆', color: 'var(--crimson)' },
 };
 
 const BLANK = { type: 'paragraph', icon: '', title: '', content: '', sort_order: '0', is_active: true };
 
-function ItemModal({ item, secret, onClose, onSave }) {
+function ItemModal({ item, initialType, secret, onClose, onSave }) {
   const isEdit = !!item;
-  const [form, setForm] = useState(isEdit ? { ...item, sort_order: String(item.sort_order || 0) } : { ...BLANK });
+  const [form, setForm] = useState(isEdit ? { ...item, sort_order: String(item.sort_order || 0) } : { ...BLANK, type: initialType || BLANK.type });
   const [busy, setBusy] = useState(false);
   const set = k => e => setForm(p => ({ ...p, [k]: e.target.type === 'checkbox' ? e.target.checked : e.target.value }));
   const needsIcon  = form.type === 'core_value' || form.type === 'activity' || form.type === 'goals';
@@ -139,10 +140,11 @@ function ItemModal({ item, secret, onClose, onSave }) {
 }
 
 const SECTIONS = [
-  { type: 'paragraph',  label: 'About Paragraphs',  icon: '📝', hint: 'Main description text shown at the top of the About page.' },
-  { type: 'quote',      label: 'Closing Quote',      icon: '💬', hint: 'The highlighted quote block (only the first active one is shown).' },
-  { type: 'core_value', label: 'Core Values',        icon: '⭐', hint: '"Our Core Values" grid — each card has an icon, title, and description.' },
-  { type: 'activity',   label: 'What We Do',         icon: '🎯', hint: '"What We Do" grid — each card has an icon, title, and description.' },
+  { type: 'paragraph',  label: 'About Paragraphs',     icon: '📝', hint: 'Main description text shown at the top of the About page.' },
+  { type: 'quote',      label: 'Closing Quote',         icon: '💬', hint: 'The highlighted quote block (only the first active one is shown).' },
+  { type: 'core_value', label: 'Core Values',           icon: '⭐', hint: '"Our Core Values" grid — each card has an icon, title, and description.' },
+  { type: 'activity',   label: 'What We Do',            icon: '🎯', hint: '"What We Do" grid — each card has an icon, title, and description.' },
+  { type: 'goals',      label: 'Goals and Objectives',  icon: '🏆', hint: 'Goals & Objectives grid — each card has an icon, title, and description.' },
 ];
 
 export default function AdminAboutPage() {
@@ -261,6 +263,7 @@ export default function AdminAboutPage() {
       {showAdd && (
         <ItemModal
           item={null}
+          initialType={showAdd}
           secret={secret}
           onClose={() => setShowAdd(null)}
           onSave={(saved) => { handleSave(saved, false); setShowAdd(null); }}

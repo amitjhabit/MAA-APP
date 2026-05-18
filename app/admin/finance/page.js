@@ -1019,7 +1019,7 @@ function TemplatesTab({ secret, toast }) {
     else toast.show(j.message || 'Error', 'error');
   };
 
-  const VARS = ['receipt_number','recipient_name','recipient_email','amount','description','category','payment_method','transaction_date','generated_date','status','signature'];
+  const VARS = ['receipt_number','recipient_name','recipient_email','amount','amount_words','description','category','payment_method','transaction_date','generated_date','status','representative_name','logo_img'];
 
   return (
     <div>

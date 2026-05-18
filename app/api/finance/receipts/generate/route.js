@@ -1,4 +1,6 @@
 // app/api/finance/receipts/generate/route.js
+import { readFileSync, existsSync } from 'fs';
+import { join } from 'path';
 import { NextResponse } from 'next/server';
 import { getDb, ensureInit } from '@/lib/db';
 import { renderTemplate, fmtAmount } from '@/lib/email';
@@ -10,6 +12,41 @@ function receiptNumber() {
   const d = new Date();
   const pad = n => String(n).padStart(2, '0');
   return `RCP-${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}-${Math.random().toString(36).slice(2,7).toUpperCase()}`;
+}
+
+function amountToWords(amount) {
+  const num = parseFloat(amount || 0);
+  const dollars = Math.floor(num);
+  const cents = Math.round((num - dollars) * 100);
+  const ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine',
+    'Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const tens = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  function below1000(n) {
+    if (n === 0) return '';
+    if (n < 20) return ones[n];
+    if (n < 100) return tens[Math.floor(n/10)] + (n%10 ? '-'+ones[n%10] : '');
+    return ones[Math.floor(n/100)]+' Hundred'+(n%100 ? ' '+below1000(n%100) : '');
+  }
+  function toWords(n) {
+    if (n === 0) return 'Zero';
+    let r = '';
+    if (n >= 1000000) { r += below1000(Math.floor(n/1000000))+' Million '; n %= 1000000; }
+    if (n >= 1000) { r += below1000(Math.floor(n/1000))+' Thousand '; n %= 1000; }
+    if (n > 0) r += below1000(n);
+    return r.trim();
+  }
+  return `${toWords(dollars)} and ${String(cents).padStart(2,'0')}/100`;
+}
+
+function getLogoImgTag() {
+  try {
+    const p = join(process.cwd(), 'public', 'images', 'gallery', 'Mithila_logo.jpeg');
+    if (existsSync(p)) {
+      const b64 = readFileSync(p).toString('base64');
+      return `<img src="data:image/jpeg;base64,${b64}" alt="MAA Logo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 12px;border:3px solid #E8720C;">`;
+    }
+  } catch {}
+  return '';
 }
 
 export async function POST(req) {
@@ -27,6 +64,14 @@ export async function POST(req) {
     const [tmpl] = await sql`SELECT * FROM receipt_templates WHERE id = ${template_id}`;
     if (!tmpl) return NextResponse.json({ success: false, message: 'Template not found' }, { status: 404 });
     if (!tmpl.body_html) return NextResponse.json({ success: false, message: 'Template has no body. Please edit the template and add HTML content.' }, { status: 400 });
+
+    const [president] = await sql`
+      SELECT name FROM committee_members
+      WHERE LOWER(role) LIKE '%president%' AND is_current = TRUE
+      ORDER BY sort_order LIMIT 1
+    `;
+    const representativeName = president?.name || 'Sunil Jha';
+    const logoImg = getLogoImgTag();
 
     const txRows = await sql(
       `SELECT t.*, c.name AS category_name
@@ -47,20 +92,20 @@ export async function POST(req) {
         : '';
 
       const vars = {
-        receipt_number:   rnum,
-        recipient_name:   tx.payer_name  || 'Member',
-        recipient_email:  tx.payer_email || '',
-        amount:           fmtAmount(tx.amount),
-        description:      tx.description || '',
-        category:         tx.category_name || '',
-        payment_method:   tx.payment_method || '',
-        transaction_date: txDate,
-        generated_date:   new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-        status:           tx.status || '',
-        app_url:          process.env.NEXT_PUBLIC_APP_URL || '',
-        signature:        tmpl.signature_base64
-          ? `<img src="${tmpl.signature_base64}" alt="Authorized Signature" style="max-height:48px;max-width:180px;display:block;">`
-          : '',
+        receipt_number:      rnum,
+        recipient_name:      tx.payer_name  || 'Member',
+        recipient_email:     tx.payer_email || '',
+        amount:              fmtAmount(tx.amount),
+        amount_words:        amountToWords(tx.amount),
+        description:         tx.description || '',
+        category:            tx.category_name || '',
+        payment_method:      tx.payment_method || '',
+        transaction_date:    txDate,
+        generated_date:      new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        status:              tx.status || '',
+        app_url:             process.env.NEXT_PUBLIC_APP_URL || '',
+        representative_name: representativeName,
+        logo_img:            logoImg,
       };
 
       const htmlContent = renderTemplate(tmpl.body_html, vars);

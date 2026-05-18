@@ -93,7 +93,7 @@ export default function DonationsPage(){
               <td className="text-sm text-muted">{d.campaign||'—'}</td>
               <td><span className="badge" style={{background:sc.bg,color:sc.color}}>{d.status}</span></td>
               <td><button onClick={()=>toggleReceipt(d.id,!d.receipt_sent)} style={{background:'none',border:'none',cursor:'pointer',fontSize:'1.1rem'}}>{d.receipt_sent?'✅':'⬜'}</button></td>
-              <td className="text-xs text-muted">{d.donated_at?new Date(d.donated_at).toLocaleDateString():''}</td>
+              <td className="text-xs text-muted">{d.donated_at?new Date(d.donated_at.includes('T')?d.donated_at:d.donated_at+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'America/Los_Angeles'}):''}</td>
               <td><div style={{display:'flex',gap:'.3rem'}}>
                 <button className="btn btn-ghost btn-sm" style={{padding:'.3rem .6rem',fontSize:'.72rem'}} onClick={()=>sendReceipt(d)} disabled={sendingReceipt===d.id} title={d.donor_email?`Send receipt to ${d.donor_email}`:'No email on file'}>{sendingReceipt===d.id?<span className="spinner"/>:'📄'}</button>
                 <button className="btn btn-primary btn-sm" style={{padding:'.3rem .6rem'}} onClick={()=>setEditD(d)}>✏️</button>

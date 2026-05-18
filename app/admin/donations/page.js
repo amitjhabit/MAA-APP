@@ -1,6 +1,6 @@
 'use client';
 // app/admin/donations/page.js
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useAdminAuth } from '@/app/admin/layout';
 
 function useToast(){const[t,setT]=useState([]);const show=useCallback((msg,type='success')=>{const id=Date.now();setT(p=>[...p,{id,msg,type}]);setTimeout(()=>setT(p=>p.filter(x=>x.id!==id)),3500);},[]);return{toasts:t,show};}
@@ -20,6 +20,83 @@ function Sidebar({active}){
   </nav></aside>);
 }
 
+function EmailAutocomplete({ value, onChange, onSelect, secret }) {
+  const [suggestions, setSuggestions] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
+  const timer = useRef(null);
+  const wrapRef = useRef(null);
+
+  const search = (q) => {
+    clearTimeout(timer.current);
+    if (q.length < 2) { setSuggestions([]); setOpen(false); return; }
+    timer.current = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/members/lookup?q=${encodeURIComponent(q)}`, { headers: { 'x-admin-secret': secret } });
+        const d = await res.json();
+        if (d.success && d.data.length) { setSuggestions(d.data); setOpen(true); setActive(-1); }
+        else { setSuggestions([]); setOpen(false); }
+      } catch {}
+    }, 220);
+  };
+
+  const pick = (member) => {
+    onSelect(member);
+    setSuggestions([]); setOpen(false);
+  };
+
+  const onKey = (e) => {
+    if (!open) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setActive(a => Math.min(a + 1, suggestions.length - 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(a => Math.max(a - 1, 0)); }
+    else if (e.key === 'Enter' && active >= 0) { e.preventDefault(); pick(suggestions[active]); }
+    else if (e.key === 'Escape') setOpen(false);
+  };
+
+  useEffect(() => {
+    const handler = (e) => { if (wrapRef.current && !wrapRef.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={wrapRef} style={{ position: 'relative' }}>
+      <input
+        type="email"
+        value={value}
+        onChange={e => { onChange(e); search(e.target.value); }}
+        onKeyDown={onKey}
+        onFocus={() => suggestions.length && setOpen(true)}
+        autoComplete="off"
+        placeholder="Type to search members…"
+      />
+      {open && suggestions.length > 0 && (
+        <ul style={{
+          position: 'absolute', zIndex: 9999, top: '100%', left: 0, right: 0,
+          background: '#fff', border: '1px solid #e0c97f', borderRadius: 6,
+          boxShadow: '0 4px 16px rgba(0,0,0,.12)', margin: 0, padding: 0,
+          listStyle: 'none', maxHeight: 220, overflowY: 'auto',
+        }}>
+          {suggestions.map((m, i) => (
+            <li
+              key={m.email}
+              onMouseDown={() => pick(m)}
+              style={{
+                padding: '8px 12px', cursor: 'pointer',
+                background: i === active ? '#fdf6e3' : 'transparent',
+                borderBottom: '1px solid #f0f0f0',
+              }}
+            >
+              <div style={{ fontWeight: 600, fontSize: 13, color: '#0D2137' }}>{m.name}</div>
+              <div style={{ fontSize: 12, color: '#888' }}>{m.email}{m.phone ? ` · ${m.phone}` : ''}</div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 function Modal({donation, secret, onClose, onSave}){
   const isEdit=!!donation;
   const blank={donor_name:'',donor_email:'',donor_phone:'',amount:'',payment_method:'zelle',campaign:'',purpose:'',status:'received',transaction_id:'',receipt_sent:false,notes:'',donated_at:new Date().toLocaleDateString('en-CA',{timeZone:'America/Los_Angeles'})};
@@ -31,7 +108,14 @@ function Modal({donation, secret, onClose, onSave}){
     <div className="modal-header"><h3 className="modal-title">{isEdit?'Edit Donation':'💰 Record New Donation'}</h3><button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button></div>
     <div className="form-grid">
       <div className="form-group"><label>Donor Name <span className="req">*</span></label><input value={form.donor_name} onChange={set('donor_name')} placeholder="Full name"/></div>
-      <div className="form-group"><label>Email</label><input type="email" value={form.donor_email} onChange={set('donor_email')}/></div>
+      <div className="form-group"><label>Email</label>
+        <EmailAutocomplete
+          value={form.donor_email}
+          onChange={set('donor_email')}
+          onSelect={m => setForm(p => ({ ...p, donor_email: m.email, donor_phone: m.phone || p.donor_phone, donor_name: p.donor_name || m.name }))}
+          secret={secret}
+        />
+      </div>
       <div className="form-group"><label>Phone</label><input value={form.donor_phone} onChange={set('donor_phone')}/></div>
       <div className="form-group"><label>Amount ($) <span className="req">*</span></label><input type="number" value={form.amount} onChange={set('amount')} placeholder="50.00" min="0" step="0.01"/></div>
       <div className="form-group"><label>Payment Method</label><select value={form.payment_method} onChange={set('payment_method')}><option value="zelle">Zelle</option><option value="credit_card">Credit Card</option><option value="check">Check</option><option value="cash">Cash</option><option value="other">Other</option></select></div>

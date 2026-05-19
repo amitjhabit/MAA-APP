@@ -93,8 +93,8 @@ html{font-size:16px;} body{font-family:var(--sans);background:var(--paper);color
 .badge-archived{background:var(--gold-light);color:var(--gold);}
 /* Buttons */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font-family:var(--sans);font-size:.875rem;font-weight:600;padding:.6rem 1.25rem;border-radius:var(--radius);border:1.5px solid transparent;cursor:pointer;transition:var(--trans);text-decoration:none;line-height:1;}
-.btn-primary{background:var(--saffron);color:#fff;border-color:var(--saffron);}
-.btn-primary:hover{background:var(--saffron-dark);border-color:var(--saffron-dark);}
+.btn-primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn-primary:hover{background:var(--navy-soft);border-color:var(--navy-soft);}
 .btn-gold{background:var(--gold);color:#fff;border-color:var(--gold);}
 .btn-gold:hover{background:#A07A0A;}
 .btn-navy{background:var(--navy);color:#fff;border-color:var(--navy);}

@@ -65,7 +65,7 @@ export default function NewsClient({ initialPosts }) {
       <PublicNav active="/news" />
 
       <section className="hero">
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-inner">
           <span className="hero-eyebrow">समाचार आ घोषणा</span>
           <h1>News &amp; <em>Announcements</em></h1>
           <p className="hero-sub">Stay updated with the latest news, cultural updates, and announcements from MAA.</p>

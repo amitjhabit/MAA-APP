@@ -11,7 +11,7 @@ export default function DonatePage() {
     <>
       <PublicNav active="/donate" />
       <section className="hero" style={{ padding: '3.5rem 2rem 3rem' }}>
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-inner">
           <span className="hero-eyebrow">दान करें</span>
           <h1>Support <em>MAA</em></h1>
           <p className="hero-sub">Your donation helps us preserve Maithili culture, organize events, and support our community.</p>

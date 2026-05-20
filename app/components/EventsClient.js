@@ -136,7 +136,7 @@ export default function EventsClient({ initialEvents }) {
 
       {/* Hero */}
       <section className="hero">
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-inner">
           <span className="hero-eyebrow">कार्यक्रम</span>
           <h1>MAA <em>Events</em></h1>
           <p className="hero-sub">Celebrating culture, community, and heritage through events across America.</p>

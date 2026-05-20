@@ -51,7 +51,7 @@ export default function GalleryClient({ initialAlbums }) {
       <PublicNav active="/gallery" />
 
       <section className="hero">
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-inner">
           <span className="hero-eyebrow">गैलरी</span>
           <h1>Photo <em>Gallery</em></h1>
           <p className="hero-sub">Memories from our events, celebrations, and community gatherings.</p>

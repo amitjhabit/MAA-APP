@@ -42,7 +42,7 @@ export default function JoinPage() {
     <>
       <PublicNav active="/join" />
       <section className="hero">
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-inner">
           <span className="hero-eyebrow">सदस्य बनें</span>
           <h1>Join <em>MAA</em></h1>
           <p className="hero-sub">Become part of the Maithili community in America. Submit your application below.</p>

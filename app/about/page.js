@@ -37,7 +37,7 @@ export default async function AboutPage() {
       <PublicNav active="/about" />
 
       <section className="hero">
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-inner">
           <span className="hero-eyebrow">हमारे बारे में</span>
           <h1>About <em>Us</em></h1>
         </div>

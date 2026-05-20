@@ -113,7 +113,7 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
 
       {/* Hero */}
       <section className="hero">
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-inner">
           <span className="hero-eyebrow">{get('hero', 'eyebrow', 'Est. 2004 · Connecting Communities')}</span>
           <h1>{get('hero', 'title', 'Celebrating Maithili Culture & Heritage')}</h1>
           <span className="hero-maithili">{get('hero', 'title_maithili', 'मैथिली संस्कृति आ विरासतक उत्सव')}</span>

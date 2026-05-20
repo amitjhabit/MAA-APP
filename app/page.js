@@ -53,7 +53,7 @@ export default async function HomePage() {
 
       {/* Hero — same compact style as About Us */}
       <section className="hero">
-        <div style={{ position: 'relative', zIndex: 1 }}>
+        <div className="hero-inner">
           <span className="hero-eyebrow">{eyebrow}</span>
           <h1>{title}</h1>
           <div className="hero-maithili">{titleMaithili}</div>
@@ -61,7 +61,7 @@ export default async function HomePage() {
       </section>
 
       {/* Content — same shell + white card pattern as About Us */}
-      <div className="shell">
+      <div className="shell" style={{ maxWidth: 900, margin: '0 auto' }}>
         <div style={{ maxWidth: 840, margin: '0 auto 3.5rem' }}>
           <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '4px solid var(--saffron)', padding: '2.5rem 2.75rem', boxShadow: 'var(--shadow-lg)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '1.5rem' }}>

@@ -27,7 +27,7 @@ export default function PublicNav({ active, onInquiry }) {
         <div className="pub-nav-inner">
           {/* Brand */}
           <a href="/" className="pub-nav-brand">
-            <img src="/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+            <img src="/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style={{ width: 62, height: 62, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: '2px solid rgba(201,150,12,.5)', boxShadow: '0 2px 8px rgba(0,0,0,.3)' }} />
             <div className="org-name">
               Maithil Association of America
             </div>

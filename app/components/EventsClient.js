@@ -136,15 +136,19 @@ export default function EventsClient({ initialEvents }) {
 
       {/* Hero */}
       <section className="hero">
-        <div className="hero-inner">
-          <span className="hero-eyebrow">कार्यक्रम</span>
-          <h1>MAA <em>Events</em></h1>
-          <p className="hero-sub">Celebrating culture, community, and heritage through events across America.</p>
-          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'flex-start', flexWrap: 'wrap', marginTop: '.5rem' }}>
+        <div className="hero-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '2rem', flexWrap: 'wrap' }}>
+          {/* Left: text */}
+          <div>
+            <span className="hero-eyebrow">कार्यक्रम</span>
+            <h1>MAA <em>Events</em></h1>
+            <p className="hero-sub">Celebrating culture, community, and heritage through events across America.</p>
+          </div>
+          {/* Right: stats */}
+          <div style={{ display: 'flex', gap: '2rem', flexShrink: 0 }}>
             {[{ num: upcoming, label: 'Upcoming' }, { num: events.length, label: 'Total' }, { num: completed, label: 'Completed' }].map(s => (
-              <div key={s.label} style={{ textAlign: 'center', color: '#fff' }}>
-                <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--gold)' }}>{s.num}</div>
-                <div style={{ fontSize: '.72rem', opacity: .8 }}>{s.label}</div>
+              <div key={s.label} style={{ textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--serif)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--gold)', lineHeight: 1 }}>{s.num}</div>
+                <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,.7)', marginTop: '.25rem', letterSpacing: '.04em' }}>{s.label}</div>
               </div>
             ))}
           </div>

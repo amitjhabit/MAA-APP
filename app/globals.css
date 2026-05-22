@@ -227,3 +227,82 @@ tbody tr:hover{background:var(--paper-2);}
 .admin-album-actions{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.65rem;}
 .scan-banner{background:#e8f5e9;border:1px solid rgba(27,94,32,.25);border-radius:var(--radius);padding:.65rem 1rem;font-size:.85rem;color:#2e7d32;font-weight:600;margin-bottom:1rem;}
 .cultural-divider{text-align:center;margin:.75rem 0;color:var(--gold);font-size:1rem;letter-spacing:.5em;}
+
+/* ── Public Dark Theme (scoped to body[data-theme="dark"], admin unaffected) ── */
+body[data-theme="dark"]{
+  background:#080C18;
+  background-image:
+    radial-gradient(ellipse at 15% 0%,rgba(10,92,107,.45) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 0%,rgba(20,50,100,.35) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 100%,rgba(8,30,60,.4) 0%,transparent 60%);
+  color:#E4E4EF;
+}
+/* Cards */
+body[data-theme="dark"] .card{
+  background:rgba(13,24,50,.82);
+  border-color:rgba(255,255,255,.09);
+  color:rgba(255,255,255,.88);
+  box-shadow:0 4px 24px rgba(0,0,0,.5);
+  backdrop-filter:blur(8px);
+}
+body[data-theme="dark"] .card:hover{
+  border-color:rgba(201,150,12,.45);
+  box-shadow:0 8px 36px rgba(0,0,0,.65);
+  transform:translateY(-3px);
+}
+/* Section headers & titles */
+body[data-theme="dark"] .section-title{color:rgba(255,255,255,.95);}
+body[data-theme="dark"] .section-header{border-color:rgba(255,255,255,.1);}
+/* Text on dark */
+body[data-theme="dark"] .text-muted,
+body[data-theme="dark"] p{color:rgba(255,255,255,.62);}
+body[data-theme="dark"] .text-navy{color:rgba(255,255,255,.9);}
+body[data-theme="dark"] .font-serif{color:rgba(255,255,255,.9);}
+/* Stat cards */
+body[data-theme="dark"] .stat-card{
+  background:rgba(13,24,50,.82);
+  border-color:rgba(255,255,255,.09);
+}
+/* Gallery cards */
+body[data-theme="dark"] .gallery-album-card{
+  background:rgba(13,24,50,.82);
+  border-color:rgba(255,255,255,.09);
+}
+body[data-theme="dark"] .gallery-album-name{color:rgba(255,255,255,.9);}
+body[data-theme="dark"] .gallery-album-desc{color:rgba(255,255,255,.5);}
+body[data-theme="dark"] .gallery-album-thumb{background:rgba(255,255,255,.05);}
+/* Breadcrumb */
+body[data-theme="dark"] .gallery-breadcrumb{color:rgba(255,255,255,.5);}
+body[data-theme="dark"] .gallery-breadcrumb .current{color:rgba(255,255,255,.85);}
+/* Footer */
+body[data-theme="dark"] .pub-footer{
+  background:linear-gradient(135deg,#06080F 0%,#0D1B2A 100%);
+  border-top:3px solid var(--saffron);
+}
+/* Inline navy boxes inside public pages */
+body[data-theme="dark"] .shell [style*="background: var(--navy)"],
+body[data-theme="dark"] .shell [style*="background:var(--navy)"]{
+  background:rgba(13,24,50,.9) !important;
+}
+/* Filter buttons */
+body[data-theme="dark"] .filter-btn{
+  background:rgba(255,255,255,.06);
+  border-color:rgba(255,255,255,.15);
+  color:rgba(255,255,255,.7);
+}
+body[data-theme="dark"] .filter-btn:hover{border-color:var(--saffron);color:var(--saffron);}
+body[data-theme="dark"] .filter-btn.active{background:var(--saffron);color:#fff;border-color:var(--saffron);}
+/* Forms on dark */
+body[data-theme="dark"] input,
+body[data-theme="dark"] textarea,
+body[data-theme="dark"] select{
+  background:rgba(255,255,255,.07);
+  border-color:rgba(255,255,255,.15);
+  color:#fff;
+}
+body[data-theme="dark"] label{color:rgba(255,255,255,.7);}
+/* Empty / loading states */
+body[data-theme="dark"] .empty-state,
+body[data-theme="dark"] .loading-state{color:rgba(255,255,255,.4);}
+/* Divider */
+body[data-theme="dark"] .divider{border-color:rgba(255,255,255,.08);}

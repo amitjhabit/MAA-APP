@@ -14,6 +14,12 @@ const LINKS = [
 export default function PublicNav({ active, onInquiry }) {
   const [open, setOpen] = useState(false);
 
+  // Apply dark theme to body for all public pages
+  useEffect(() => {
+    document.body.setAttribute('data-theme', 'dark');
+    return () => document.body.removeAttribute('data-theme');
+  }, []);
+
   // Close menu on route change / resize
   useEffect(() => {
     const close = () => setOpen(false);
@@ -63,7 +69,7 @@ export default function PublicNav({ active, onInquiry }) {
       </nav>
 
       {/* Social bar — below nav, after the orange line */}
-      <div style={{ background: '#f8f4ef', borderBottom: '1px solid var(--border)', padding: '.3rem 1.25rem', display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+      <div style={{ background: 'rgba(6,10,24,.92)', borderBottom: '1px solid rgba(255,255,255,.08)', padding: '.3rem 1.25rem', display: 'flex', alignItems: 'center', gap: '.5rem' }}>
         <a
           href="https://www.facebook.com/profile.php?id=61559439638204&mibextid=wwXIfr"
           target="_blank"

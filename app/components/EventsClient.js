@@ -147,8 +147,8 @@ export default function EventsClient({ initialEvents }) {
           <div style={{ display: 'flex', gap: '2rem', flexShrink: 0 }}>
             {[{ num: upcoming, label: 'Upcoming' }, { num: events.length, label: 'Total' }, { num: completed, label: 'Completed' }].map(s => (
               <div key={s.label} style={{ textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--serif)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--gold)', lineHeight: 1 }}>{s.num}</div>
-                <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,.7)', marginTop: '.25rem', letterSpacing: '.04em' }}>{s.label}</div>
+                <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--gold)', lineHeight: 1 }}>{s.num}</div>
+                <div style={{ fontSize: '.65rem', color: 'rgba(255,255,255,.7)', marginTop: '.2rem', letterSpacing: '.04em' }}>{s.label}</div>
               </div>
             ))}
           </div>

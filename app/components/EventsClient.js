@@ -53,12 +53,12 @@ function EventCard({ event }) {
   return (
     <div className="card card-static" style={{ opacity: isPast ? .75 : 1, display: 'flex', flexDirection: 'column', padding: 0, overflow: 'hidden' }}>
 
-      {/* Cover image — natural width, max height */}
+      {/* Cover image — full image, no cropping */}
       {event.cover_image && (
         <img
           src={event.cover_image}
           alt={event.title}
-          style={{ width: '100%', display: 'block', objectFit: 'cover', maxHeight: 320 }}
+          style={{ width: '100%', display: 'block', height: 'auto' }}
           onError={e => { e.currentTarget.style.display = 'none'; }}
         />
       )}

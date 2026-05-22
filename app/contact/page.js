@@ -39,7 +39,7 @@ export default function ContactPage() {
         <div className="hero-inner">
           <span className="hero-eyebrow">संपर्क करें</span>
           <h1>Get in <em>Touch</em></h1>
-          <p className="hero-sub">We'd love to hear from you. Send us a message and we'll get back to you within 24 hours.</p>
+          <p className="hero-sub" style={{ maxWidth: 'none' }}>We'd love to hear from you. Send us a message and we'll get back to you within 24 hours.</p>
         </div>
       </section>
 

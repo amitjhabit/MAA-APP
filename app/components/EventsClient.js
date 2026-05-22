@@ -130,9 +130,20 @@ export default function EventsClient({ initialEvents }) {
   const upcoming  = events.filter(e => e.status === 'upcoming').length;
   const completed = events.filter(e => e.status === 'completed').length;
 
+  const navStats = (
+    <>
+      {[{ num: upcoming, label: 'Upcoming' }, { num: events.length, label: 'Total' }, { num: completed, label: 'Completed' }].map(s => (
+        <div key={s.label} style={{ textAlign: 'center' }}>
+          <div style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: 'var(--gold)', lineHeight: 1 }}>{s.num}</div>
+          <div style={{ fontSize: '.62rem', color: 'rgba(255,255,255,.65)', marginTop: '.15rem', letterSpacing: '.04em' }}>{s.label}</div>
+        </div>
+      ))}
+    </>
+  );
+
   return (
     <>
-      <PublicNav active="/events" />
+      <PublicNav active="/events" rightContent={navStats} />
 
       {/* Hero */}
       <section className="hero">
@@ -140,14 +151,6 @@ export default function EventsClient({ initialEvents }) {
           <span className="hero-eyebrow">कार्यक्रम</span>
           <h1>MAA <em>Events</em></h1>
           <p className="hero-sub">Celebrating culture, community, and heritage through events across America.</p>
-          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'flex-start', flexWrap: 'wrap', marginTop: '.5rem' }}>
-            {[{ num: upcoming, label: 'Upcoming' }, { num: events.length, label: 'Total' }, { num: completed, label: 'Completed' }].map(s => (
-              <div key={s.label} style={{ textAlign: 'center', color: '#fff' }}>
-                <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--gold)' }}>{s.num}</div>
-                <div style={{ fontSize: '.72rem', opacity: .8 }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 

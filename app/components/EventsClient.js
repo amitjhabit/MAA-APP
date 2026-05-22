@@ -140,7 +140,7 @@ export default function EventsClient({ initialEvents }) {
           <span className="hero-eyebrow">कार्यक्रम</span>
           <h1>MAA <em>Events</em></h1>
           <p className="hero-sub">Celebrating culture, community, and heritage through events across America.</p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'flex-start', flexWrap: 'wrap', marginTop: '.5rem' }}>
             {[{ num: upcoming, label: 'Upcoming' }, { num: events.length, label: 'Total' }, { num: completed, label: 'Completed' }].map(s => (
               <div key={s.label} style={{ textAlign: 'center', color: '#fff' }}>
                 <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--gold)' }}>{s.num}</div>
@@ -151,7 +151,7 @@ export default function EventsClient({ initialEvents }) {
         </div>
       </section>
 
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '1.75rem 1.5rem 2.5rem' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '1.75rem 1.5rem 2.5rem' }}>
         {/* Filters */}
         <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap', marginBottom: '1.25rem', alignItems: 'center', justifyContent: 'space-between' }}>
           <div className="filter-bar" style={{ marginBottom: 0 }}>

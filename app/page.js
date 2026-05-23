@@ -10,17 +10,17 @@ function SubtitleText({ text }) {
   const parts = text.split(/\s*\*\s+/).map(s => s.trim()).filter(Boolean);
   if (parts.length <= 1) {
     return (
-      <p style={{ fontSize: '1.05rem', lineHeight: 2, color: 'var(--ink)' }}>{text}</p>
+      <p style={{ fontSize: '.78rem', lineHeight: 1.55, color: 'var(--ink)' }}>{text}</p>
     );
   }
   const [intro, ...bullets] = parts;
   return (
     <div>
-      {intro && <p style={{ fontSize: '1.05rem', lineHeight: 2, color: 'var(--ink)', marginBottom: '1.25rem' }}>{intro}</p>}
-      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+      {intro && <p style={{ fontSize: '.78rem', lineHeight: 1.55, color: 'var(--ink)', marginBottom: '.75rem' }}>{intro}</p>}
+      <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '.4rem' }}>
         {bullets.map((b, i) => (
-          <li key={i} style={{ display: 'flex', gap: '.85rem', alignItems: 'flex-start', fontSize: '1rem', lineHeight: 1.75, color: 'var(--ink)' }}>
-            <span style={{ color: 'var(--saffron)', fontWeight: 700, flexShrink: 0, fontSize: '1.1rem', marginTop: '.1rem' }}>•</span>
+          <li key={i} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.78rem', lineHeight: 1.55, color: 'var(--ink)', fontStyle: 'italic' }}>
+            <span style={{ color: 'var(--saffron)', fontWeight: 700, flexShrink: 0, fontSize: '.85rem', marginTop: '.05rem' }}>•</span>
             <span>{b}</span>
           </li>
         ))}
@@ -62,24 +62,24 @@ export default async function HomePage() {
 
       {/* Content — same shell + white card pattern as About Us */}
       <div className="shell" style={{ maxWidth: 900, margin: '0 auto' }}>
-        <div style={{ maxWidth: 840, margin: '0 auto 3.5rem' }}>
-          <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '4px solid var(--saffron)', padding: '2.5rem 2.75rem', boxShadow: 'var(--shadow-lg)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', marginBottom: '1.5rem' }}>
-              <div style={{ width: 4, height: 32, background: 'var(--saffron)', borderRadius: 2, flexShrink: 0 }} />
-              <h2 style={{ fontFamily: 'var(--serif)', fontSize: '1.25rem', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>About Our Organization</h2>
+        <div style={{ maxWidth: 840, margin: '0 auto 1.5rem' }}>
+          <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '3px solid var(--saffron)', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem', marginBottom: '.85rem' }}>
+              <div style={{ width: 3, height: 20, background: 'var(--saffron)', borderRadius: 2, flexShrink: 0 }} />
+              <h2 style={{ fontFamily: 'var(--serif)', fontSize: '.9rem', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>About Our Organization</h2>
             </div>
             <SubtitleText text={subtitle} />
           </div>
         </div>
 
-        {/* CTA strip — same as About Us bottom section */}
-        <div style={{ textAlign: 'center', padding: '2.5rem', background: 'var(--navy)', borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }}>
-          <div style={{ color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '1.1rem', marginBottom: '1.25rem' }}>
+        {/* CTA strip */}
+        <div style={{ textAlign: 'center', padding: '1.25rem', background: 'var(--navy)', borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }}>
+          <div style={{ color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.82rem', marginBottom: '.85rem' }}>
             "Together, let's stand tall as proud Maithils."
           </div>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/join" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.4)', fontWeight: 600 }}>Join MAA Today</a>
-            <a href="/about" className="btn btn-lg" style={{ background: 'rgba(255,255,255,.1)', color: '#fff', borderColor: 'rgba(255,255,255,.25)' }}>Learn More →</a>
+          <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="/join" className="btn" style={{ background: 'rgba(255,255,255,.15)', color: '#fff', borderColor: 'rgba(255,255,255,.4)', fontWeight: 600 }}>Join MAA Today</a>
+            <a href="/about" className="btn" style={{ background: 'rgba(255,255,255,.1)', color: '#fff', borderColor: 'rgba(255,255,255,.25)' }}>Learn More →</a>
           </div>
         </div>
       </div>

@@ -268,7 +268,7 @@ body[data-theme="dark"] .section-title{color:rgba(255,255,255,.95);}
 body[data-theme="dark"] .section-header{border-color:rgba(255,255,255,.1);}
 /* Text on dark */
 body[data-theme="dark"] .text-muted,
-body[data-theme="dark"] p{color:rgba(255,255,255,.62);}
+body[data-theme="dark"] p{color:rgba(255,255,255,.62);font-size:.78rem;line-height:1.55;}
 body[data-theme="dark"] .text-navy{color:rgba(255,255,255,.9);}
 body[data-theme="dark"] .font-serif{color:rgba(255,255,255,.9);}
 /* Stat cards */

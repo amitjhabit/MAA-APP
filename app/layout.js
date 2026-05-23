@@ -1,4 +1,5 @@
 import './globals.css';
+import PageTracker from '@/app/components/PageTracker';
 export const metadata = { title: 'Maithil Association of America', description: 'Connecting the Maithili community across America.' };
 export default function RootLayout({ children }) {
   return (
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
         {/* Runs synchronously before first paint — prevents white flash on public pages */}
         <script dangerouslySetInnerHTML={{ __html: `(function(){if(!window.location.pathname.startsWith('/admin')){document.body.setAttribute('data-theme','dark');}})();` }} />
         {children}
+        <PageTracker />
       </body>
     </html>
   );

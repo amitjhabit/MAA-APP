@@ -437,12 +437,35 @@ function OverviewReport({ data, year }) {
   );
 }
 
+/* ══════════════════════════════════════ TRAFFIC REPORT ══════════════════════════════════════ */
+function TrafficReport({ data }) {
+  if (!data) return <div style={{ color: 'var(--ink-dim)', padding: '3rem', textAlign: 'center' }}>No traffic data yet — visits will appear after the first page load.</div>;
+  const { total_views, today_views, week_views, month_views, top_pages, last_30_days } = data;
+  return (
+    <>
+      <Grid cols={4}>
+        <StatCard icon="👁️" label="Total Page Views"  value={fmt(total_views)}  bg="var(--saffron-light)"  color="var(--saffron-dark)" />
+        <StatCard icon="📅" label="Today"             value={fmt(today_views)}  bg="var(--paper-2)"        color="var(--navy)" />
+        <StatCard icon="📆" label="Last 7 Days"       value={fmt(week_views)}   bg="var(--forest-light)"   color="var(--forest)" />
+        <StatCard icon="🗓️" label="Last 30 Days"      value={fmt(month_views)}  bg="#E3F2FD"               color="#0D47A1" />
+      </Grid>
+      <Section title="Daily Views — Last 30 Days">
+        <BarChart data={last_30_days} valueKey="count" labelKey="label" color="var(--saffron)" height={180} />
+      </Section>
+      <Section title="Top Pages">
+        <BarChart data={top_pages} valueKey="count" labelKey="label" color="var(--navy)" horizontal />
+      </Section>
+    </>
+  );
+}
+
 /* ══════════════════════════════════════ MAIN PAGE ══════════════════════════════════════ */
 const TABS = [
   { id: 'overview',  label: '🏠 Overview' },
   { id: 'members',   label: '👥 Members' },
   { id: 'donations', label: '💰 Donations' },
   { id: 'finance',   label: '📊 Finance' },
+  { id: 'traffic',   label: '🌐 Website Traffic' },
 ];
 
 export default function AnalyticsPage() {
@@ -450,15 +473,20 @@ export default function AnalyticsPage() {
   const [tab, setTab]     = useState('overview');
   const [year, setYear]   = useState(new Date().getFullYear());
   const [data, setData]   = useState(null);
+  const [traffic, setTraffic] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const years = Array.from({ length: 6 }, (_, i) => new Date().getFullYear() - 2 + i);
 
   const load = useCallback(async () => {
     setLoading(true);
-    const res = await fetch(`/api/analytics?year=${year}`, { headers: { 'x-admin-secret': secret } });
-    const j = await res.json();
+    const [res, tRes] = await Promise.all([
+      fetch(`/api/analytics?year=${year}`, { headers: { 'x-admin-secret': secret } }),
+      fetch('/api/analytics/traffic',      { headers: { 'x-admin-secret': secret } }),
+    ]);
+    const [j, t] = await Promise.all([res.json(), tRes.json()]);
     if (j.success) setData(j);
+    if (t.success) setTraffic(t.traffic);
     setLoading(false);
   }, [secret, year]);
 
@@ -472,7 +500,7 @@ export default function AnalyticsPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '.75rem' }}>
           <div>
             <h1 style={{ fontFamily: 'var(--serif)', fontSize: '1.5rem', fontWeight: 700, color: 'var(--navy)', margin: 0 }}>Analytics & Reports</h1>
-            <p style={{ color: 'var(--ink-soft)', fontSize: '.85rem', margin: '.2rem 0 0' }}>Members, donations, budget, and finance insights</p>
+            <p style={{ color: 'var(--ink-soft)', fontSize: '.85rem', margin: '.2rem 0 0' }}>Members, donations, budget, finance, and website traffic</p>
           </div>
           <div style={{ display: 'flex', gap: '.5rem', alignItems: 'center' }}>
             <select className="admin-input" value={year} onChange={e => setYear(parseInt(e.target.value))} style={{ width: 100 }}>
@@ -495,12 +523,13 @@ export default function AnalyticsPage() {
 
         {loading && <div className="loading-spinner" style={{ margin: '4rem auto' }} />}
 
-        {!loading && data && (
+        {!loading && (
           <>
-            {tab === 'overview'  && <OverviewReport  data={data} year={year} />}
-            {tab === 'members'   && <MembersReport   data={data.members} year={year} />}
-            {tab === 'donations' && <DonationsReport data={data.donations} year={year} />}
-            {tab === 'finance'   && <FinanceReport   data={data.finance} year={year} />}
+            {tab === 'overview'  && data && <OverviewReport  data={data} year={year} />}
+            {tab === 'members'   && data && <MembersReport   data={data.members} year={year} />}
+            {tab === 'donations' && data && <DonationsReport data={data.donations} year={year} />}
+            {tab === 'finance'   && data && <FinanceReport   data={data.finance} year={year} />}
+            {tab === 'traffic'   && <TrafficReport data={traffic} />}
           </>
         )}
       </main>

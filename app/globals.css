@@ -62,7 +62,7 @@ html{font-size:16px;} body{font-family:var(--sans);background:var(--paper);color
 .shell-sm{max-width:800px;margin:0 auto;padding:1.75rem 1.5rem 2.5rem;}
 /* Section */
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;padding-bottom:.55rem;border-bottom:2px solid var(--border);}
-.section-title{font-family:var(--serif);font-size:1.3rem;color:var(--navy);}
+.section-title{font-family:var(--serif);font-size:1rem;color:var(--navy);}
 .section-title span{color:var(--saffron);}
 .section-eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--saffron);margin-bottom:.4rem;}
 /* Cards */

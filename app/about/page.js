@@ -71,7 +71,7 @@ export default async function AboutPage() {
             </div>
             <div className="grid-3" style={{ marginBottom: '2rem' }}>
               {coreValues.map(item => (
-                <div key={item.id} className="card" style={{ textAlign: 'center' }}>
+                <div key={item.id} className="card" style={{ textAlign: 'left' }}>
                   {item.icon && <div style={{ fontSize: '1.6rem', marginBottom: '.5rem' }}>{item.icon}</div>}
                   {item.title && <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, color: 'var(--navy)', marginBottom: '.35rem', fontSize: '.875rem' }}>{item.title}</div>}
                   <div className="text-sm text-muted" style={{ lineHeight: 1.7, fontStyle: 'italic' }}>{item.content}</div>
@@ -88,7 +88,7 @@ export default async function AboutPage() {
             </div>
             <div className="grid-3" style={{ marginBottom: '2rem' }}>
               {activities.map(item => (
-                <div key={item.id} className="card" style={{ textAlign: 'center' }}>
+                <div key={item.id} className="card" style={{ textAlign: 'left' }}>
                   {item.icon && <div style={{ fontSize: '1.6rem', marginBottom: '.5rem' }}>{item.icon}</div>}
                   {item.title && <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, color: 'var(--navy)', marginBottom: '.35rem', fontSize: '.875rem' }}>{item.title}</div>}
                   <div className="text-sm text-muted" style={{ lineHeight: 1.7, fontStyle: 'italic' }}>{item.content}</div>
@@ -105,7 +105,7 @@ export default async function AboutPage() {
             </div>
             <div className="grid-3" style={{ marginBottom: '2rem' }}>
               {goals.map(item => (
-                <div key={item.id} className="card" style={{ textAlign: 'center' }}>
+                <div key={item.id} className="card" style={{ textAlign: 'left' }}>
                   {item.icon && <div style={{ fontSize: '1.6rem', marginBottom: '.5rem' }}>{item.icon}</div>}
                   {item.title && <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, color: 'var(--navy)', marginBottom: '.35rem', fontSize: '.875rem' }}>{item.title}</div>}
                   <div className="text-sm text-muted" style={{ lineHeight: 1.7, fontStyle: 'italic' }}>{item.content}</div>

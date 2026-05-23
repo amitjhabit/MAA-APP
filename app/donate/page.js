@@ -15,7 +15,7 @@ export default function DonatePage() {
           <span className="hero-eyebrow">दान करें</span>
           <h1>Support <em>MAA</em></h1>
           <p className="hero-sub">Your donation helps us preserve Maithili culture, organize events, and support our community.</p>
-          <p style={{ color: 'rgba(255,255,255,.6)', fontSize: '.82rem', marginTop: '.5rem' }}>MAA is a 501(c)(3) non-profit organization · EIN: 99-1915636</p>
+          <p className="hero-sub" style={{ fontSize: '.78rem', color: 'rgba(255,255,255,.55)', marginTop: '.25rem', marginBottom: 0 }}>MAA is a 501(c)(3) non-profit organization · EIN: 99-1915636</p>
         </div>
       </section>
 

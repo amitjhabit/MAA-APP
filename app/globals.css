@@ -33,6 +33,7 @@ html{font-size:16px;} body{font-family:var(--sans);background:var(--paper);color
 .pub-nav-statsbar{display:none;position:sticky;top:78px;z-index:48;background:rgba(10,36,56,.97);border-bottom:1px solid rgba(10,92,107,.45);padding:.35rem 1rem;justify-content:center;gap:1.25rem;}
 .pub-nav-stat-chip{display:flex;align-items:center;gap:.45rem;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:.3rem .85rem;white-space:nowrap;}
 .pub-nav-stat-chip svg{flex-shrink:0;opacity:.8;}
+a.pub-nav-stat-chip:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.25);}
 .pub-nav-stat-chip-num{color:var(--gold);font-size:.9rem;font-weight:700;line-height:1;}
 .pub-nav-stat-chip-label{color:rgba(255,255,255,.75);font-size:.72rem;font-weight:500;}
 .pub-nav-links{display:flex;gap:.25rem;align-items:center;}

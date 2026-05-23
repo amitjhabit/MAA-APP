@@ -121,9 +121,9 @@ function EventCard({ event }) {
   );
 }
 
-export default function EventsClient({ initialEvents }) {
+export default function EventsClient({ initialEvents, initialStatus = 'all' }) {
   const [events,    setEvents]    = useState(initialEvents || []);
-  const [filter,    setFilter]    = useState('all');
+  const [filter,    setFilter]    = useState(initialStatus);
   const [catFilter, setCatFilter] = useState('all');
 
   const filtered  = events.filter(e => (filter === 'all' || e.status === filter) && (catFilter === 'all' || e.category === catFilter));

@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic';
 import { getDb, ensureInit } from '@/lib/db';
 import EventsClient from '@/app/components/EventsClient';
 
-export default async function HomePage() {
+export default async function HomePage({ searchParams }) {
   let events = [];
   try {
     await ensureInit();
@@ -19,5 +19,7 @@ export default async function HomePage() {
   } catch (e) {
     console.error('EventsPage data fetch:', e.message);
   }
-  return <EventsClient initialEvents={events} />;
+  const validStatuses = ['all', 'upcoming', 'ongoing', 'completed'];
+  const initialStatus = validStatuses.includes(searchParams?.status) ? searchParams.status : 'all';
+  return <EventsClient initialEvents={events} initialStatus={initialStatus} />;
 }

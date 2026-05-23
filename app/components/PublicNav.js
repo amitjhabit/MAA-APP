@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 
 const LINKS = [
-  ['/', 'Home'],
   ['/events', 'Events'],
+  ['/', 'Home'],
   ['/news', 'News'],
   ['/gallery', 'Gallery'],
   ['/about', 'About Us'],

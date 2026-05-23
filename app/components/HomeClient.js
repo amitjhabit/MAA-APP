@@ -170,8 +170,8 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
                       </div>
                       <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '.9rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{ev.title}</div>
                       {ev.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.3rem' }}>{ev.title_maithili}</div>}
-                      <div className="text-sm text-muted">{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
-                      {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem', whiteSpace: 'pre-wrap' }}><LinkedText text={ev.description} /></div>}
+                      <div className="text-sm text-muted" style={{ fontSize: '.78rem', lineHeight: 1.55 }}>{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
+                      {ev.description && <div className="text-muted" style={{ fontSize: '.78rem', lineHeight: 1.55, marginTop: '.2rem', whiteSpace: 'pre-wrap' }}><LinkedText text={ev.description} /></div>}
                       {ev.status === 'upcoming' && (
                         <div style={{ marginTop: '.65rem', display: 'flex', gap: '.5rem', flexWrap: 'wrap' }}>
                           {ev.meeting_link && <a href={ev.meeting_link} target="_blank" rel="noreferrer" className="btn btn-primary btn-sm">Join Online →</a>}
@@ -207,7 +207,7 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
                   <span className="badge" style={{ background: cat.bg, color: cat.color, alignSelf: 'flex-start' }}>{n.category}</span>
                   <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '.9rem', color: 'var(--navy)', lineHeight: 1.3 }}>{n.title}</div>
                   {n.title_maithili && <div className="maithili" style={{ fontSize: '.82rem' }}>{n.title_maithili}</div>}
-                  <div className="text-sm text-muted" style={{ lineHeight: 1.6, flex: 1 }}>{(n.excerpt||n.content||'').slice(0,130)}{(n.excerpt||n.content||'').length>130?'…':''}</div>
+                  <div className="text-muted" style={{ fontSize: '.78rem', lineHeight: 1.55, flex: 1 }}>{(n.excerpt||n.content||'').slice(0,130)}{(n.excerpt||n.content||'').length>130?'…':''}</div>
                   <div className="text-xs text-muted" style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '.5rem' }}>
                     <span>{n.author||'MAA Team'}</span>
                     <span>{n.published_at?localDate(n.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):''}</span>

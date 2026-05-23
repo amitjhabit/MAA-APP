@@ -46,7 +46,7 @@ export default async function AboutPage() {
       <div className="shell">
         {(paragraphs.length > 0 || quote) && (
           <div style={{ maxWidth: 840, margin: '0 auto 2rem' }}>
-            <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '3px solid var(--saffron)', padding: '1.5rem 1.75rem', boxShadow: 'var(--shadow)' }}>
+            <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '1px solid rgba(10,92,107,.6)', padding: '1.5rem 1.75rem', boxShadow: 'var(--shadow)' }}>
               {paragraphs.map((p, i) => (
                 <p key={p.id} style={{ fontSize: '.78rem', lineHeight: 1.55, color: 'var(--ink)', marginBottom: i < paragraphs.length - 1 ? '.75rem' : 0 }}>
                   {p.content}
@@ -120,7 +120,7 @@ export default async function AboutPage() {
         <div className="section-header">
           <div><div className="section-eyebrow">सदस्यता</div><h2 className="section-title">Membership <span>Plan</span></h2></div>
         </div>
-        <div style={{ maxWidth: 480, margin: '0 auto 2rem', background: 'var(--navy)', borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.75rem', borderTop: '3px solid var(--saffron)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ maxWidth: 480, margin: '0 auto 2rem', background: 'var(--navy)', borderRadius: 'var(--radius-lg)', padding: '1.25rem 1.75rem', borderTop: '1px solid rgba(10,92,107,.6)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap' }}>
           <div>
             <div style={{ color: 'var(--gold)', fontWeight: 600, fontSize: '.72rem', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.2rem' }}>Membership Plan</div>
             <div style={{ color: '#fff', fontFamily: 'var(--serif)', fontSize: '1rem', fontWeight: 700 }}>Annual Membership</div>

@@ -24,7 +24,7 @@ const CAT_COLORS = {
 function NewsCard({ post, featured }) {
   const cat = CAT_COLORS[post.category] || CAT_COLORS.general;
   return (
-    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '.65rem', ...(featured ? { borderTop: '3px solid var(--saffron)' } : {}) }}>
+    <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: '.65rem', ...(featured ? { borderTop: '1px solid rgba(10,92,107,.6)' } : {}) }}>
       {featured && (
         <div style={{ background: 'var(--saffron)', color: '#fff', fontSize: '.68rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', padding: '.2rem .6rem', borderRadius: 4, alignSelf: 'flex-start' }}>⭐ Featured</div>
       )}

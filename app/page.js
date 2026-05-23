@@ -63,7 +63,7 @@ export default async function HomePage() {
       {/* Content — same shell + white card pattern as About Us */}
       <div className="shell" style={{ maxWidth: 900, margin: '0 auto' }}>
         <div style={{ maxWidth: 840, margin: '0 auto 1.5rem' }}>
-          <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '3px solid var(--saffron)', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow)' }}>
+          <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '1px solid rgba(10,92,107,.6)', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow)' }}>
             <SubtitleText text={subtitle} />
           </div>
         </div>

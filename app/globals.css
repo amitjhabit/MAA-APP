@@ -309,9 +309,13 @@ body[data-theme="dark"] .filter-btn.active{background:var(--saffron);color:#fff;
 body[data-theme="dark"] input,
 body[data-theme="dark"] textarea,
 body[data-theme="dark"] select{
-  background:rgba(255,255,255,.07);
+  background:#0D1B2A;
   border-color:rgba(255,255,255,.15);
   color:#fff;
+}
+body[data-theme="dark"] select option{
+  background:#0D1B2A;
+  color:rgba(255,255,255,.9);
 }
 body[data-theme="dark"] label{color:rgba(255,255,255,.7);}
 /* Empty / loading states */

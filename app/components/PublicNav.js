@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 const LINKS = [
   ['/events', 'Events'],
-  ['/', 'Home'],
+  ['/', 'Mission'],
   ['/news', 'News'],
   ['/gallery', 'Gallery'],
   ['/about', 'About Us'],

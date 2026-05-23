@@ -61,7 +61,7 @@ export default async function HomePage() {
                 textAlign: 'left',
                 background: 'linear-gradient(135deg, rgba(232,114,12,.10) 0%, rgba(10,92,107,.22) 100%)',
                 border: '1px solid rgba(10,92,107,.35)',
-                borderLeft: '3px solid var(--saffron)',
+                borderLeft: '3px solid rgba(94,207,223,.75)',
               }}>
                 <div style={{ fontSize: '.78rem', lineHeight: 1.6, fontStyle: 'italic', color: 'var(--ink)' }}>{b}</div>
               </div>

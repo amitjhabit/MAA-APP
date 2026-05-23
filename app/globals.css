@@ -236,6 +236,19 @@ body[data-theme="dark"]{
     radial-gradient(ellipse at 85% 0%,rgba(20,50,100,.35) 0%,transparent 50%),
     radial-gradient(ellipse at 50% 100%,rgba(8,30,60,.4) 0%,transparent 60%);
   color:#E4E4EF;
+  /* Override CSS variables so ALL inline styles using them go dark automatically */
+  --paper:#080C18;
+  --paper-2:rgba(13,24,50,.75);
+  --paper-3:rgba(255,255,255,.06);
+  --white:rgba(13,28,55,.88);
+  --ink:rgba(255,255,255,.92);
+  --ink-soft:rgba(255,255,255,.65);
+  --ink-dim:rgba(255,255,255,.4);
+  --border:rgba(255,255,255,.1);
+  --border-hi:rgba(255,255,255,.2);
+  --shadow:0 2px 12px rgba(0,0,0,.5);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.65);
+  --navy:#5ECFDF;
 }
 /* Cards */
 body[data-theme="dark"] .card{

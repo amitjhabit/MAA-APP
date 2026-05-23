@@ -64,10 +64,6 @@ export default async function HomePage() {
       <div className="shell" style={{ maxWidth: 900, margin: '0 auto' }}>
         <div style={{ maxWidth: 840, margin: '0 auto 1.5rem' }}>
           <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '3px solid var(--saffron)', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '.6rem', marginBottom: '.85rem' }}>
-              <div style={{ width: 3, height: 20, background: 'var(--saffron)', borderRadius: 2, flexShrink: 0 }} />
-              <h2 style={{ fontFamily: 'var(--serif)', fontSize: '.9rem', color: 'var(--navy)', fontWeight: 600, margin: 0 }}>About Our Organization</h2>
-            </div>
             <SubtitleText text={subtitle} />
           </div>
         </div>

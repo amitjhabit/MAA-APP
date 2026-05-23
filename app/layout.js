@@ -8,7 +8,11 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet" />
       </head>
-      <body>{children}</body>
+      <body>
+        {/* Runs synchronously before first paint — prevents white flash on public pages */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){if(!window.location.pathname.startsWith('/admin')){document.body.setAttribute('data-theme','dark');}})();` }} />
+        {children}
+      </body>
     </html>
   );
 }

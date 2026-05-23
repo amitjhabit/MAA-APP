@@ -9,8 +9,9 @@ export async function GET() {
     const sql = getDb();
     const [m] = await sql`SELECT COUNT(*) AS c FROM members WHERE is_active = TRUE`;
     const [e] = await sql`SELECT COUNT(*) AS c FROM events`;
+    const [u] = await sql`SELECT COUNT(*) AS c FROM events WHERE status = 'upcoming'`;
     const [n] = await sql`SELECT COUNT(*) AS c FROM news_posts WHERE status = 'published'`;
-    const res = NextResponse.json({ success: true, data: { members: parseInt(m.c), events: parseInt(e.c), news: parseInt(n.c) } });
+    const res = NextResponse.json({ success: true, data: { members: parseInt(m.c), events: parseInt(e.c), upcoming_events: parseInt(u.c), news: parseInt(n.c) } });
     res.headers.set('Cache-Control', 'no-store');
     return res;
   } catch {

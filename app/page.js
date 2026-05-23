@@ -57,8 +57,13 @@ export default async function HomePage() {
         {bullets.length > 0 && (
           <div className="grid-3" style={{ marginBottom: '1.5rem' }}>
             {bullets.map((b, i) => (
-              <div key={i} className="card" style={{ textAlign: 'left' }}>
-                <div style={{ fontSize: '.78rem', lineHeight: 1.55, fontStyle: 'italic', color: 'var(--ink-soft)' }}>{b}</div>
+              <div key={i} className="card" style={{
+                textAlign: 'left',
+                background: 'linear-gradient(135deg, rgba(232,114,12,.10) 0%, rgba(10,92,107,.22) 100%)',
+                border: '1px solid rgba(10,92,107,.35)',
+                borderLeft: '3px solid var(--saffron)',
+              }}>
+                <div style={{ fontSize: '.78rem', lineHeight: 1.6, fontStyle: 'italic', color: 'var(--ink)' }}>{b}</div>
               </div>
             ))}
           </div>

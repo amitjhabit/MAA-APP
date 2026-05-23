@@ -128,10 +128,10 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
             { num: `${stats.members}+`, label: 'Members',          sub: 'सदस्य' },
             { num: `${stats.events}+`,  label: 'Events Organized', sub: 'कार्यक्रम' },
           ].map(s => (
-            <div key={s.label} style={{ textAlign: 'center', padding: '.75rem' }}>
-              <div style={{ fontFamily: 'var(--serif)', fontSize: '1.8rem', fontWeight: 700, color: 'var(--saffron)', lineHeight: 1 }}>{s.num}</div>
-              <div style={{ fontWeight: 600, color: 'var(--navy)', marginTop: '.2rem', fontSize: '.82rem' }}>{s.label}</div>
-              <div style={{ fontSize: '.7rem', color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic' }}>{s.sub}</div>
+            <div key={s.label} style={{ textAlign: 'center', padding: '.5rem' }}>
+              <div style={{ fontFamily: 'var(--serif)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--saffron)', lineHeight: 1 }}>{s.num}</div>
+              <div style={{ fontWeight: 600, color: 'var(--navy)', marginTop: '.15rem', fontSize: '.75rem' }}>{s.label}</div>
+              <div style={{ fontSize: '.65rem', color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic' }}>{s.sub}</div>
             </div>
           ))}
         </div>
@@ -168,7 +168,7 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
                         <span className="badge" style={{ background: cat.bg, color: cat.color }}>{ev.category}</span>
                         <span className="badge" style={{ background: sta.bg, color: sta.color }}>{ev.status}</span>
                       </div>
-                      <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{ev.title}</div>
+                      <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '.9rem', color: 'var(--navy)', lineHeight: 1.3, marginBottom: '.2rem' }}>{ev.title}</div>
                       {ev.title_maithili && <div className="maithili" style={{ fontSize: '.85rem', marginBottom: '.3rem' }}>{ev.title_maithili}</div>}
                       <div className="text-sm text-muted">{ev.event_time && `🕐 ${ev.event_time} · `}{ev.is_online ? '💻 Online' : `📍 ${[ev.location,ev.city,ev.state].filter(Boolean).join(', ')}`}</div>
                       {ev.description && <div className="text-sm text-muted" style={{ marginTop: '.2rem', whiteSpace: 'pre-wrap' }}><LinkedText text={ev.description} /></div>}
@@ -205,7 +205,7 @@ export default function HomeClient({ events: initialEvents, news: initialNews, s
               return (
                 <div key={n.id} className="card" style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
                   <span className="badge" style={{ background: cat.bg, color: cat.color, alignSelf: 'flex-start' }}>{n.category}</span>
-                  <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '1.05rem', color: 'var(--navy)', lineHeight: 1.3 }}>{n.title}</div>
+                  <div style={{ fontFamily: 'var(--serif)', fontWeight: 600, fontSize: '.9rem', color: 'var(--navy)', lineHeight: 1.3 }}>{n.title}</div>
                   {n.title_maithili && <div className="maithili" style={{ fontSize: '.82rem' }}>{n.title_maithili}</div>}
                   <div className="text-sm text-muted" style={{ lineHeight: 1.6, flex: 1 }}>{(n.excerpt||n.content||'').slice(0,130)}{(n.excerpt||n.content||'').length>130?'…':''}</div>
                   <div className="text-xs text-muted" style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '.5rem' }}>

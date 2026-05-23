@@ -132,7 +132,7 @@ export default function EventsClient({ initialEvents }) {
 
   return (
     <>
-      <PublicNav active="/events" />
+      <PublicNav active="/" />
 
       {/* Hero */}
       <section className="hero">

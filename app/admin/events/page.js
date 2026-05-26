@@ -78,6 +78,7 @@ function Sidebar() {
         <NL href="/admin/gallery" icon="🖼️" label="Gallery" />
         <NL href="/admin/homepage" icon="🏡" label="Mission" />
         <NL href="/admin/about"   icon="📝" label="About Us" />
+        <NL href="/admin/mithila" icon="🗺️" label="Mithila" />
         <div className="admin-nav-section">Organization</div>
         <NL href="/admin/volunteers" icon="🙋" label="Volunteers" />
         <NL href="/admin/committee"  icon="🏛️" label="Committee" />

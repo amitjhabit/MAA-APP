@@ -10,7 +10,7 @@ export default function PublicFooter() {
         </div>
         <div>
           <div style={{ color: 'var(--gold)', fontWeight: 600, marginBottom: '.75rem', fontSize: '.85rem', textTransform: 'uppercase', letterSpacing: '.08em' }}>Quick Links</div>
-          {[['About Us', '/'], ['Events', '/events'], ['News', '/news'], ['Gallery', '/gallery'], ['Donate', '/donate'], ['Join / Renew', '/join'], ['Contact', '/contact']].map(([l, h]) => (
+          {[['About Us', '/'], ['Mithila', '/mithila'], ['Events', '/events'], ['News', '/news'], ['Gallery', '/gallery'], ['Donate', '/donate'], ['Join / Renew', '/join'], ['Contact', '/contact']].map(([l, h]) => (
             <div key={l} style={{ marginBottom: '.35rem' }}>
               <a href={h} style={{ color: 'rgba(255,255,255,.7)', fontSize: '.875rem' }}>{l}</a>
             </div>

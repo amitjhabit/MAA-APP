@@ -54,6 +54,7 @@ export default function AdminDashboard() {
     { icon: '📊', title: 'Finance',   sub: 'वित्त',         href: '/admin/finance',    stat: 'Manage',         statLabel: 'budget & receipts', color: 'var(--forest)' },
     { icon: '📈', title: 'Analytics', sub: 'विश्लेषण',      href: '/admin/analytics',  stat: 'Reports',        statLabel: 'insights & trends', color: '#7B1FA2' },
     { icon: '🏡', title: 'Mission', sub: 'मुखपृष्ठ',     href: '/admin/homepage',   stat: 'Edit',           statLabel: 'hero & CTAs',       color: 'var(--navy)' },
+    { icon: '🗺️', title: 'Mithila',  sub: 'मिथिला',        href: '/admin/mithila',    stat: 'Edit',           statLabel: 'page content',      color: 'var(--saffron)' },
   ];
 
   return (

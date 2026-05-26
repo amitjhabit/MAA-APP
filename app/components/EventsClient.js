@@ -13,7 +13,7 @@ function localDate(val) {
   return new Date(+m[1], +m[2] - 1, +m[3]);
 }
 
-// Render text with clickable URLs
+// Render text with clickable URLs — raw URLs are hidden, shown as "Please Register here"
 function LinkedText({ text }) {
   if (!text) return null;
   const parts = text.split(/(https?:\/\/[^\s]+)/g);
@@ -21,7 +21,7 @@ function LinkedText({ text }) {
     <>
       {parts.map((part, i) =>
         /^https?:\/\//.test(part)
-          ? <a key={i} href={part} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)', wordBreak: 'break-all' }}>{part}</a>
+          ? <a key={i} href={part} target="_blank" rel="noreferrer" style={{ color: 'var(--saffron)', fontWeight: 600 }}>Please Register here</a>
           : part
       )}
     </>

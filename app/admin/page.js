@@ -44,8 +44,8 @@ export default function AdminDashboard() {
   const modules = [
     { icon: '👥', title: 'Members',    sub: 'सदस्य',        href: '/admin/members',    stat: stats.members,    statLabel: 'total',     color: 'var(--saffron)' },
     { icon: '📅', title: 'Events',     sub: 'कार्यक्रम',    href: '/admin/events',     stat: stats.events,     statLabel: 'total',     color: '#185FA5' },
-    { icon: '💰', title: 'Donations',  sub: 'दान',          href: '/admin/donations',  stat: `$${stats.total_donations.toLocaleString()}`, statLabel: 'received', color: 'var(--forest)' },
-    { icon: '📰', title: 'News',       sub: 'समाचार',       href: '/admin/news',       stat: stats.news,       statLabel: 'posts',     color: 'var(--gold)' },
+    { icon: '💰', title: 'Donations',  sub: 'दान',          href: '/admin/donations',  stat: `$${stats.total_donations.toLocaleString()}`, statLabel: 'received', color: 'var(--saffron)' },
+    { icon: '📰', title: 'News',       sub: 'समाचार',       href: '/admin/news',       stat: stats.news,       statLabel: 'posts',     color: 'var(--saffron)' },
     { icon: '🙋', title: 'Volunteers', sub: 'स्वयंसेवक',    href: '/admin/volunteers', stat: stats.volunteers, statLabel: 'total',     color: 'var(--crimson)' },
     { icon: '🏛️', title: 'Committee', sub: 'समिति',        href: '/admin/committee',  stat: stats.committee,  statLabel: 'members',   color: 'var(--navy)' },
     { icon: '🖼️', title: 'Gallery',   sub: 'गैलरी',        href: '/admin/gallery',    stat: stats.gallery,    statLabel: 'photos',    color: '#7B1FA2' },
@@ -84,14 +84,14 @@ export default function AdminDashboard() {
         {/* Quick stats strip */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem', marginBottom: '2rem', background: 'var(--navy)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', border: '1px solid var(--border)' }}>
           {[
-            { label: 'Total Members',  value: stats.members,                          color: 'var(--saffron)' },
-            { label: 'Active Events',  value: stats.events,                           color: 'var(--gold)' },
-            { label: 'Donations',      value: `$${stats.total_donations.toLocaleString()}`, color: 'var(--forest)' },
-            { label: 'New Inquiries',  value: stats.new_inquiries,                    color: stats.new_inquiries > 0 ? 'var(--crimson)' : 'rgba(255,255,255,.4)' },
+            { label: 'Total Members',  value: stats.members,                               color: 'var(--saffron)',  bg: null },
+            { label: 'Active Events',  value: stats.events,                                color: 'var(--gold)',     bg: null },
+            { label: 'Donations',      value: `$${stats.total_donations.toLocaleString()}`, color: 'var(--saffron)',  bg: null },
+            { label: 'New Inquiries',  value: stats.new_inquiries,                         color: 'var(--saffron)',  bg: null },
           ].map(s => (
-            <div key={s.label} style={{ textAlign: 'center' }}>
+            <div key={s.label} style={{ textAlign: 'center', background: s.bg || 'transparent', borderRadius: 'var(--radius)', padding: s.bg ? '.5rem' : 0 }}>
               <div style={{ fontFamily: 'var(--serif)', fontSize: '2rem', fontWeight: 700, color: s.color, lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: '.72rem', color: 'rgba(255,255,255,.55)', textTransform: 'uppercase', letterSpacing: '.08em', marginTop: '.3rem' }}>{s.label}</div>
+              <div style={{ fontSize: '.72rem', color: s.bg ? 'rgba(255,255,255,.8)' : 'rgba(255,255,255,.55)', textTransform: 'uppercase', letterSpacing: '.08em', marginTop: '.3rem' }}>{s.label}</div>
             </div>
           ))}
         </div>

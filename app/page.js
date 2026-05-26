@@ -39,21 +39,39 @@ export default async function HomePage() {
       <PublicNav active="/" />
 
       <section className="hero">
-        <div className="hero-inner">
-          <span className="hero-eyebrow">हमारे बारे में</span>
-          <h1>About <em>Us</em></h1>
-          {bannerItems.length > 0 && (
-            <div style={{ marginTop: '.5rem' }}>
-              {bannerItems.map((p, i) => (
-                <p key={p.id} className="hero-sub" style={{ maxWidth: '100%', marginBottom: i < bannerItems.length - 1 ? '.5rem' : 0 }}>
-                  {p.content}
-                </p>
-              ))}
+        <div className="hero-inner" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', flexWrap: 'wrap' }}>
+          {/* Left: text */}
+          <div style={{ flex: 1, minWidth: 280 }}>
+            <span className="hero-eyebrow">हमारे बारे में</span>
+            <h1>About <em>Us</em></h1>
+            {bannerItems.length > 0 && (
+              <div style={{ marginTop: '.5rem' }}>
+                {bannerItems.map((p, i) => (
+                  <p key={p.id} className="hero-sub" style={{ maxWidth: '100%', marginBottom: i < bannerItems.length - 1 ? '.5rem' : 0 }}>
+                    {p.content}
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* Right: framed Mithila art */}
+          <div style={{ flexShrink: 0 }}>
+            <div style={{
+              border: '5px solid var(--gold)',
+              borderRadius: 'var(--radius)',
+              boxShadow: '0 4px 20px rgba(0,0,0,.35), 0 0 0 2px rgba(201,150,12,.4)',
+              overflow: 'hidden',
+              width: 300,
+            }}>
+              <img
+                src="/images/gallery/mithila_nature_painting.png"
+                alt="Mithila Nature Painting"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
             </div>
-          )}
+          </div>
         </div>
       </section>
-
 
       <div className="shell">
         {(paragraphs.length > 0 || quote) && (

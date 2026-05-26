@@ -39,7 +39,7 @@ export default async function HomePage() {
       <PublicNav active="/" />
 
       <section className="hero">
-        <div className="hero-inner" style={{ display: 'flex', alignItems: 'center', gap: '2.5rem', flexWrap: 'wrap' }}>
+        <div className="hero-inner" style={{ display: 'flex', alignItems: 'flex-start', gap: '2.5rem', flexWrap: 'wrap' }}>
           {/* Left: text */}
           <div style={{ flex: 1, minWidth: 280 }}>
             <span className="hero-eyebrow">हमारे बारे में</span>
@@ -47,7 +47,7 @@ export default async function HomePage() {
             {bannerItems.length > 0 && (
               <div style={{ marginTop: '.5rem' }}>
                 {bannerItems.map((p, i) => (
-                  <p key={p.id} className="hero-sub" style={{ maxWidth: '100%', marginBottom: i < bannerItems.length - 1 ? '.5rem' : 0 }}>
+                  <p key={p.id} className="hero-sub" style={{ maxWidth: '100%', marginBottom: i < bannerItems.length - 1 ? '1rem' : 0 }}>
                     {p.content}
                   </p>
                 ))}

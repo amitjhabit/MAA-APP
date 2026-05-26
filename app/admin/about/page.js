@@ -36,11 +36,12 @@ function Sidebar() {
 }
 
 const TYPE_LABELS = {
-  paragraph:  { label: 'About Paragraph',     icon: '📝', color: 'var(--navy)' },
-  quote:      { label: 'Closing Quote',        icon: '💬', color: 'var(--gold)' },
-  core_value: { label: 'Core Value',           icon: '⭐', color: 'var(--saffron)' },
-  activity:   { label: 'What We Do',           icon: '🎯', color: 'var(--forest)' },
-  goals:      { label: 'Goals and Objectives', icon: '🏆', color: 'var(--crimson)' },
+  hero_banner: { label: 'Hero Banner Text',     icon: '🖼️', color: 'var(--saffron)' },
+  paragraph:   { label: 'About Paragraph',      icon: '📝', color: 'var(--navy)' },
+  quote:       { label: 'Closing Quote',         icon: '💬', color: 'var(--gold)' },
+  core_value:  { label: 'Core Value',            icon: '⭐', color: 'var(--saffron)' },
+  activity:    { label: 'What We Do',            icon: '🎯', color: 'var(--forest)' },
+  goals:       { label: 'Goals and Objectives',  icon: '🏆', color: 'var(--crimson)' },
 };
 
 const BLANK = { type: 'paragraph', icon: '', title: '', content: '', sort_order: '0', is_active: true };
@@ -81,6 +82,7 @@ function ItemModal({ item, initialType, secret, onClose, onSave }) {
         <div className="form-grid">
           <div className="form-group"><label>Section Type</label>
             <select value={form.type} onChange={set('type')} disabled={isEdit}>
+              <option value="hero_banner">🖼️ Hero Banner Text</option>
               <option value="paragraph">📝 About Paragraph</option>
               <option value="quote">💬 Closing Quote</option>
               <option value="core_value">⭐ Core Value</option>
@@ -110,6 +112,7 @@ function ItemModal({ item, initialType, secret, onClose, onSave }) {
               placeholder={
                 form.type === 'paragraph' ? 'Write the paragraph text here…' :
                 form.type === 'quote' ? 'Enter the quote text…' :
+                form.type === 'hero_banner' ? 'Text to display in the About Us hero banner…' :
                 'Brief description (1-2 sentences)'
               }
             />
@@ -120,6 +123,14 @@ function ItemModal({ item, initialType, secret, onClose, onSave }) {
             <label htmlFor="is_active" style={{ marginBottom: 0 }}>Visible on public page</label>
           </div>
         </div>
+
+        {/* Live preview for hero banner */}
+        {form.type === 'hero_banner' && form.content && (
+          <div style={{ background: 'linear-gradient(135deg,#0D1B2A 0%,#0A5C6B 100%)', borderRadius: 'var(--radius)', padding: '1rem 1.25rem', marginTop: '.75rem', borderLeft: '4px solid var(--saffron)' }}>
+            <div style={{ fontSize: '.65rem', color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.4rem' }}>Hero Banner Preview</div>
+            <p style={{ color: 'rgba(255,255,255,.8)', fontSize: '.875rem', lineHeight: 1.7, margin: 0 }}>{form.content}</p>
+          </div>
+        )}
 
         {/* Live preview for quotes */}
         {form.type === 'quote' && form.content && (
@@ -140,11 +151,12 @@ function ItemModal({ item, initialType, secret, onClose, onSave }) {
 }
 
 const SECTIONS = [
-  { type: 'paragraph',  label: 'About Paragraphs',     icon: '📝', hint: 'Main description text shown at the top of the About page.' },
-  { type: 'quote',      label: 'Closing Quote',         icon: '💬', hint: 'The highlighted quote block (only the first active one is shown).' },
-  { type: 'core_value', label: 'Core Values',           icon: '⭐', hint: '"Our Core Values" grid — each card has an icon, title, and description.' },
-  { type: 'activity',   label: 'What We Do',            icon: '🎯', hint: '"What We Do" grid — each card has an icon, title, and description.' },
-  { type: 'goals',      label: 'Goals and Objectives',  icon: '🏆', hint: 'Goals & Objectives grid — each card has an icon, title, and description.' },
+  { type: 'hero_banner', label: 'Hero Banner',          icon: '🖼️', hint: 'Text displayed inside the hero banner at the top of the About Us page. Add multiple lines — each item becomes its own paragraph in the banner.' },
+  { type: 'paragraph',   label: 'About Paragraphs',     icon: '📝', hint: 'Main description text shown in the body section below the banner.' },
+  { type: 'quote',       label: 'Closing Quote',         icon: '💬', hint: 'The highlighted quote block (only the first active one is shown).' },
+  { type: 'core_value',  label: 'Core Values',           icon: '⭐', hint: '"Our Core Values" grid — each card has an icon, title, and description.' },
+  { type: 'activity',    label: 'What We Do',            icon: '🎯', hint: '"What We Do" grid — each card has an icon, title, and description.' },
+  { type: 'goals',       label: 'Goals and Objectives',  icon: '🏆', hint: 'Goals & Objectives grid — each card has an icon, title, and description.' },
 ];
 
 export default function AdminAboutPage() {

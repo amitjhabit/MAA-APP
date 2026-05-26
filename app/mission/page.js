@@ -42,13 +42,13 @@ export default async function MissionPage() {
         </div>
       </section>
 
-      <div className="shell" style={{ maxWidth: 900, margin: '0 auto' }}>
+      <div className="shell">
 
         {/* Intro text card */}
         {introText && (
-          <div style={{ maxWidth: 840, margin: '0 auto 1.5rem' }}>
-            <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '1px solid rgba(10,92,107,.6)', padding: '1.25rem 1.5rem', boxShadow: 'var(--shadow)' }}>
-              <p style={{ fontSize: '.78rem', lineHeight: 1.55, color: 'var(--ink)', margin: 0 }}>{introText}</p>
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)', borderTop: '1px solid rgba(10,92,107,.6)', padding: '2rem 2.5rem', boxShadow: 'var(--shadow)' }}>
+              <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--ink)', margin: 0 }}>{introText}</p>
             </div>
           </div>
         )}
@@ -63,7 +63,7 @@ export default async function MissionPage() {
                 border: '1px solid rgba(10,92,107,.35)',
                 borderLeft: '3px solid rgba(94,207,223,.75)',
               }}>
-                <div style={{ fontSize: '.78rem', lineHeight: 1.6, fontStyle: 'italic', color: 'var(--ink)' }}>{b}</div>
+                <div style={{ fontSize: '1rem', lineHeight: 1.75, fontStyle: 'italic', color: 'var(--ink)' }}>{b}</div>
               </div>
             ))}
           </div>
@@ -71,7 +71,7 @@ export default async function MissionPage() {
 
         {/* CTA strip */}
         <div style={{ textAlign: 'center', padding: '1.25rem', background: 'var(--navy)', borderRadius: 'var(--radius-lg)', marginBottom: '1rem' }}>
-          <div style={{ color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.82rem', marginBottom: '.85rem' }}>
+          <div style={{ color: 'var(--gold)', fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '.95rem', marginBottom: '.85rem' }}>
             "Together, let's stand tall as proud Maithils."
           </div>
           <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>

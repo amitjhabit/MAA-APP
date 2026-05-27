@@ -60,7 +60,7 @@ export async function POST(request) {
           membership_type:normaliseType(row.membership_type),
           membership_plan:normalisePlan(row.membership_plan),
           membership_status:normaliseStatus(row.membership_status||row.status),
-          is_active:normaliseBool(row.is_active??row.active, true),
+          is_active:normaliseBool(row.is_active??row.active, false),
           joined_date:normaliseDate(row.joined_date||row.join_date)||new Date().toISOString().split('T')[0],
           expiry_date:normaliseDate(row.expiry_date||row.expiration_date),
           amount_paid:parseFloat(row.amount_paid||row.amount||0)||0,

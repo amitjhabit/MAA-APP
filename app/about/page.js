@@ -38,7 +38,7 @@ export default async function AboutPage() {
 
       <section className="hero">
         <div className="hero-inner">
-          <span className="hero-eyebrow">हमारे बारे में</span>
+          <span className="hero-eyebrow">हमर सभक परिचय</span>
           <h1>About <em>Us</em></h1>
         </div>
       </section>

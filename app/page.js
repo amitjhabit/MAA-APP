@@ -42,7 +42,7 @@ export default async function HomePage() {
         <div className="hero-inner" style={{ display: 'flex', alignItems: 'flex-start', gap: '2.5rem', flexWrap: 'wrap' }}>
           {/* Left: text */}
           <div style={{ flex: 1, minWidth: 280 }}>
-            <span className="hero-eyebrow">हमारे बारे में</span>
+            <span className="hero-eyebrow">हमर सभक परिचय</span>
             <h1>About <em>Us</em></h1>
             {bannerItems.length > 0 && (
               <div style={{ marginTop: '.5rem' }}>

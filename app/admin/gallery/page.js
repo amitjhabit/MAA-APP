@@ -136,6 +136,26 @@ function PhotoModal({ photo, albumId, albumFolderPath, secret, onClose, onSave }
     setUploading(false);
   };
 
+  const handleCloudFileChange = async e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadErr(''); setUploadDone(false);
+    const reader = new FileReader();
+    reader.onload = ev => setLocalPreview(ev.target.result);
+    reader.readAsDataURL(file);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      if (albumFolderPath) fd.append('folder_path', albumFolderPath);
+      const res = await fetch('/api/gallery/upload-cloud', { method: 'POST', headers: { 'x-admin-secret': secret }, body: fd });
+      const data = await res.json();
+      if (data.success) { setForm(p => ({ ...p, image_url: data.url })); setUploadDone(true); }
+      else { setUploadErr(data.message || 'Cloudinary upload failed.'); setLocalPreview(''); }
+    } catch { setUploadErr('Network error during upload.'); setLocalPreview(''); }
+    setUploading(false);
+  };
+
   const handleUrlChange = e => setForm(p => ({ ...p, image_url: normalizeUrl(e.target.value) }));
 
   const submit = async () => {
@@ -163,27 +183,42 @@ function PhotoModal({ photo, albumId, albumFolderPath, secret, onClose, onSave }
           <button className="btn btn-ghost btn-sm" onClick={onClose}>✕</button>
         </div>
 
-        <div style={{ display: 'flex', gap: '.35rem', marginBottom: '1rem', background: 'var(--paper-2)', borderRadius: 'var(--radius)', padding: '.3rem' }}>
-          <button onClick={() => { setUploadMode('file'); setUploadErr(''); }} style={{ flex: 1, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'file' ? '#fff' : 'transparent', color: uploadMode === 'file' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'file' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
-            📁 Upload / Gallery
+        <div style={{ display: 'flex', gap: '.35rem', marginBottom: '1rem', background: 'var(--paper-2)', borderRadius: 'var(--radius)', padding: '.3rem', flexWrap: 'wrap' }}>
+          <button onClick={() => { setUploadMode('file'); setUploadErr(''); }} style={{ flex: 1, minWidth: 80, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'file' ? '#fff' : 'transparent', color: uploadMode === 'file' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'file' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
+            📁 Computer
           </button>
-          <button onClick={() => { setUploadMode('camera'); setUploadErr(''); }} style={{ flex: 1, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'camera' ? '#fff' : 'transparent', color: uploadMode === 'camera' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'camera' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
-            📱 Take Photo
+          <button onClick={() => { setUploadMode('cloud'); setUploadErr(''); }} style={{ flex: 1, minWidth: 80, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'cloud' ? '#fff' : 'transparent', color: uploadMode === 'cloud' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'cloud' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
+            ☁️ Mobile / Cloud
           </button>
-          <button onClick={() => { setUploadMode('url'); setUploadErr(''); }} style={{ flex: 1, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'url' ? '#fff' : 'transparent', color: uploadMode === 'url' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'url' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
+          <button onClick={() => { setUploadMode('camera'); setUploadErr(''); }} style={{ flex: 1, minWidth: 80, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'camera' ? '#fff' : 'transparent', color: uploadMode === 'camera' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'camera' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
+            📱 Camera
+          </button>
+          <button onClick={() => { setUploadMode('url'); setUploadErr(''); }} style={{ flex: 1, minWidth: 80, padding: '.4rem', borderRadius: 6, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: '.8rem', background: uploadMode === 'url' ? '#fff' : 'transparent', color: uploadMode === 'url' ? 'var(--saffron)' : 'var(--ink-soft)', boxShadow: uploadMode === 'url' ? 'var(--shadow)' : 'none', transition: 'var(--trans)' }}>
             🔗 URL / Path
           </button>
         </div>
 
-        {(uploadMode === 'file' || uploadMode === 'camera') && (
+        {uploadMode === 'file' && (
           <div style={{ marginBottom: '1rem' }}>
-            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" capture={uploadMode === 'camera' ? 'environment' : undefined} style={{ display: 'none' }} onChange={handleFileChange} />
+            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" style={{ display: 'none' }} onChange={handleFileChange} />
+            <div onClick={() => fileRef.current?.click()} style={{ border: `2px dashed ${uploading ? 'var(--gold)' : uploadDone ? 'var(--forest)' : 'var(--border-hi)'}`, borderRadius: 'var(--radius)', padding: '1.25rem', textAlign: 'center', cursor: 'pointer', background: uploadDone ? 'var(--forest-light)' : 'var(--paper-2)', transition: 'var(--trans)' }}>
+              {uploading ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5rem', color: 'var(--gold)' }}><span className="spinner" /><span className="text-sm">Uploading…</span></div>
+                : uploadDone ? <div style={{ color: 'var(--forest)', fontWeight: 600, fontSize: '.875rem' }}>✅ Upload complete — click to replace</div>
+                : <><div style={{ fontSize: '2rem', marginBottom: '.4rem' }}>📷</div><div style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.9rem' }}>Click to choose a photo</div><div className="text-xs text-muted" style={{ marginTop: '.2rem' }}>JPG, PNG, GIF, WEBP — max 5 MB{albumFolderPath ? ` · saves to ${albumFolderPath}/` : ''}</div></>}
+            </div>
+            {uploadErr && <div style={{ color: 'var(--crimson)', fontSize: '.8rem', marginTop: '.5rem' }}>{uploadErr}</div>}
+          </div>
+        )}
+
+        {(uploadMode === 'cloud' || uploadMode === 'camera') && (
+          <div style={{ marginBottom: '1rem' }}>
+            <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" capture={uploadMode === 'camera' ? 'environment' : undefined} style={{ display: 'none' }} onChange={handleCloudFileChange} />
             <div onClick={() => fileRef.current?.click()} style={{ border: `2px dashed ${uploading ? 'var(--gold)' : uploadDone ? 'var(--forest)' : 'var(--border-hi)'}`, borderRadius: 'var(--radius)', padding: '1.25rem', textAlign: 'center', cursor: 'pointer', background: uploadDone ? 'var(--forest-light)' : 'var(--paper-2)', transition: 'var(--trans)' }}>
               {uploading ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5rem', color: 'var(--gold)' }}><span className="spinner" /><span className="text-sm">Uploading to Cloudinary…</span></div>
-                : uploadDone ? <div style={{ color: 'var(--forest)', fontWeight: 600, fontSize: '.875rem' }}>✅ Upload complete — tap to replace</div>
+                : uploadDone ? <div style={{ color: 'var(--forest)', fontWeight: 600, fontSize: '.875rem' }}>✅ Uploaded to Cloudinary — tap to replace</div>
                 : uploadMode === 'camera'
-                  ? <><div style={{ fontSize: '2.5rem', marginBottom: '.4rem' }}>📸</div><div style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.9rem' }}>Tap to open camera</div><div className="text-xs text-muted" style={{ marginTop: '.2rem' }}>Takes a new photo directly from your mobile camera</div></>
-                  : <><div style={{ fontSize: '2rem', marginBottom: '.4rem' }}>📷</div><div style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.9rem' }}>Tap to choose from gallery</div><div className="text-xs text-muted" style={{ marginTop: '.2rem' }}>JPG, PNG, GIF, WEBP — max 10 MB · stored on Cloudinary</div></>}
+                  ? <><div style={{ fontSize: '2.5rem', marginBottom: '.4rem' }}>📸</div><div style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.9rem' }}>Tap to open camera</div><div className="text-xs text-muted" style={{ marginTop: '.2rem' }}>Takes photo directly · stored on Cloudinary · max 10 MB</div></>
+                  : <><div style={{ fontSize: '2rem', marginBottom: '.4rem' }}>☁️</div><div style={{ fontWeight: 600, color: 'var(--navy)', fontSize: '.9rem' }}>Tap to choose from phone / Google Photos</div><div className="text-xs text-muted" style={{ marginTop: '.2rem' }}>Stored on Cloudinary — works from mobile &amp; Vercel · max 10 MB</div></>}
             </div>
             {uploadErr && <div style={{ color: 'var(--crimson)', fontSize: '.8rem', marginTop: '.5rem' }}>{uploadErr}</div>}
           </div>
@@ -394,7 +429,7 @@ export default function GalleryPage() {
             {/* Info banner (albums view only) */}
             {view === 'albums' && (
               <div style={{ background: 'var(--gold-light)', border: '1px solid rgba(201,150,12,.3)', borderRadius: 'var(--radius)', padding: '.75rem 1rem', marginBottom: '1.5rem', fontSize: '.85rem', color: 'var(--ink-soft)' }}>
-                <strong style={{ color: 'var(--gold)' }}>📁 Album-Based Gallery</strong> — Create albums, then open an album and tap <strong>+ Add Photo</strong> to upload from your phone camera, photo library, or computer. Images are stored on Cloudinary. Use <strong>Scan Folder</strong> to bulk-import images already in the git repo.
+                <strong style={{ color: 'var(--gold)' }}>📁 Album-Based Gallery</strong> — Create albums and link them to image folders under <code style={{ background: 'var(--paper-3)', padding: '.1rem .3rem', borderRadius: 3 }}>public/images/gallery/</code>. Use <strong>Scan Folder</strong> to bulk-import from git. Use <strong>☁️ Mobile / Cloud</strong> or <strong>📱 Camera</strong> tabs to upload directly from your phone via Cloudinary.
               </div>
             )}
 

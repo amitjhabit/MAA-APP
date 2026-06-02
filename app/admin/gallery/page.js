@@ -140,19 +140,46 @@ function PhotoModal({ photo, albumId, albumFolderPath, secret, onClose, onSave }
     const file = e.target.files[0];
     if (!file) return;
     setUploadErr(''); setUploadDone(false);
+    // Show local preview immediately
     const reader = new FileReader();
     reader.onload = ev => setLocalPreview(ev.target.result);
     reader.readAsDataURL(file);
     setUploading(true);
     try {
+      // Step 1: get a signed upload ticket from our server (tiny request, no file payload)
+      const signRes = await fetch('/api/gallery/cloudinary-sign', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': secret },
+        body: JSON.stringify({ folder: albumFolderPath || 'general' }),
+      });
+      const signData = await signRes.json();
+      if (!signData.success) { setUploadErr(signData.message || 'Could not get upload credentials.'); setLocalPreview(''); setUploading(false); return; }
+
+      // Step 2: upload the file DIRECTLY from the browser to Cloudinary
+      // — never passes through Vercel, so there is no 4.5 MB body limit
       const fd = new FormData();
       fd.append('file', file);
-      if (albumFolderPath) fd.append('folder_path', albumFolderPath);
-      const res = await fetch('/api/gallery/upload-cloud', { method: 'POST', headers: { 'x-admin-secret': secret }, body: fd });
-      const data = await res.json();
-      if (data.success) { setForm(p => ({ ...p, image_url: data.url })); setUploadDone(true); }
-      else { setUploadErr(data.message || 'Cloudinary upload failed.'); setLocalPreview(''); }
-    } catch { setUploadErr('Network error during upload.'); setLocalPreview(''); }
+      fd.append('api_key', signData.api_key);
+      fd.append('timestamp', signData.timestamp);
+      fd.append('signature', signData.signature);
+      fd.append('folder', signData.folder);
+
+      const uploadRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${signData.cloud_name}/image/upload`,
+        { method: 'POST', body: fd }
+      );
+      const result = await uploadRes.json();
+      if (result.secure_url) {
+        setForm(p => ({ ...p, image_url: result.secure_url }));
+        setUploadDone(true);
+      } else {
+        setUploadErr(result.error?.message || 'Cloudinary upload failed.');
+        setLocalPreview('');
+      }
+    } catch (err) {
+      setUploadErr(`Upload failed: ${err.message || 'Check your internet connection and try again.'}`);
+      setLocalPreview('');
+    }
     setUploading(false);
   };
 

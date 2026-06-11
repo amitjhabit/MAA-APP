@@ -17,7 +17,7 @@ function MemberCard({ m, past }) {
         boxShadow: '0 2px 10px rgba(0,0,0,0.10)',
       }}>
         {m.photo_url
-          ? <img src={m.photo_url} alt={m.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+          ? <img src={m.photo_url} alt={m.name} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', objectPosition: 'top center' }} />
           : m.name[0]}
       </div>
       <div>

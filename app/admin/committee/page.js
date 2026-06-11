@@ -59,7 +59,7 @@ export default function CommitteePage(){
           <div className="grid-2">
             {members.map(m=>(<div key={m.id} className="card" style={{display:'flex',gap:'1rem',alignItems:'flex-start'}}>
               <div style={{width:52,height:52,borderRadius:'50%',background:'var(--saffron-light)',border:'2px solid var(--saffron)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.1rem',fontWeight:700,color:'var(--saffron)',flexShrink:0,overflow:'hidden'}}>
-                {m.photo_url?<img src={m.photo_url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'top center'}}/>:m.name[0]}
+                {m.photo_url?<img src={m.photo_url} alt="" style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'center'}}/>:m.name[0]}
               </div>
               <div style={{flex:1,minWidth:0}}>
                 <div style={{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:'.5rem'}}>

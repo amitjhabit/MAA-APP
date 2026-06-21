@@ -339,7 +339,14 @@ export default function DonationsPage() {
       const r = await fetch(`/api/finance/receipts?donation_id=${d.id}&limit=1`, { headers: { 'x-admin-secret': secret } });
       const res = await r.json();
       if (res.success && res.data.length > 0) {
-        setPreviewHtml(res.data[0].html_content);
+        const origin = window.location.origin;
+        let html = res.data[0].html_content || '';
+        if (html && !html.includes('Mithila_logo') && !html.includes('data:image')) {
+          const logoTag = `<img src="${origin}/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 12px;border:3px solid #E8720C;">`;
+          html = html.replace(/<h1 /i, `${logoTag}<h1 `);
+        }
+        html = html.replace(/src="(\/[^"]+)"/g, `src="${origin}$1"`);
+        setPreviewHtml(html);
       } else {
         show('No receipt generated yet. Use the 📄 button to send one first, then preview it.', 'error');
       }

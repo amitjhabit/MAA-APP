@@ -796,7 +796,19 @@ function ReceiptsTab({ secret, toast }) {
                   </td>
                   <td>
                     <div style={{ display: 'flex', gap: '.35rem' }}>
-                      <button className="btn btn-ghost btn-sm" onClick={() => setPreviewHtml(r.html_content)}>Preview</button>
+                      <button className="btn btn-ghost btn-sm" onClick={() => {
+                        // Convert relative /images/... paths to absolute so they render in srcDoc iframe
+                        const origin = window.location.origin;
+                        let html = r.html_content || '';
+                        // Inject logo if missing (old receipts saved before logo fix)
+                        if (html && !html.includes('Mithila_logo') && !html.includes('data:image')) {
+                          const logoTag = `<img src="${origin}/images/gallery/Mithila_logo.jpeg" alt="MAA Logo" style="width:80px;height:80px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 12px;border:3px solid #E8720C;">`;
+                          html = html.replace(/<h1 /i, `${logoTag}<h1 `);
+                        }
+                        // Make relative paths absolute for srcDoc rendering
+                        html = html.replace(/src="(\/[^"]+)"/g, `src="${origin}$1"`);
+                        setPreviewHtml(html);
+                      }}>Preview</button>
                       <a
                         href={r.html_content ? `/api/finance/receipts/${r.id}/pdf?secret=${encodeURIComponent(secret)}` : '#'}
                         download={r.html_content ? `${r.receipt_number}.pdf` : undefined}

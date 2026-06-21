@@ -43,7 +43,7 @@ export async function POST(req) {
       }
       try {
         // Build a clean email body (no embedded base64 images) so email clients can render it
-        const emailHtml = buildEmailHtml({
+        const { html: emailHtml, text: emailText } = buildEmailHtml({
           appUrl,
           receiptNumber:   r.receipt_number,
           recipientName:   r.recipient_name,
@@ -53,7 +53,7 @@ export async function POST(req) {
           paymentMethod:   r.tx_payment_method || '',
           transactionDate: fmtDate(r.tx_date || r.generated_at),
           generatedDate:   fmtDate(null),
-          referenceType:   'other',
+          referenceType:   r.reference_type || 'other',
         });
 
         const attachments = r.pdf_base64 ? [{
@@ -62,7 +62,7 @@ export async function POST(req) {
           contentType: 'application/pdf',
         }] : [];
 
-        await sendEmail({ to: r.recipient_email, subject: r.subject, html: emailHtml, attachments });
+        await sendEmail({ to: r.recipient_email, subject: r.subject, html: emailHtml, text: emailText, attachments });
         await sql`UPDATE receipts SET emailed_at = NOW() WHERE id = ${r.id}`;
         results.push({ id: r.id, success: true, to: r.recipient_email });
       } catch (err) {

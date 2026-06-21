@@ -27,7 +27,7 @@ export async function PATCH(req, { params }) {
       if (existing) {
         // Reuse the same receipt — just resend the email
         const desc = ex.campaign ? `Donation — ${ex.campaign}` : 'Donation to Maithil Association of America';
-        await resendExistingReceipt({ sql, receipt: existing, recipientEmail: ex.donor_email, description: desc, paymentMethod: ex.payment_method || '' });
+        await resendExistingReceipt({ sql, receipt: existing, recipientEmail: ex.donor_email, description: desc, detail: ex.purpose || '', paymentMethod: ex.payment_method || '' });
         receiptNumber = existing.receipt_number;
       } else {
         // First time — create a new receipt
@@ -37,6 +37,7 @@ export async function PATCH(req, { params }) {
           recipientEmail:  ex.donor_email,
           amount:          ex.amount,
           description:     ex.campaign ? `Donation — ${ex.campaign}` : 'Donation to Maithil Association of America',
+          detail:          ex.purpose || '',
           paymentMethod:   ex.payment_method || '',
           transactionDate: ex.donated_at,
           referenceType:   'donation',

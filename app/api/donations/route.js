@@ -51,6 +51,7 @@ export async function POST(request) {
         recipientEmail:  d.donor_email,
         amount:          d.amount,
         description:     d.campaign ? `Donation — ${d.campaign}` : 'Donation to Maithil Association of America',
+        detail:          d.purpose || '',
         paymentMethod:   d.payment_method || '',
         transactionDate: d.donated_at,
         referenceType:   'donation',

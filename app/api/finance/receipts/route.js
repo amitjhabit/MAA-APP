@@ -25,10 +25,13 @@ export async function GET(req) {
     const rows = await sql(
       `SELECT r.*, t.description AS transaction_description,
               COALESCE(t.amount, r.amount, 0) AS transaction_amount,
-              t.transaction_date, tmpl.name AS template_name
+              t.transaction_date, tmpl.name AS template_name,
+              d.purpose AS donation_purpose,
+              d.campaign AS donation_campaign
        FROM receipts r
        LEFT JOIN finance_transactions t ON t.id = r.transaction_id
        LEFT JOIN receipt_templates tmpl ON tmpl.id = r.template_id
+       LEFT JOIN donations d ON d.id = r.donation_id
        ${where}
        ORDER BY r.generated_at DESC
        LIMIT $${params.length+1} OFFSET $${params.length+2}`,

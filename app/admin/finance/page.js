@@ -764,7 +764,8 @@ function ReceiptsTab({ secret, toast }) {
                 <th>Receipt #</th>
                 <th>Recipient</th>
                 <th>Email</th>
-                <th>Transaction</th>
+                <th>Description</th>
+                <th>Event / Sponsorship Detail</th>
                 <th style={{ textAlign: 'right' }}>Amount</th>
                 <th>Generated</th>
                 <th>Emailed</th>
@@ -779,7 +780,12 @@ function ReceiptsTab({ secret, toast }) {
                   <td style={{ fontFamily: 'var(--mono, monospace)', fontSize: '.8rem' }}>{r.receipt_number}</td>
                   <td>{r.recipient_name}</td>
                   <td style={{ fontSize: '.8rem' }}>{r.recipient_email || '—'}</td>
-                  <td style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '.8rem' }}>{r.transaction_description || '—'}</td>
+                  <td style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '.8rem' }}>
+                    {r.transaction_description || (r.donation_campaign ? `Donation — ${r.donation_campaign}` : '—')}
+                  </td>
+                  <td style={{ maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '.8rem', color: r.donation_purpose ? 'var(--navy)' : 'var(--ink-dim)' }}>
+                    {r.donation_purpose || '—'}
+                  </td>
                   <td style={{ textAlign: 'right', fontWeight: 600, fontSize: '.875rem' }}>${fmt(r.transaction_amount)}</td>
                   <td style={{ fontSize: '.8rem' }}>{fmtDate(r.generated_at)}</td>
                   <td style={{ fontSize: '.8rem' }}>{r.emailed_at ? fmtDate(r.emailed_at) : <span style={{ color: 'var(--ink-dim)' }}>Not sent</span>}</td>
@@ -805,7 +811,7 @@ function ReceiptsTab({ secret, toast }) {
                   </td>
                 </tr>
               ))}
-              {rows.length === 0 && <tr><td colSpan={10} style={{ textAlign: 'center', color: 'var(--ink-dim)', padding: '2rem' }}>No receipts yet. Generate them from the Transactions tab.</td></tr>}
+              {rows.length === 0 && <tr><td colSpan={11} style={{ textAlign: 'center', color: 'var(--ink-dim)', padding: '2rem' }}>No receipts yet. Generate them from the Transactions tab.</td></tr>}
             </tbody>
           </table>
         </div>

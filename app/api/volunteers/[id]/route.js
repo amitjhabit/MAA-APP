@@ -2,16 +2,35 @@
 import { NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 function auth(req) { return req.headers.get('x-admin-secret') === process.env.ADMIN_SECRET; }
+
 export async function PATCH(req, { params }) {
   if (!auth(req)) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
   try {
     const sql = getDb(), b = await req.json();
     const [ex] = await sql`SELECT * FROM volunteers WHERE id = ${params.id}`;
     if (!ex) return NextResponse.json({ success: false, message: 'Not found' }, { status: 404 });
-    const [v] = await sql`UPDATE volunteers SET name=${b.name??ex.name},email=${b.email??ex.email},phone=${b.phone??ex.phone},role=${b.role??ex.role},skills=${b.skills??ex.skills},availability=${b.availability??ex.availability},hours_total=${b.hours_total!==undefined?parseFloat(b.hours_total):ex.hours_total},status=${b.status??ex.status},notes=${b.notes??ex.notes} WHERE id=${params.id} RETURNING *`;
+    const firstName = b.first_name ?? ex.first_name ?? '';
+    const lastName  = b.last_name  ?? ex.last_name  ?? '';
+    const name = [firstName, lastName].filter(Boolean).join(' ') || ex.name;
+    const [v] = await sql`
+      UPDATE volunteers SET
+        name        = ${name},
+        first_name  = ${firstName},
+        last_name   = ${lastName},
+        address     = ${b.address     ?? ex.address},
+        email       = ${b.email       ?? ex.email},
+        phone       = ${b.phone       ?? ex.phone},
+        role        = ${b.role        ?? ex.role},
+        skills      = ${b.skills      ?? ex.skills},
+        availability= ${b.availability?? ex.availability},
+        hours_total = ${b.hours_total !== undefined ? parseFloat(b.hours_total) : ex.hours_total},
+        status      = ${b.status      ?? ex.status},
+        notes       = ${b.notes       ?? ex.notes}
+      WHERE id = ${params.id} RETURNING *`;
     return NextResponse.json({ success: true, data: v });
   } catch (e) { return NextResponse.json({ success: false, message: e.message }, { status: 500 }); }
 }
+
 export async function DELETE(req, { params }) {
   if (!auth(req)) return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
   try {

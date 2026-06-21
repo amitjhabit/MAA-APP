@@ -16,8 +16,10 @@ export async function GET(req) {
     const offset = (page - 1) * limit;
     const search = searchParams.get('search') || '';
 
+    const donationId = searchParams.get('donation_id');
     const conds = [], params = [];
     if (search) { params.push(`%${search}%`); conds.push(`(r.recipient_name ILIKE $${params.length} OR r.recipient_email ILIKE $${params.length} OR r.receipt_number ILIKE $${params.length})`); }
+    if (donationId) { params.push(parseInt(donationId)); conds.push(`r.donation_id = $${params.length}`); }
     const where = conds.length ? `WHERE ${conds.join(' AND ')}` : '';
 
     const rows = await sql(

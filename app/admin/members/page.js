@@ -324,7 +324,7 @@ function Toggle({ active, onChange }) {
 /* ══════════════════════════════════════
    DETAIL PANEL
 ══════════════════════════════════════ */
-function DetailPanel({ m, onClose, onEdit, onDelete }) {
+function DetailPanel({ m, onClose, onEdit, onDelete, onSendReceipt }) {
   const expired=m.expiry_date&&localDate(m.expiry_date)<new Date();
   const age=calcAge(m.date_of_birth);
   const R=({icon,label,value,danger})=>{
@@ -369,9 +369,10 @@ function DetailPanel({ m, onClose, onEdit, onDelete }) {
           <R icon="🪪" label="Member ID" value={`#${m.id}`}/>
           <R icon="🕐" label="Registered" value={new Date(m.created_at).toLocaleString()}/>
         </div>
-        <div style={{padding:'1rem 1.25rem',borderTop:'1px solid var(--border)',display:'grid',gridTemplateColumns:'1fr 1fr',gap:'.5rem'}}>
+        <div style={{padding:'1rem 1.25rem',borderTop:'1px solid var(--border)',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'.5rem'}}>
           <button className="btn btn-danger btn-sm" style={{justifyContent:'center'}} onClick={()=>{onDelete(m.id);onClose();}}>🗑 Delete</button>
           <button className="btn btn-primary btn-sm" style={{justifyContent:'center'}} onClick={()=>{onEdit(m);onClose();}}>✏️ Edit</button>
+          <button className="btn btn-ghost btn-sm" style={{justifyContent:'center'}} onClick={()=>onSendReceipt(m)} title={m.email&&m.amount_paid>0?`Send receipt to ${m.email}`:'Add email + amount paid first'}>📄 Receipt</button>
         </div>
       </div>
     </>
@@ -536,6 +537,20 @@ export default function AdminMembersPage() {
     catch{show('Failed','error');}
   };
 
+  const [sendingMemberReceipt, setSendingMemberReceipt] = useState(null);
+  const sendMembershipReceipt = async (m) => {
+    if (!m.email) { show('No email address on file for this member', 'error'); return; }
+    if (!m.amount_paid || parseFloat(m.amount_paid) <= 0) { show('No payment amount recorded for this member. Edit the member to add Amount Paid first.', 'error'); return; }
+    setSendingMemberReceipt(m.id);
+    try {
+      const res = await fetch(`/api/members/${m.id}/receipt`, { method: 'POST', headers: { 'x-admin-secret': secret } });
+      const data = await res.json();
+      if (data.success) show(`Receipt ${data.receipt_number} emailed to ${m.email}`, 'success');
+      else show(data.message || 'Failed to send receipt', 'error');
+    } catch { show('Error sending receipt', 'error'); }
+    setSendingMemberReceipt(null);
+  };
+
   const NL=({href,icon,label,active})=><a href={href} className={`admin-nav-link${active?' active':''}`}><span className="nav-icon">{icon}</span>{label}</a>;
 
   return(
@@ -674,6 +689,9 @@ export default function AdminMembersPage() {
                         <td><div style={{display:'flex',gap:'.3rem'}}>
                           <button className="btn btn-ghost btn-sm" style={{padding:'.3rem .6rem'}} onClick={()=>setPanelMember(m)} title="View">👁</button>
                           <button className="btn btn-primary btn-sm" style={{padding:'.3rem .6rem'}} onClick={()=>setEditMember(m)} title="Edit">✏️</button>
+                          <button className="btn btn-ghost btn-sm" style={{padding:'.3rem .6rem',fontSize:'.72rem'}} onClick={()=>sendMembershipReceipt(m)} disabled={sendingMemberReceipt===m.id} title={m.email&&m.amount_paid>0?`Email receipt to ${m.email}`:'Add email + amount paid to send receipt'}>
+                            {sendingMemberReceipt===m.id?<span className="spinner"/>:'📄'}
+                          </button>
                           <button className="btn btn-danger btn-sm" style={{padding:'.3rem .6rem'}} onClick={()=>handleDelete(m.id)} title="Delete">🗑</button>
                         </div></td>
                       </tr>
@@ -697,7 +715,7 @@ export default function AdminMembersPage() {
         </div>
       </div>
 
-      {panelMember&&<DetailPanel m={panelMember} onClose={()=>setPanelMember(null)} onEdit={m=>{setEditMember(m);setPanelMember(null);}} onDelete={id=>{handleDelete(id);setPanelMember(null);}}/>}
+      {panelMember&&<DetailPanel m={panelMember} onClose={()=>setPanelMember(null)} onEdit={m=>{setEditMember(m);setPanelMember(null);}} onDelete={id=>{handleDelete(id);setPanelMember(null);}} onSendReceipt={m=>{sendMembershipReceipt(m);}}/>}
       {showAdd&&<MemberModal member={null} secret={secret} onClose={()=>setShowAdd(false)} onSave={handleSave}/>}
       {editMember&&<MemberModal member={editMember} secret={secret} onClose={()=>setEditMember(null)} onSave={handleSave}/>}
       {showImport&&<ImportModal secret={secret} onClose={()=>setShowImport(false)} onDone={()=>{setShowImport(false);fetchMembers();show('Import complete! Members refreshed.');}}/>}

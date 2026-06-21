@@ -34,7 +34,6 @@ export async function POST(req) {
       [receipt_ids]
     );
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || '';
     const results = [];
     for (const r of rows) {
       if (!r.recipient_email) {
@@ -42,9 +41,14 @@ export async function POST(req) {
         continue;
       }
       try {
-        // Build a clean email body (no embedded base64 images) so email clients can render it
+        // Read logo for inline CID embedding
+        const { readFileSync } = await import('fs');
+        const { join } = await import('path');
+        let logoBuffer = null;
+        try { logoBuffer = readFileSync(join(process.cwd(), 'public', 'images', 'gallery', 'Mithila_logo.jpeg')); } catch {}
+        const logoCid = 'maa-logo@maa';
+
         const { html: emailHtml, text: emailText } = buildEmailHtml({
-          appUrl,
           receiptNumber:   r.receipt_number,
           recipientName:   r.recipient_name,
           amount:          parseFloat(r.amount || 0).toFixed(2),
@@ -54,13 +58,12 @@ export async function POST(req) {
           transactionDate: fmtDate(r.tx_date || r.generated_at),
           generatedDate:   fmtDate(null),
           referenceType:   r.reference_type || 'other',
+          logoCid:         logoBuffer ? logoCid : null,
         });
 
-        const attachments = r.pdf_base64 ? [{
-          filename: `${r.receipt_number}.pdf`,
-          content: Buffer.from(r.pdf_base64, 'base64'),
-          contentType: 'application/pdf',
-        }] : [];
+        const attachments = [];
+        if (logoBuffer) attachments.push({ filename: 'logo.jpeg', content: logoBuffer, contentType: 'image/jpeg', cid: logoCid });
+        if (r.pdf_base64) attachments.push({ filename: `${r.receipt_number}.pdf`, content: Buffer.from(r.pdf_base64, 'base64'), contentType: 'application/pdf' });
 
         await sendEmail({ to: r.recipient_email, subject: r.subject, html: emailHtml, text: emailText, attachments });
         await sql`UPDATE receipts SET emailed_at = NOW() WHERE id = ${r.id}`;

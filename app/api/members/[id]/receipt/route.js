@@ -30,7 +30,7 @@ export async function POST(req, { params }) {
 
     let receiptNumber;
     if (existing) {
-      await resendExistingReceipt({ sql, receipt: existing, recipientEmail: member.email });
+      await resendExistingReceipt({ sql, receipt: existing, recipientEmail: member.email, description, paymentMethod: member.payment_method || '' });
       receiptNumber = existing.receipt_number;
     } else {
       const result = await autoGenerateAndSendReceipt({
